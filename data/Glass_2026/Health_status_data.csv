@@ -1,0 +1,455 @@
+﻿Year,Site,Coral_ID,Bleaching_status,Percent_mortality_since_2022,Signs_of_disease
+2022,Cristobal Island,61,Pigmented,0,No
+2022,Cristobal Island,62,Pigmented,0,No
+2022,Cristobal Island,63,Pigmented,0,No
+2022,Cristobal Island,64,Pigmented,0,No
+2022,Cristobal Island,65,Pigmented,0,No
+2022,Cristobal Island,66,Pigmented,0,No
+2022,Cristobal Island,67,Pigmented,0,No
+2022,Cristobal Island,68,Pigmented,0,No
+2022,Cristobal Island,69,Pigmented,0,No
+2022,Cristobal Island,70,Pigmented,0,No
+2022,Cristobal Island,71,Pigmented,0,No
+2022,Cristobal Island,72,Pigmented,0,No
+2022,Cristobal Island,73,Pigmented,0,No
+2022,Cristobal Island,74,Pigmented,0,No
+2022,Cristobal Island,75,Pigmented,0,No
+2022,Cristobal Island,76,Pigmented,0,No
+2022,Cristobal Island,77,Pigmented,0,No
+2022,Cristobal Island,78,Pigmented,0,No
+2022,Cristobal Island,79,Pigmented,0,No
+2022,Cristobal Island,80,Pigmented,0,No
+2022,Cristobal Island,81,Pigmented,0,No
+2022,Cristobal Island,82,Pigmented,0,No
+2022,Cristobal Island,83,Pigmented,0,No
+2022,Cristobal Island,84,Pigmented,0,No
+2022,Cristobal Island,85,Pigmented,0,No
+2022,Cristobal Island,86,Pigmented,0,No
+2022,Cristobal Island,87,Pigmented,0,No
+2022,Cristobal Island,88,Pigmented,0,No
+2022,Cristobal Island,89,Pigmented,0,No
+2022,Cristobal Island,90,Pigmented,0,No
+2022,Cristobal Island,93,Partially bleached,0,No
+2022,Cristobal Island,94,Partially bleached,0,No
+2022,Cristobal Island,96,Pigmented,0,No
+2022,Cristobal Island,97,Partially bleached,0,No
+2022,Cristobal Island,98,Partially bleached,0,No
+2022,Cristobal Island,99,Partially bleached,0,No
+2022,Cristobal Island,100,Partially bleached,0,No
+2022,Cristobal Island,101,Partially bleached,0,No
+2022,Cristobal Island,102,Partially bleached,0,No
+2022,Cristobal Island,103,Partially bleached,0,No
+2022,Cristobal Island,104,Partially bleached,0,No
+2022,Cristobal Island,105,Partially bleached,0,No
+2022,Cristobal Island,106,Partially bleached,0,No
+2022,Cristobal Island,108,Partially bleached,0,No
+2022,Cristobal Island,109,Partially bleached,0,No
+2022,Cristobal Island,110,Pigmented,0,No
+2022,Cristobal Island,114,Partially bleached,0,No
+2022,Cristobal Island,115,Partially bleached,0,No
+2022,Hospital Point,116,Pigmented,0,No
+2022,Hospital Point,117,Pigmented,0,No
+2022,Hospital Point,118,Pigmented,0,No
+2022,Hospital Point,120,Pigmented,0,No
+2022,Hospital Point,121,Pigmented,0,No
+2022,Hospital Point,122,Pigmented,0,No
+2022,Hospital Point,124,Partially bleached,0,No
+2022,Hospital Point,125,Pigmented,0,No
+2022,Hospital Point,126,Partially bleached,0,No
+2022,Hospital Point,127,Partially bleached,0,No
+2022,Hospital Point,128,Partially bleached,0,No
+2022,Hospital Point,129,Partially bleached,0,No
+2022,Hospital Point,130,Partially bleached,0,No
+2022,Hospital Point,131,Pigmented,0,No
+2022,Hospital Point,132,Partially bleached,0,No
+2022,Hospital Point,133,Pigmented,0,No
+2022,Hospital Point,134,Pigmented,0,No
+2022,Hospital Point,135,Pigmented,0,No
+2022,Hospital Point,136,Pigmented,0,No
+2022,Hospital Point,137,Pigmented,0,No
+2022,Hospital Point,138,Pigmented,0,No
+2022,Hospital Point,139,Pigmented,0,No
+2022,Hospital Point,140,Pigmented,0,No
+2022,Hospital Point,141,Pigmented,0,No
+2022,Hospital Point,142,Pigmented,0,No
+2022,Hospital Point,143,Pigmented,0,No
+2022,Hospital Point,144,Pigmented,0,No
+2022,Hospital Point,145,Pigmented,0,No
+2022,Hospital Point,146,Pigmented,0,No
+2022,Hospital Point,147,Pigmented,0,No
+2022,Hospital Point,148,Pigmented,0,No
+2022,Hospital Point,149,Pigmented,0,No
+2022,Hospital Point,150,Pigmented,0,No
+2022,Hospital Point,151,Pigmented,0,No
+2022,Hospital Point,152,Pigmented,0,No
+2022,Hospital Point,153,Pigmented,0,No
+2022,Hospital Point,154,Pigmented,0,No
+2022,Hospital Point,155,Pigmented,0,No
+2022,Hospital Point,156,Pigmented,0,No
+2022,Hospital Point,157,Pigmented,0,No
+2022,Hospital Point,158,Pigmented,0,No
+2022,Hospital Point,159,Pigmented,0,No
+2022,Hospital Point,160,Pigmented,0,No
+2022,Hospital Point,161,Pigmented,0,No
+2022,Hospital Point,162,Pigmented,0,No
+2022,Hospital Point,163,Pigmented,0,No
+2022,Hospital Point,164,Pigmented,0,No
+2022,Hospital Point,165,Pigmented,0,No
+2022,Hospital Point,166,Pigmented,0,No
+2022,Hospital Point,167,Pigmented,0,No
+2022,Hospital Point,168,Pigmented,0,No
+2022,Hospital Point,169,Pigmented,0,No
+2022,Hospital Point,170,Pigmented,0,No
+2022,Punta Donato,171,Pigmented,0,No
+2022,Punta Donato,173,Pigmented,0,Yes
+2022,Punta Donato,174,Pigmented,0,No
+2022,Punta Donato,175,Partially bleached,0,Yes
+2022,Punta Donato,176,Pigmented,0,No
+2022,Punta Donato,178,Pigmented,0,Yes
+2022,Punta Donato,181,Pigmented,0,No
+2022,Punta Donato,183,Pigmented,0,Yes
+2022,Punta Donato,184,Pigmented,0,No
+2022,Punta Donato,185,Pigmented,0,No
+2022,Punta Donato,186,Pigmented,0,No
+2022,Punta Donato,187,Pigmented,0,No
+2022,Punta Donato,188,Pigmented,0,No
+2022,Punta Donato,189,Pigmented,0,No
+2022,Punta Donato,190,Pigmented,0,No
+2022,Punta Donato,193,Partially bleached,0,Yes
+2022,Punta Donato,194,Pigmented,0,No
+2022,Punta Donato,195,Pigmented,0,No
+2022,Punta Donato,196,Pigmented,0,No
+2022,Punta Donato,199,Pigmented,0,No
+2022,Punta Donato,201,Pigmented,0,No
+2022,Punta Donato,203,Partially bleached,0,Yes
+2022,Punta Donato,209,Pigmented,0,No
+2022,Punta Donato,212,Pigmented,0,No
+2022,Punta Donato,213,Pigmented,0,No
+2022,Punta Donato,214,Pigmented,0,No
+2022,Punta Donato,215,Pigmented,0,No
+2022,Punta Donato,216,Pigmented,0,No
+2022,Punta Donato,218,Pigmented,0,No
+2022,Punta Donato,219,Pigmented,0,No
+2022,Punta Donato,220,Pigmented,0,No
+2022,Punta Donato,221,Pigmented,0,No
+2022,Punta Donato,224,Pigmented,0,No
+2022,Punta Donato,225,Pigmented,0,No
+2022,Punta Donato,229,Pigmented,0,Yes
+2022,STRI Point,31,Pigmented,0,No
+2022,STRI Point,32,Pigmented,0,No
+2022,STRI Point,33,Pigmented,0,No
+2022,STRI Point,34,Pigmented,0,No
+2022,STRI Point,35,Pigmented,0,No
+2022,STRI Point,36,Pigmented,0,No
+2022,STRI Point,37,Pigmented,0,No
+2022,STRI Point,38,Pigmented,0,Yes
+2022,STRI Point,39,Partially bleached,0,Yes
+2022,STRI Point,40,Pigmented,0,No
+2022,STRI Point,41,Pigmented,0,No
+2022,STRI Point,42,Pigmented,0,No
+2022,STRI Point,43,Pigmented,0,No
+2022,STRI Point,44,Partially bleached,0,Yes
+2022,STRI Point,45,Pigmented,0,Yes
+2022,STRI Point,46,Pigmented,0,No
+2022,STRI Point,47,Pigmented,0,No
+2022,STRI Point,48,Pigmented,0,No
+2022,STRI Point,49,Partially bleached,0,No
+2022,STRI Point,50,Pigmented,0,No
+2022,STRI Point,51,Pigmented,0,No
+2022,STRI Point,52,Pigmented,0,No
+2022,STRI Point,53,Partially bleached,0,No
+2022,STRI Point,54,Pigmented,0,No
+2022,STRI Point,55,Pigmented,0,No
+2022,STRI Point,56,Pigmented,0,No
+2022,STRI Point,57,Pigmented,0,No
+2022,STRI Point,58,Partially bleached,0,No
+2022,STRI Point,59,Pigmented,0,No
+2022,STRI Point,60,Pigmented,0,No
+2023,Cristobal Island,61,Pigmented,0,No
+2023,Cristobal Island,62,Pigmented,0,No
+2023,Cristobal Island,63,Pigmented,10,No
+2023,Cristobal Island,65,Partially bleached,10,No
+2023,Cristobal Island,66,Partially bleached,0,No
+2023,Cristobal Island,67,Partially bleached,0,No
+2023,Cristobal Island,68,Partially bleached,0,Yes
+2023,Cristobal Island,69,Partially bleached,0,No
+2023,Cristobal Island,70,Partially bleached,10,No
+2023,Cristobal Island,71,Partially bleached,0,No
+2023,Cristobal Island,72,Fully bleached,40,Yes
+2023,Cristobal Island,73,Partially bleached,10,Yes
+2023,Cristobal Island,74,Partially bleached,10,Yes
+2023,Cristobal Island,75,Partially bleached,0,No
+2023,Cristobal Island,76,Partially bleached,0,No
+2023,Cristobal Island,77,Pigmented,10,No
+2023,Cristobal Island,78,Pigmented,0,No
+2023,Cristobal Island,79,Partially bleached,10,No
+2023,Cristobal Island,80,Partially bleached,0,No
+2023,Cristobal Island,81,Partially bleached,0,No
+2023,Cristobal Island,82,Partially bleached,10,No
+2023,Cristobal Island,83,Partially bleached,0,No
+2023,Cristobal Island,84,Partially bleached,10,No
+2023,Cristobal Island,85,Pigmented,0,No
+2023,Cristobal Island,86,Partially bleached,0,No
+2023,Cristobal Island,87,Pigmented,0,Yes
+2023,Cristobal Island,88,Pigmented,0,No
+2023,Cristobal Island,89,Pigmented,0,No
+2023,Cristobal Island,94,Pigmented,0,No
+2023,Cristobal Island,96,Pigmented,0,No
+2023,Cristobal Island,97,Fully bleached,10,No
+2023,Cristobal Island,98,Partially bleached,0,No
+2023,Cristobal Island,99,Partially bleached,0,No
+2023,Cristobal Island,100,Pigmented,80,No
+2023,Cristobal Island,101,Partially bleached,0,No
+2023,Cristobal Island,102,Pigmented,0,No
+2023,Cristobal Island,103,Partially bleached,0,No
+2023,Cristobal Island,104,Partially bleached,10,No
+2023,Cristobal Island,105,Partially bleached,10,No
+2023,Cristobal Island,108,Partially bleached,0,No
+2023,Cristobal Island,109,Pigmented,0,No
+2023,Cristobal Island,110,Partially bleached,0,No
+2023,Cristobal Island,114,Fully bleached,0,No
+2023,Cristobal Island,115,Partially bleached,0,No
+2023,Hospital Point,116,Partially bleached,0,No
+2023,Hospital Point,118,Partially bleached,40,No
+2023,Hospital Point,120,Partially bleached,0,No
+2023,Hospital Point,121,Partially bleached,0,No
+2023,Hospital Point,122,Partially bleached,10,No
+2023,Hospital Point,124,Pigmented,0,No
+2023,Hospital Point,125,Pigmented,0,No
+2023,Hospital Point,126,Partially bleached,0,No
+2023,Hospital Point,127,Partially bleached,0,No
+2023,Hospital Point,129,Fully bleached,0,No
+2023,Hospital Point,130,Partially bleached,0,No
+2023,Hospital Point,131,Partially bleached,0,No
+2023,Hospital Point,132,Partially bleached,0,No
+2023,Hospital Point,133,Pigmented,0,No
+2023,Hospital Point,134,Pigmented,0,No
+2023,Hospital Point,135,Pigmented,0,No
+2023,Hospital Point,136,Pigmented,0,No
+2023,Hospital Point,137,Pigmented,0,No
+2023,Hospital Point,138,Pigmented,0,No
+2023,Hospital Point,139,Pigmented,0,No
+2023,Hospital Point,140,Partially bleached,0,No
+2023,Hospital Point,141,Partially bleached,0,No
+2023,Hospital Point,142,Pigmented,0,No
+2023,Hospital Point,143,Pigmented,0,No
+2023,Hospital Point,144,Pigmented,0,No
+2023,Hospital Point,145,Pigmented,0,No
+2023,Hospital Point,146,Pigmented,0,No
+2023,Hospital Point,147,Pigmented,0,No
+2023,Hospital Point,149,Pigmented,0,No
+2023,Hospital Point,151,Pigmented,0,No
+2023,Hospital Point,152,Pigmented,0,No
+2023,Hospital Point,153,Pigmented,0,No
+2023,Hospital Point,154,Pigmented,0,No
+2023,Hospital Point,155,Pigmented,0,No
+2023,Hospital Point,156,Pigmented,0,No
+2023,Hospital Point,157,Pigmented,0,No
+2023,Hospital Point,158,Pigmented,0,No
+2023,Hospital Point,159,Partially bleached,0,No
+2023,Hospital Point,160,Pigmented,0,No
+2023,Hospital Point,162,Partially bleached,0,No
+2023,Hospital Point,165,Pigmented,0,No
+2023,Hospital Point,167,Pigmented,0,No
+2023,Punta Donato,171,Pigmented,0,No
+2023,Punta Donato,173,Pigmented,0,No
+2023,Punta Donato,174,Pigmented,0,No
+2023,Punta Donato,175,Partially bleached,0,No
+2023,Punta Donato,176,Pigmented,0,No
+2023,Punta Donato,178,Pigmented,0,Yes
+2023,Punta Donato,181,Pigmented,30,No
+2023,Punta Donato,183,Pigmented,0,Yes
+2023,Punta Donato,184,Pigmented,0,No
+2023,Punta Donato,185,Pigmented,0,No
+2023,Punta Donato,186,Pigmented,0,No
+2023,Punta Donato,187,Partially bleached,0,No
+2023,Punta Donato,188,Partially bleached,0,No
+2023,Punta Donato,189,Pigmented,0,No
+2023,Punta Donato,190,Pigmented,0,No
+2023,Punta Donato,193,Partially bleached,0,No
+2023,Punta Donato,194,Pigmented,0,No
+2023,Punta Donato,195,Pigmented,0,No
+2023,Punta Donato,196,Partially bleached,0,No
+2023,Punta Donato,199,Partially bleached,0,No
+2023,Punta Donato,201,Pigmented,0,No
+2023,Punta Donato,203,Partially bleached,0,No
+2023,Punta Donato,209,Partially bleached,0,No
+2023,Punta Donato,212,Pigmented,0,No
+2023,Punta Donato,213,Pigmented,0,No
+2023,Punta Donato,215,Pigmented,0,No
+2023,Punta Donato,216,Partially bleached,0,No
+2023,Punta Donato,218,Partially bleached,0,No
+2023,Punta Donato,220,Pigmented,0,No
+2023,Punta Donato,221,Partially bleached,0,No
+2023,Punta Donato,224,Pigmented,0,No
+2023,Punta Donato,225,Pigmented,0,No
+2023,Punta Donato,229,Pigmented,0,No
+2023,STRI Point,32,Pigmented,0,Yes
+2023,STRI Point,33,Pigmented,30,No
+2023,STRI Point,34,Partially bleached,0,No
+2023,STRI Point,35,Pigmented,0,No
+2023,STRI Point,36,Fully bleached,20,Yes
+2023,STRI Point,37,Pigmented,10,No
+2023,STRI Point,38,Partially bleached,20,Yes
+2023,STRI Point,39,Pigmented,0,Yes
+2023,STRI Point,40,Pigmented,0,No
+2023,STRI Point,41,Pigmented,0,No
+2023,STRI Point,43,Pigmented,30,No
+2023,STRI Point,44,Fully bleached,20,Yes
+2023,STRI Point,45,Fully bleached,60,Yes
+2023,STRI Point,46,Pigmented,0,No
+2023,STRI Point,47,Partially bleached,20,No
+2023,STRI Point,48,Partially bleached,0,No
+2023,STRI Point,49,Partially bleached,0,No
+2023,STRI Point,50,Pigmented,0,No
+2023,STRI Point,51,Partially bleached,0,No
+2023,STRI Point,52,Partially bleached,20,No
+2023,STRI Point,53,Partially bleached,50,No
+2023,STRI Point,54,Pigmented,0,No
+2023,STRI Point,55,Pigmented,0,No
+2023,STRI Point,56,Pigmented,0,No
+2023,STRI Point,57,Pigmented,60,No
+2023,STRI Point,58,Partially bleached,0,No
+2023,STRI Point,59,Pigmented,0,No
+2024,Cristobal Island,61,Pigmented,0,No
+2024,Cristobal Island,62,Pigmented,0,No
+2024,Cristobal Island,63,Pigmented,10,No
+2024,Cristobal Island,65,Pigmented,30,No
+2024,Cristobal Island,66,Pigmented,40,No
+2024,Cristobal Island,67,Pigmented,30,No
+2024,Cristobal Island,68,Pigmented,30,No
+2024,Cristobal Island,69,Pigmented,80,No
+2024,Cristobal Island,70,Pigmented,80,No
+2024,Cristobal Island,72,Pigmented,80,No
+2024,Cristobal Island,73,Pigmented,30,No
+2024,Cristobal Island,74,Partially bleached,20,No
+2024,Cristobal Island,75,Pigmented,20,No
+2024,Cristobal Island,76,Pigmented,0,No
+2024,Cristobal Island,77,Pigmented,10,No
+2024,Cristobal Island,78,Pigmented,10,No
+2024,Cristobal Island,79,Pigmented,60,No
+2024,Cristobal Island,80,Pigmented,0,No
+2024,Cristobal Island,81,Partially bleached,20,No
+2024,Cristobal Island,82,Pigmented,20,No
+2024,Cristobal Island,83,Pigmented,50,No
+2024,Cristobal Island,84,Partially bleached,40,No
+2024,Cristobal Island,85,Pigmented,0,No
+2024,Cristobal Island,87,Pigmented,0,No
+2024,Cristobal Island,88,Pigmented,0,No
+2024,Cristobal Island,89,Pigmented,0,No
+2024,Cristobal Island,94,Partially bleached,0,No
+2024,Cristobal Island,96,Pigmented,0,No
+2024,Cristobal Island,97,Fully bleached,10,No
+2024,Cristobal Island,98,Partially bleached,0,No
+2024,Cristobal Island,99,Partially bleached,20,No
+2024,Cristobal Island,100,Pigmented,90,No
+2024,Cristobal Island,101,Partially bleached,0,No
+2024,Cristobal Island,102,Partially bleached,10,No
+2024,Cristobal Island,103,Fully bleached,10,No
+2024,Cristobal Island,104,Partially bleached,10,No
+2024,Cristobal Island,105,Partially bleached,10,No
+2024,Cristobal Island,108,Partially bleached,0,No
+2024,Cristobal Island,109,Partially bleached,0,No
+2024,Cristobal Island,110,Partially bleached,0,No
+2024,Cristobal Island,114,Partially bleached,10,Yes
+2024,Cristobal Island,115,Partially bleached,0,No
+2024,Hospital Point,116,Pigmented,0,No
+2024,Hospital Point,118,Partially bleached,70,No
+2024,Hospital Point,120,Partially bleached,70,No
+2024,Hospital Point,121,Pigmented,10,No
+2024,Hospital Point,122,Partially bleached,20,No
+2024,Hospital Point,124,Partially bleached,0,No
+2024,Hospital Point,125,Pigmented,0,No
+2024,Hospital Point,126,Partially bleached,0,No
+2024,Hospital Point,127,Partially bleached,0,No
+2024,Hospital Point,129,Partially bleached,0,No
+2024,Hospital Point,131,Pigmented,0,No
+2024,Hospital Point,132,Partially bleached,0,No
+2024,Hospital Point,133,Pigmented,0,No
+2024,Hospital Point,134,Pigmented,0,No
+2024,Hospital Point,135,Partially bleached,0,No
+2024,Hospital Point,136,Pigmented,0,No
+2024,Hospital Point,137,Pigmented,0,No
+2024,Hospital Point,138,Pigmented,0,No
+2024,Hospital Point,139,Pigmented,0,No
+2024,Hospital Point,140,Pigmented,0,No
+2024,Hospital Point,141,Partially bleached,0,No
+2024,Hospital Point,142,Pigmented,0,No
+2024,Hospital Point,143,Pigmented,0,No
+2024,Hospital Point,144,Pigmented,0,No
+2024,Hospital Point,145,Pigmented,0,No
+2024,Hospital Point,147,Pigmented,0,No
+2024,Hospital Point,149,Pigmented,0,No
+2024,Hospital Point,151,Pigmented,0,No
+2024,Hospital Point,152,Pigmented,0,No
+2024,Hospital Point,153,Pigmented,0,No
+2024,Hospital Point,154,Pigmented,0,No
+2024,Hospital Point,155,Pigmented,0,No
+2024,Hospital Point,156,Pigmented,0,No
+2024,Hospital Point,157,Pigmented,0,No
+2024,Hospital Point,158,Pigmented,0,No
+2024,Hospital Point,159,Pigmented,0,No
+2024,Hospital Point,160,Pigmented,0,No
+2024,Hospital Point,165,Pigmented,0,No
+2024,Hospital Point,167,Pigmented,0,No
+2024,Punta Donato,171,Pigmented,10,No
+2024,Punta Donato,173,Pigmented,0,No
+2024,Punta Donato,174,Pigmented,0,No
+2024,Punta Donato,175,Partially bleached,0,No
+2024,Punta Donato,176,Pigmented,0,No
+2024,Punta Donato,178,Pigmented,0,No
+2024,Punta Donato,181,Pigmented,30,No
+2024,Punta Donato,183,Pigmented,0,No
+2024,Punta Donato,184,Pigmented,0,No
+2024,Punta Donato,185,Pigmented,0,No
+2024,Punta Donato,186,Pigmented,0,No
+2024,Punta Donato,187,Pigmented,0,No
+2024,Punta Donato,188,Pigmented,0,No
+2024,Punta Donato,189,Pigmented,0,No
+2024,Punta Donato,190,Pigmented,0,Yes
+2024,Punta Donato,193,Partially bleached,0,No
+2024,Punta Donato,194,Partially bleached,0,Yes
+2024,Punta Donato,195,Pigmented,0,No
+2024,Punta Donato,196,Pigmented,0,No
+2024,Punta Donato,199,Pigmented,0,No
+2024,Punta Donato,201,Partially bleached,0,Yes
+2024,Punta Donato,203,Partially bleached,0,No
+2024,Punta Donato,209,Pigmented,10,No
+2024,Punta Donato,212,Pigmented,0,No
+2024,Punta Donato,213,Pigmented,0,No
+2024,Punta Donato,214,Pigmented,0,No
+2024,Punta Donato,215,Pigmented,0,No
+2024,Punta Donato,216,Pigmented,10,No
+2024,Punta Donato,218,Pigmented,0,No
+2024,Punta Donato,220,Pigmented,0,No
+2024,Punta Donato,221,Pigmented,0,No
+2024,Punta Donato,224,Pigmented,0,No
+2024,Punta Donato,225,Pigmented,0,No
+2024,Punta Donato,229,Pigmented,0,No
+2024,STRI Point,32,Pigmented,0,No
+2024,STRI Point,33,Pigmented,40,No
+2024,STRI Point,34,Partially bleached,0,Yes
+2024,STRI Point,35,Partially bleached,10,Yes
+2024,STRI Point,36,Partially bleached,50,Yes
+2024,STRI Point,37,Pigmented,10,No
+2024,STRI Point,38,Partially bleached,30,Yes
+2024,STRI Point,39,Partially bleached,0,Yes
+2024,STRI Point,40,Pigmented,0,No
+2024,STRI Point,41,Pigmented,0,No
+2024,STRI Point,43,Pigmented,40,No
+2024,STRI Point,44,Partially bleached,40,No
+2024,STRI Point,45,Partially bleached,60,Yes
+2024,STRI Point,46,Partially bleached,0,No
+2024,STRI Point,47,Partially bleached,20,No
+2024,STRI Point,48,Fully bleached,0,No
+2024,STRI Point,49,Fully bleached,0,No
+2024,STRI Point,50,Pigmented,0,No
+2024,STRI Point,51,Partially bleached,0,No
+2024,STRI Point,52,Pigmented,30,No
+2024,STRI Point,53,Partially bleached,90,No
+2024,STRI Point,54,Partially bleached,0,No
+2024,STRI Point,55,Pigmented,0,No
+2024,STRI Point,56,Partially bleached,0,No
+2024,STRI Point,57,Partially bleached,70,No
+2024,STRI Point,58,Partially bleached,10,No
+2024,STRI Point,59,Pigmented,0,No

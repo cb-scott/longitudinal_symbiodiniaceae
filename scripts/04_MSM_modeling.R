@@ -1,3 +1,15 @@
+################################################################################
+# MULTISTATE MARKOV (MSM) MODELS OF SYMBIONT SWITCHING RATES
+################################################################################
+# Fits msm models to genus-level symbiont data: first a two-state (baseline
+# vs. switched) model of annual switching/reversion probability as a function
+# of environmental PCs, then a four-state (A/B/C/D) pairwise transition rate
+# model with mixed-genotype states censored. Produces hazard ratio plots,
+# transition-rate network diagrams, and pairwise switching-rate forest plots.
+################################################################################
+
+
+
 load("data/LongZooxInputData_wEnv.Rdata")
 source("scripts/helpers.R")
 library(msm)
@@ -6,6 +18,11 @@ library(igraph)
 set.seed(123)
 
 
+#===============================================================
+# MODEL ANNUAL SWITCHING AND REVERSION PROBABILITIES 
+#===============================================================
+
+# ------ Clean data determine if a switch event happened at any level -------
 dat <- genlevel |>
   filter(GENUS != "NA") %>%
   group_by(COLONY_ID) |>
@@ -14,7 +31,6 @@ dat <- genlevel |>
   mutate(
     baseline_genus = first(GENUS),
     state = case_when(
-     # is.na(GENUS)           ~ 4L,  # lost/dead
       GENUS == baseline_genus ~ 1L,  # original
       GENUS != baseline_genus ~ 2L   # switched
     )
@@ -30,28 +46,29 @@ dat <- dat |>
   mutate(numeric_years = (as.numeric(as.Date(DATE))-min(as.numeric(as.Date(DATE))))/365) |>
   ungroup()
 
+#------ Supply initial transition probabilities ------- 
+
 Q_init <- rbind(
-  c(0,   0.1),  # Original → Switched, Absorbed
-  c(0.5, 0)  # Switched → Original, Absorbed
+  c(0,   0.1),  # Original → Switched
+  c(0.5, 0)  # Switched → Original
 )
+
+#----- Fit and check an initial model without PC covariates -----
 
 fit <- msm(state ~ numeric_years, subject = COLONY_ID,
            data = dat,
            qmatrix = Q_init)
-           #covariates = ~ PC1 + PC2 + PC3)  # robust SEs for study clustering
-fit
+fit 
 
-
-
-
+#----- Fit a final model with PC covariates ------
 fit.pcs <- msm(state ~ numeric_years, subject = COLONY_ID,
            data = dat,
            qmatrix = Q_init,
-          covariates = ~ PC1 + PC2 + PC3)  # robust SEs for study clustering
-fit.pcs #this is for switching and reversion
+          covariates = ~ PC1 + PC2 + PC3)
+fit.pcs 
 
 
-
+#------ Extract transition rates and CIs ------ 
 msm.out <- data.frame(
   transition   = rownames(msm.form.qoutput(fit.pcs)),
   base.Estimate = msm.form.qoutput(fit.pcs)$base.Estimate,
@@ -84,6 +101,7 @@ hrs = hr_long %>% filter(transition != "State 1 - State 1") %>%
 hrs = hrs %>% filter(covariate != "base") %>% mutate(sig = ifelse(L < 1 & U > 1, "ns", "significant"))
 hrs$covariate = factor(hrs$covariate, levels = rev(sort(hrs$covariate)))
 
+# ------ Plot hazard ratios --------
 hrs %>% ggplot(aes(x = HR, y=covariate, col = sig)) +
   geom_errorbarh(aes(xmin = L, xmax = U), width = .1) + 
   geom_vline(xintercept = 1) + 
@@ -97,8 +115,7 @@ hrs %>% ggplot(aes(x = HR, y=covariate, col = sig)) +
   xlab("HR Initial Switch")
 ggsave("results/Switch_fxn_PCs.png", width = 1.5, height = 2, units = "in", dpi = 500)
 
-#### Just plot the baseline fits
-
+# ------ Plot switch and revert graph ----- 
 
 # Extract Q matrix estimates
 Q_est <- qmatrix.msm(fit.pcs)$estimates
@@ -163,55 +180,11 @@ plot(g,
 dev.off()
 
 
-####### PREDICT SPECIES SPECIFIC RATES FROM THE MODEL ##############
+#===============================================================
+# MODEL ANNUAL SYMBIONT GENUS PAIRWISE TRANSITION RATES 
+#===============================================================
 
-# Get species-mean covariate values
-species_covs <- dat |>
-  group_by(SPECIES) |>
-  summarise(
-    PC1 = mean(PC1, na.rm = TRUE),
-    PC2 = mean(PC2, na.rm = TRUE),
-    PC3 = mean(PC3, na.rm = TRUE),
-    n_colonies = n_distinct(COLONY_ID),
-    .groups = "drop"
-  ) |>
-  filter(n_colonies >= 3)  # drop species with very few colonies
-
-# Predict transition intensities at species-mean covariates
-species_rates <- species_covs |>
-  rowwise() |>
-  mutate(
-    qmat        = list(qmatrix.msm(fit.pcs,
-                                   covariates = list(PC1 = PC1, PC2 = PC2, PC3 = PC3))),
-    rate_switch = qmat$estimates[1, 2],
-    rate_revert = qmat$estimates[2, 1]
-  ) |>
-  mutate(
-    mean_time_to_switch = 1 / rate_switch,
-    mean_time_to_revert = 1 / rate_revert
-  ) |>
-  select(-qmat) |>
-  ungroup()
-
-print(species_rates)
-
-species_rates |>
-  tidyr::pivot_longer(cols = c(rate_switch, rate_revert),
-                      names_to = "transition", values_to = "rate") |>
-  mutate(transition = recode(transition,
-                             rate_switch = "Switching (1→2)",
-                             rate_revert = "Reversion (2→1)")) |>
-  ggplot(aes(x = rate, y = reorder(SPECIES, rate), color = transition)) +
-  geom_point(aes(size = n_colonies)) +
-  scale_color_manual(values = c("Switching (1→2)" = "#E57C3A",
-                                "Reversion (2→1)" = "#4A90BF")) +
-  labs(x = "Transition intensity (per year)", y = NULL,
-       size = "N colonies", color = "Transition") +
-  theme_bw() +
-  theme(axis.text.y = element_text(face = "italic"))
-
-#######################################
-##### MODEL IT WITH THESE OTEHR STATE TRANSITIONS BUT GET RID OF RARE ONES
+# ------ Clean data to get rid of rare transition states -------- 
 
 dat <- genlevel |>
   filter(GENUS != "NA") %>%
@@ -230,10 +203,10 @@ dat <- dat |>
   mutate(numeric_years = (as.numeric(as.Date(DATE))-min(as.numeric(as.Date(DATE))))/365) |>
   ungroup()
 
-#genus -> states 
 stateids = data.frame(GENUS = sort(unique(dat$GENUS)), state = 1:length(unique(dat$GENUS)))
 dat = left_join(dat, stateids)
 
+#---- censor mixed states ----- 
 mixed_states = c("A_C", "A_D", "B_C", "C_D")
 dat <- dat |>
   mutate(state_censored = ifelse(GENUS %in% mixed_states, NA, state))
@@ -250,50 +223,29 @@ new_stateids = rbind(stateids_pure, stateids_censored)
 
 dat <- dat |>
   select(-state) |>
-  left_join(new_stateids, by = "GENUS") #|>
- # mutate(state_new = ifelse(GENUS %in% mixed_states, NA, state))
+  left_join(new_stateids, by = "GENUS") 
 
+#----- initialize transtions which were observed in the data at 0.005 ------ 
 observed <- statetable.msm(state, COLONY_ID, data = dat[dat$state < 100,])
 Q_init <- matrix(0, nrow = 4, ncol = 4)
 Q_init[observed > 0] <- 0.005
 diag(Q_init) <- 0
 Q_init
 #any transition is possible 
-# Check observed transitions first
-statetable.msm(state, COLONY_ID, data = dat)
 
-
+#---- fit msm model with censored states ----- 
 fit <- msm(state ~ numeric_years, subject = COLONY_ID,
            data = dat,
            qmatrix = Q_init,
            control = list(fnscale = 8000, maxit = 3000),
            censor = c(900, 901, 902, 903),
            censor.states = list(c(1,3), c(1,4), c(2,3), c(3,4)))
-#covariates = ~ PC1 + PC2 + PC3)  # robust SEs for study clustering
 fit
 
-
-# fit.pcs <- msm(state ~ numeric_years, subject = COLONY_ID,
-#                data = dat,
-#                qmatrix = Q_init,
-#                control = list(fnscale = 1000, maxit = 5000),
-#                censor = c(900, 901, 902, 903),
-#                censor.states = list(c(1,3), c(1,4), c(2,3), c(3,4)),
-#                covariates = ~ PC1 + PC2 + PC3)  # robust SEs for study clustering
-# fit.pcs #this super doesn't want to converge, perhaps just ignore it!
-# save(fit.pcs, file = "data/fit_msm_wPCs.Rdata")
-# 
-
-library(ggplot2)
-library(dplyr)
-#load("data/fit_msm_wPCs.Rdata")
 # Extract hazard ratios from model
 hr_table <- hazard.msm(fit)
-#need to make a forest plot from this.
 
-
-
-library(igraph)
+# ------ Plot pairwise switching graph ----- 
 
 # Extract Q matrix estimates
 Q_est <- qmatrix.msm(fit)$estimates
@@ -356,7 +308,7 @@ plot(g,
      vertex.label.family = "Arial")
 dev.off()
 
-#forest plot
+#------ Plot pairwise switching forest plot------- 
 df.est <- as.data.frame(Q_est) |>
   tibble::rownames_to_column("from") |>
   pivot_longer(-from, names_to = "to", values_to = "rate")
@@ -400,209 +352,3 @@ df.overlap %>%
   )
 
 ggsave("results/Ann_Switch_Rate.png", width = 3, height = 3.5, units = "in", dpi = 500)
-
-
-#################################################
-### SPECIES LEVEL SWITCHING AND REVERSION ########
-#################################################
-# Check how many species would pass each filter
-species_summary <- dat |>
-  group_by(SPECIES) |>
-  summarise(
-    n_colonies   = n_distinct(COLONY_ID),
-    n_obs        = n(),
-    n_switches   = sum(state == 2 & lag(state, default = 1) == 1, na.rm = TRUE),
-    n_reversions = sum(state == 1 & lag(state, default = 1) == 2, na.rm = TRUE),
-    .groups = "drop"
-  ) 
-
-print(species_summary)
-
-
-# ============================================================
-# Species-level multi-state Markov models
-# Fits switching/reversion model with PC covariates
-# for species with >= 10 colonies
-# ============================================================
-
-library(msm)
-library(tidyverse)
-
-# ---- Identify qualifying species ----
-qualifying_species <- dat |>
-  group_by(SPECIES) |>
-  summarise(
-    n_colonies = n_distinct(COLONY_ID),
-    n_obs      = n(),
-    n_switches = sum(diff(state) != 0, na.rm = TRUE),
-    .groups    = "drop"
-  ) |>
-  filter(n_colonies >= 3)
-
-cat("Species qualifying (>= 3 colonies):", nrow(qualifying_species), "\n")
-print(qualifying_species)
-
-# ---- Split data by species ----
-species_dat   <- dat |>
-  filter(SPECIES %in% qualifying_species$SPECIES) |>
-  group_split(SPECIES)
-
-species_names <- dat |>
-  filter(SPECIES %in% qualifying_species$SPECIES) |>
-  pull(SPECIES) |>
-  unique() |>
-  sort()
-
-# ---- Fit per species ----
-species_fits <- map2(species_dat, species_names, function(d, sp) {
-  tryCatch(
-    msm(state ~ numeric_years,
-        subject    = COLONY_ID,
-        data       = d,
-        qmatrix    = Q_init,
-        covariates = ~ PC1 + PC2 + PC3),
-    error   = function(e) { message("Failed: ", sp, " — ", e$message);   NULL },
-    warning = function(w) { message("Warning: ", sp, " — ", w$message); NULL }
-  )
-})
-names(species_fits) <- species_names
-
-# Remove failed fits
-failed        <- names(species_fits)[sapply(species_fits, is.null)]
-species_fits  <- Filter(Negate(is.null), species_fits)
-cat("Successful fits:", length(species_fits), "of", length(species_names), "\n")
-if (length(failed) > 0) cat("Failed species:", paste(failed, collapse = ", "), "\n")
-
-# ---- Extract hazard ratios for each species ----
-extract_hrs <- function(fit, sp) {
-  tryCatch({
-    out <- msm.form.qoutput(fit)
-    df  <- data.frame(
-      SPECIES       = sp,
-      transition    = rownames(out),
-      base.Estimate = out$base.Estimate,
-      base.L        = out$base.L,
-      base.U        = out$base.U,
-      PC1.Estimate  = out$PC1[, "Estimate"],
-      PC1.L         = out$PC1[, "L"],
-      PC1.U         = out$PC1[, "U"],
-      PC2.Estimate  = out$PC2[, "Estimate"],
-      PC2.L         = out$PC2[, "L"],
-      PC2.U         = out$PC2[, "U"],
-      PC3.Estimate  = out$PC3[, "Estimate"],
-      PC3.L         = out$PC3[, "L"],
-      PC3.U         = out$PC3[, "U"]
-    )
-    df
-  }, error = function(e) { message("Extract failed: ", sp); NULL })
-}
-
-all_hrs_raw <- map2_dfr(species_fits, names(species_fits), extract_hrs)
-
-# ---- Reshape to long format ----
-all_hrs <- all_hrs_raw |>
-  pivot_longer(
-    cols      = -c(SPECIES, transition),
-    names_to  = c("covariate", ".value"),
-    names_sep = "\\."
-  ) |>
-  rename(HR = Estimate) |>
-  filter(!is.na(HR), HR != 0) |>
-  # Keep only switching transition (State 1 -> State 2) and PC covariates
-  filter(transition == "State 1 - State 2") |>
-  filter(covariate != "base") |>
-  mutate(
-    sig        = ifelse(L < 1 & U > 1, "ns", "significant"),
-    covariate  = factor(covariate, levels = c("PC1", "PC2", "PC3")),
-    SPECIES    = factor(SPECIES)
-  ) |>
-  left_join(qualifying_species, by = "SPECIES")
-
-# ---- Forest plot: HR per species per PC ----
-all_hrs |>
-  ggplot(aes(x = HR, y = reorder(SPECIES, HR), col = sig)) +
-  geom_vline(xintercept = 1, linetype = "dashed", color = "gray50") +
-  geom_errorbarh(aes(xmin = L, xmax = U), height = 0.2) +
-  geom_point(aes(size = n_colonies)) +
-  scale_color_manual(values = c("ns" = "gray60", "significant" = "black")) +
-  scale_size_continuous(range = c(1, 4)) +
-  facet_wrap(~ covariate, nrow = 1, scales = "free_x") +
-  labs(
-    x     = "Hazard ratio for switching",
-    y     = NULL,
-    size  = "N colonies",
-    color = NULL,
-    title = "Species-level covariate effects on switching rate"
-  ) +
-  theme_classic(base_size = 9) +
-  theme(
-    axis.text.y    = element_text(face = "italic"),
-    legend.position = "bottom",
-    panel.border   = element_rect(color = "black", fill = NA, linewidth = 0.5),
-    strip.text     = element_text(face = "bold")
-  )
-ggsave("results/Species_HR_Switch.png", width = 7, height = 6, dpi = 500)
-
-# ---- Also extract baseline switching and reversion rates ----
-baseline_rates <- map_dfr(names(species_fits), function(sp) {
-  fit  <- species_fits[[sp]]
-  qmat <- qmatrix.msm(fit)
-  tibble(
-    SPECIES         = sp,
-    rate_switch     = qmat$estimates[1, 2],
-    rate_switch_L   = qmat$L[1, 2],
-    rate_switch_U   = qmat$U[1, 2],
-    rate_revert     = qmat$estimates[2, 1],
-    rate_revert_L   = qmat$L[2, 1],
-    rate_revert_U   = qmat$U[2, 1]
-  )
-}) |>
-  left_join(qualifying_species, by = "SPECIES") |>
-  mutate(
-    mean_time_to_switch = 1 / rate_switch,
-    mean_time_to_revert = 1 / rate_revert
-  )
-
-print(baseline_rates)
-
-# ---- Plot baseline switching and reversion rates ----
-baseline_rates |>
-  pivot_longer(
-    cols      = c(rate_switch, rate_revert),
-    names_to  = "transition",
-    values_to = "rate"
-  ) |>
-  mutate(
-    L = ifelse(transition == "rate_switch", rate_switch_L, rate_revert_L),
-    U = ifelse(transition == "rate_switch", rate_switch_U, rate_revert_U),
-    transition = recode(transition,
-                        rate_switch = "Switching (1\u21922)",
-                        rate_revert = "Reversion (2\u21921)")
-  ) |>
-  ggplot(aes(x = rate, y = reorder(SPECIES, rate), color = transition)) +
-  geom_errorbarh(aes(xmin = L, xmax = U), height = 0.2) +
-  geom_point(aes(size = n_colonies)) +
-  scale_color_manual(values = c(
-    "Switching (1\u21922)" = "#E57C3A",
-    "Reversion (2\u21921)" = "#4A90BF"
-  )) +
-  scale_size_continuous(range = c(1, 4)) +
-  labs(
-    x     = "Transition intensity (per year)",
-    y     = NULL,
-    size  = "N colonies",
-    color = "Transition",
-    title = "Species-level baseline switching and reversion rates"
-  ) +
-  theme_classic(base_size = 9) +
-  theme(
-    axis.text.y     = element_text(face = "italic"),
-    legend.position = "bottom",
-    panel.border    = element_rect(color = "black", fill = NA, linewidth = 0.5)
-  )
-ggsave("results/Species_Baseline_Rates.png", width = 4, height = 6, dpi = 500)
-
-# ---- Save results ----
-save(species_fits,    file = "data/msm_species_fits.Rdata")
-write_csv(all_hrs,        "results/species_msm_hrs.csv")
-write_csv(baseline_rates, "results/species_msm_baseline_rates.csv")

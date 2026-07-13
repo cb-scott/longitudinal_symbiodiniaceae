@@ -1,0 +1,589 @@
+Location,Nearshore or offshore,Coordinates,Number on Fig 1a map,Minumum depth,Maximum depth,Sample number,Host family,Host genus,Host species,Symbiont transmission mode,Year collected,Dominant symbiont species
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,150,Acroporidae,Acropora,carduus,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,c,3,1,3,146,Acroporidae,Acropora,carduus,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,34,Acroporidae,Acropora,muricata,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,35,Acroporidae,Acropora,muricata,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,43,Acroporidae,Acropora,muricata,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,44,Acroporidae,Acropora,muricata,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,50,Acroporidae,Acropora,muricata,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,56,Acroporidae,Acropora,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,57,Acroporidae,Acropora,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,65,Acroporidae,Acropora,,Horizontal,2013,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,423,Acroporidae,Acropora,carduus,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,368,Acroporidae,Acropora,elseyi,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,370,Acroporidae,Acropora,kirstyae,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,365,Acroporidae,Acropora,longicyathus,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,413,Acroporidae,Acropora,microphthalma,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,374,Acroporidae,Acropora,microphthalma,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,425,Acroporidae,Acropora,muricata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,464,Acroporidae,Acropora,vaughani,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,422,Acroporidae,Acropora,vaughani,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,399,Acroporidae,Acropora,vaughani/burg,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,336,Acroporidae,Acropora,muricata/brug..,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,392,Acroporidae,Acropora,subglabra/longicyathus?,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,356,Acroporidae,Acropora,brueggemanni,Horizontal,2009,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,5,Acroporidae,Acropora,muricata,Horizontal,2013,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,184,Acroporidae,Acropora,caroliniana,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,238,Acroporidae,Acropora,cerealis,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,183,Acroporidae,Acropora,divaricata,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,224,Acroporidae,Acropora,echinata,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,314,Acroporidae,Acropora,hyacinthus,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,231,Acroporidae,Acropora,loripes,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,203,Acroporidae,Acropora,loripes,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,152,Acroporidae,Acropora,loripes,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,301,Acroporidae,Acropora,nasuta,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,204,Acroporidae,Acropora,subulata,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,320,Acroporidae,Acropora,vaughani,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,194,Acroporidae,Acropora,subglabra,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,245,Acroporidae,Acropora,gemmifera,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,508,Acroporidae,Acropora,acuminata,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,599,Acroporidae,Acropora,cerealis,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,575,Acroporidae,Acropora,cerealis,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,468,Acroporidae,Acropora,cerealis,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,510,Acroporidae,Acropora,cytherea,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,600,Acroporidae,Acropora,divaricata,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,537,Acroporidae,Acropora,divaricata,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,467,Acroporidae,Acropora,divaricata,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,595,Acroporidae,Acropora,florida,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,534,Acroporidae,Acropora,florida,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,531,Acroporidae,Acropora,florida,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,524,Acroporidae,Acropora,florida,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,488,Acroporidae,Acropora,microphthalma,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,473,Acroporidae,Acropora,secale,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,563,Acroporidae,Acropora,selago,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,559,Acroporidae,Acropora,selago,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,542,Acroporidae,Acropora,subglabra,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,51,Acroporidae,Acropora,staghorn,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,85,Acroporidae,Acropora,staghorn,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,58,Acroporidae,Acropora,staghorn,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,59,Acroporidae,Acropora,staghorn,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,60,Acroporidae,Acropora,staghorn,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,84,Acroporidae,Acropora,staghorn,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,116,Acroporidae,Acropora,,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,30,Acroporidae,Acropora,,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,50,Acroporidae,Acropora,,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,61,Acroporidae,Acropora,,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,65,Acroporidae,Acropora,,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,622,Acroporidae,Acropora,monticulosa,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,465,Acroporidae,Acropora,palifera,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,304,Acroporidae,Acropora,cerealis,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,299,Acroporidae,Acropora,cerealis,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,316,Acroporidae,Acropora,gemmifera,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,268,Acroporidae,Acropora,humilis,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,293,Acroporidae,Acropora,monticulosa,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,227,Acroporidae,Acropora,muricata,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,249,Acroporidae,Acropora,nasuta,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,298,Acroporidae,Acropora,tenuis,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,236,Acroporidae,Acropora,tenuis,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,476,Acroporidae,Acropora,brueggemanni,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,601,Acroporidae,Acropora,clathrata,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,590,Acroporidae,Acropora,gemmifera,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,564,Acroporidae,Acropora,hyacinthus,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,554,Acroporidae,Acropora,palifera,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,591,Acroporidae,Acropora,polystoma,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,53,Acroporidae,Acropora,polifera,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,63,Acroporidae,Acropora,polifera,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,71,Acroporidae,Acropora,polifera,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,79,Acroporidae,Acropora,polifera,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,83,Acroporidae,Acropora,polifera,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,87,Acroporidae,Acropora,polifera,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,90,Acroporidae,Acropora,polifera,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,68,Acroporidae,Acropora,staghorn,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,55,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,33,Acroporidae,Acropora,palifera,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,128,Acroporidae,Acropora,palifera,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,160,Acroporidae,Acropora,palifera or gemnifera,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,1,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,7,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,8,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,11,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,15,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,16,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,20,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,21,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,24,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,32,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,34,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,37,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,55,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,56,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,59,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,81,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,87,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,106,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,108,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,110,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,113,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,114,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,115,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,124,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,126,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,130,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,131,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,137,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,146,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,153,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,154,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,158,Acroporidae,Acropora,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,469,Acroporidae,Acropora,clathrata,Horizontal,2009,Cladocopium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,68,Acroporidae,Astreopora,incrustans,Horizontal,2009,Durusdinium undescribed spp. (ITS2 type D4-5)
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,361,Acroporidae,Astreopora,listeri,Horizontal,2009,Durusdinium undescribed spp. (ITS2 type D4-5)
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,428,Acroporidae,Astreopora,myriophthalma,Horizontal,2009,Durusdinium undescribed spp. (ITS2 type D4-5)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,163,Acroporidae,Astreopora,myriophthalma,Horizontal,2009,Cladocopium undescribed spp.
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,521,Acroporidae,Astreopora,myriophthalma,Horizontal,2009,Cladocopium undescribed spp.
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,504,Merulinidae,Caulastraea,furcata,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,126,Merulinidae,Coelastrea,aspera,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,6,Merulinidae,Coelastrea,aspera,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,139,Merulinidae,Coelastrea,australensis,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,114,Merulinidae,Coelastrea,australensis,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,84,Merulinidae,Coelastrea,pectinata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,47,Merulinidae,Coelastrea,pectinata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,26,Merulinidae,Coelastrea,pectinata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,7,Merulinidae,Coelastrea,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,20,Merulinidae,Coelastrea,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,28,Merulinidae,Coelastrea,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,31,Merulinidae,Coelastrea,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,55,Merulinidae,Coelastrea,,Horizontal,2013,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,443,Merulinidae,Coelastrea,aspera,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,404,Merulinidae,Coelastrea,australiensis,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,436,Merulinidae,Coelastrea,edwardsi,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,347,Merulinidae,Coelastrea,aspera,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,463,Merulinidae,Coelastrea,edwardsi,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,398,Merulinidae,Coelastrea,pectinata,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,489,Merulinidae,Coelastrea,pectinata,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,233,Merulinidae,Coelastrea,retiformis,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,182,Merulinidae,Coelastrea,retiformis,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,616,Merulinidae,Coelastrea,retiformis,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,586,Merulinidae,Coelastrea,retiformis,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,577,Merulinidae,Coelastrea,retiformis,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,5,Merulinidae,Coelastrea,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,9,Merulinidae,Coelastrea,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,17,Merulinidae,Coelastrea,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,22,Merulinidae,Coelastrea,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,30,Merulinidae,Coelastrea,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,34,Merulinidae,Coelastrea,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,35,Merulinidae,Coelastrea,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,495,Euphylliidae,Coeloseris,mayeri,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,276,Coscinaraeidae,Coscinaraea,columna,Horizontal,2009,Cladocopium patulum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,75,Fungiidae,Ctenactis,echinata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,397,Fungiidae,Ctenactis,echinata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,353,Fungiidae,Ctenactis,echinata,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,272,Fungiidae,Ctenactis,echinata,Horizontal,2009,Cladocopium patulum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,197,Fungiidae,Ctenactis,echinata,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,503,Fungiidae,Ctenactis,echinata,Horizontal,2009,Cladocopium patulum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,118,Merulinidae,Cyphastrea,chalcidicum,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,82,Merulinidae,Cyphastrea,chalcidicum,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,51,Merulinidae,Cyphastrea,chalcidicum,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,109,Merulinidae,Cyphastrea,serailia,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,36,Merulinidae,Cyphastrea,serailia,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,76,Merulinidae,Cyphastrea,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,82,Merulinidae,Cyphastrea,,Horizontal,2013,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,378,Merulinidae,Cyphastrea,agassiza,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,402,Merulinidae,Cyphastrea,chalcidicum,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,328,Merulinidae,Cyphastrea,chalcidicum,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,241,Merulinidae,Cyphastrea,microphthalma,Horizontal,2009,Cladocopium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,188,Merulinidae,Cyphastrea,chalcidicum,Horizontal,2009,Cladocopium patulum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,166,Merulinidae,Cyphastrea,chalcidicum,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,496,Merulinidae,Cyphastrea,chalcidicum,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,54,Merulinidae,Cyphastrea,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,66,Merulinidae,Cyphastrea,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,69,Merulinidae,Cyphastrea,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,80,Merulinidae,Cyphastrea,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,88,Merulinidae,Cyphastrea,,Horizontal,2013,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,394,Diploastraeidae,Diploastrea,heliopora,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,274,Diploastraeidae,Diploastrea,heliopora,Horizontal,2009,Durusdinium trenchii
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,585,Diploastraeidae,Diploastrea,heliopora,Horizontal,2009,Durusdinium trenchii
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,543,Diploastraeidae,Diploastrea,heliopora,Horizontal,2009,Durusdinium trenchii
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,64,Diploastraeidae,Diploastrea,,Horizontal,2013,Durusdinium trenchii
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,74,Diploastraeidae,Diploastrea,,Horizontal,2013,Durusdinium trenchii
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,519,Diploastraeidae,Diploastrea,heliopora,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,226,Merulinidae,Dipsastraea,amicorum,Horizontal,2009,Cladocopium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,199,Lobophylliidae,Echinophyllia,aspera,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,15,628,Lobophylliidae,Echinophyllia,echinoporoides,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,91,Lobophylliidae,Echinophyllia,,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,217,Lobophylliidae,Echinophyllia,echinata,Horizontal,2009,Cladocopium patulum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,235,Lobophylliidae,Echinophyllia,aspera,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,277,Lobophylliidae,Echinophyllia,echinoporoides,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,162,Lobophylliidae,Echinophyllia,echinoporoides,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,615,Lobophylliidae,Echinophyllia,lamellosa,Horizontal,2009,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,2,Merulinidae,Echinopora,Echinopora lamellosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,130,Merulinidae,Echinopora,lamellosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,91,Merulinidae,Echinopora,lamellosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,74,Merulinidae,Echinopora,lamellosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,12,Merulinidae,Echinopora,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,53,Merulinidae,Echinopora,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,62,Merulinidae,Echinopora,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,66,Merulinidae,Echinopora,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,1,Merulinidae,Echinopora,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,3,Merulinidae,Echinopora,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,22,Merulinidae,Echinopora,,Horizontal,2013,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,342,Merulinidae,Echinopora,gemmacea,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,440,Merulinidae,Echinopora,lamellosa,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,395,Merulinidae,Echinopora,lamellosa,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,457,Merulinidae,Echinopora,pacifica,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,78,Merulinidae,Echinopora,,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,26,Merulinidae,Echinopora,,Horizontal,2013,Cladocopium undescribed spp. (ITs2 type C19)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,61,Merulinidae,Echinopora,,Horizontal,2013,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,156,Merulinidae,Echinopora,pacifica,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,536,Merulinidae,Echinopora,gemmacea,Horizontal,2009,Cladocopium patulum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,93,Merulinidae,Echinopora,,Horizontal,2013,Cladocopium madreporum/?
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,57,Merulinidae,Echinopora,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,65,Merulinidae,Echinopora,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,67,Merulinidae,Echinopora,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,73,Merulinidae,Echinopora,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,76,Merulinidae,Echinopora,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,82,Merulinidae,Echinopora,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,86,Merulinidae,Echinopora,,Horizontal,2013,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,119,Euphylliidae,Euphyllia,divisa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,124,Faviinae,Favia,matthai,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,104,Faviinae,Favia,speciosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,43,Faviinae,Favia,speciosa,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,225,Faviinae,Favia,matthai,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,483,Faviinae,Favia,matthai,Horizontal,2009,Cladocopium patulum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,228,Faviinae,Favia,stelligera,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,540,Faviinae,Favia,matthai,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,582,Faviinae,Favia,rotundata,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,566,Faviinae,Favia,stelligera,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,72,Faviinae,Favia,stelligera,Horizontal,2013,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,192,Faviinae,Favia,laxa,Horizontal,2009,Cladocopium
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,137,Merulinidae,Favites,complanata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,77,Merulinidae,Favites,complanata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,95,Merulinidae,Favites,halicora,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,87,Merulinidae,Favites,halicora,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,117,Merulinidae,Favites,pentagona,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,11,Merulinidae,Favites,abdita,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,17,Merulinidae,Favites,abdita,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,39,Merulinidae,Favites,abdita,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,59,Merulinidae,Favites,abdita,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,68,Merulinidae,Favites,abdita,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,73,Merulinidae,Favites,abdita,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,30,Merulinidae,Favites,,Horizontal,2013,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,432,Merulinidae,Favites,abdita,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,451,Merulinidae,Favites,complanata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,403,Merulinidae,Favites,complanata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,435,Merulinidae,Favites,pentagona,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,430,Merulinidae,Favites,complanata,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,390,Merulinidae,Favites,halicora,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,339,Merulinidae,Favites,abdita,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,345,Merulinidae,Favites,complanata,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,569,Merulinidae,Favites,abdita,Horizontal,2009,Cladocopium patulum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,289,Merulinidae,Favites,flexuosa,Horizontal,2009,Cladocopium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,256,Merulinidae,Favites,abdita,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,290,Merulinidae,Favites,complanata,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,284,Merulinidae,Favites,halicora,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,588,Merulinidae,Favites,abdita,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,560,Merulinidae,Favites,abdita,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,532,Merulinidae,Favites,complanata,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,466,Merulinidae,Favites,halicora,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,576,Merulinidae,Favites,pentagona,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,561,Merulinidae,Favites,pentagona,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,2,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,7,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,13,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,14,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,16,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,27,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,29,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,33,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,36,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,57,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,64,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,70,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,97,Merulinidae,Favites,,Horizontal,2013,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,246,Merulinidae,Favites,abdita,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,571,Merulinidae,Favites,complanata,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,579,Merulinidae,Favites,russelli,Horizontal,2009,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,73,Fungiidae,Fungia,concinna,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,53,Fungiidae,Fungia,fungites,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,12,Fungiidae,Fungia,fungites,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,396,Fungiidae,Fungia,fungites,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,352,Fungiidae,Fungia,fungites,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,327,Fungiidae,Fungia,fungites,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,206,Fungiidae,Fungia,danae,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,171,Fungiidae,Fungia,fungites,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,120,Fungiidae,Fungia,,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,4,Fungiidae,Fungia,,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,28,Fungiidae,Fungia,,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,123,Fungiidae,Fungia,,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,26,Fungiidae,Fungia,,Horizontal,2013,Cladocopium patulum or Cladocopium madreporum?
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,258,Fungiidae,Fungia,paumotensis,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,605,Fungiidae,Fungia,echinata,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,494,Fungiidae,Fungia,klunzingeri,Horizontal,2009,C3
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,141,Euphylliidae,Galaxea,astreata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,135,Euphylliidae,Galaxea,astreata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,83,Euphylliidae,Galaxea,astreata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,60,Euphylliidae,Galaxea,astreata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,144,Euphylliidae,Galaxea,horrescens,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,138,Euphylliidae,Galaxea,horrescens,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,354,Euphylliidae,Galaxea,cryptonamosa,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,406,Euphylliidae,Galaxea,horrescens,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,216,Euphylliidae,Galaxea,archelia,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,165,Euphylliidae,Galaxea,fascicularis,Horizontal,2009,Durusdinium trenchii
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,485,Euphylliidae,Galaxea,astreata,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,310,Euphylliidae,Galaxea,astreata,Horizontal,2009,Cladocopium patulum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,154,Euphylliidae,Galaxea,astreata,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,505,Euphylliidae,Galaxea,fascicularis,Horizontal,2009,C3
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,418,Agariciidae,Gardineroseris,planulata,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,187,Agariciidae,Gardineroseris,planulata,Horizontal,2009,Cladocopium patulum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,266,Agariciidae,Gardineroseris,planulata,Horizontal,2009,Cladocopium patulum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,376,Agariciidae,Gardineroseris,planulata,Horizontal,2009,Cladocopium patulum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,149,Poritidae,Goniopora,lobata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,58,Poritidae,Goniopora,lobata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,52,Poritidae,Goniopora,lobata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,375,Poritidae,Goniopora,columna,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,414,Poritidae,Goniopora,lobata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,369,Poritidae,Goniopora,lobata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,340,Poritidae,Goniopora,lobata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,101,Fungiidae,Heliofungia,actiniformis,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,50,Fungiidae,Heliofungia,actiniformis,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,17,Fungiidae,Heliofungia,actiniformis,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,91,Fungiidae,Heliofungia,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,92,Fungiidae,Heliofungia,,Horizontal,2013,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,341,Fungiidae,Heliofungia,actiniformis,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,143,Fungiidae,Herpolitha,limax,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,408,Fungiidae,Herpolitha,weberi,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,355,Fungiidae,Herpolitha,limax,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,214,Fungiidae,Herpolitha,limax,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,271,Fungiidae,Herpolitha,limax,Horizontal,2009,Cladocopium patulum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,441,Merulinidae,Hydnophora,rigida,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,305,Merulinidae,Hydnophora,exesa,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,273,Merulinidae,Hydnophora,rigida,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,497,Merulinidae,Hydnophora,exesa,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,512,Merulinidae,Hydnophora,exesa,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,530,Merulinidae,Hydnophora,rigida,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,285,Merulinidae,Hydnophora,microconos,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,302,Merulinidae,Hydnophora,rigida,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,602,Merulinidae,Hydnophora,exesa,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,589,Merulinidae,Hydnophora,microconos,Horizontal,2009,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,122,Leptastreidae,Leptastrea,bewickensis,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,24,Leptastreidae,Leptastrea,bewickensis,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,42,Leptastreidae,Leptastrea,pruinosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,66,Leptastreidae,Leptastrea,purpurea,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,360,Leptastreidae,Leptastrea,bewickensis,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,438,Leptastreidae,Leptastrea,purpurea,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,334,Leptastreidae,Leptastrea,purpurea,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,391,Leptastreidae,Leptastrea,purpurea,Horizontal,2009,C19
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,593,Leptastreidae,Leptastrea,bewickensis,Horizontal,2009,Durusdinium trenchii
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,606,Leptastreidae,Leptastrea,purpurea,Horizontal,2009,Cladocopium patulum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,161,Leptastreidae,Leptastrea,purpurea,Horizontal,2009,C1
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,572,Leptastreidae,Leptastrea,aequalis,Horizontal,2009,C1
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,484,Leptastreidae,Leptastrea,transversa,Horizontal,2009,C1
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,215,Leptastreidae,Leptastrea,pruinosa,Horizontal,2009,C1
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,281,Merulinidae,Leptoria,phrygia,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,240,Merulinidae,Leptoria,phrygia,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,584,Merulinidae,Leptoria,irregularis,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,587,Merulinidae,Leptoria,phrygia,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,518,Merulinidae,Leptoria,phrygia,Horizontal,2009,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,59,Agariciidae,Leptoseris,tubulifera,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,11,Agariciidae,Leptoseris,yabei,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,22,Agariciidae,Leptoseris,yabei,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,190,Agariciidae,Leptoseris,mycetoseroides,Horizontal,2009,C1
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,222,Agariciidae,Leptoseris,yabei,Horizontal,2009,C1
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,21,Agariciidae,Leptoseris,yabei,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,20,Lobophylliidae,Lobophyllia,hataii,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,97,Lobophylliidae,Lobophyllia,corymbosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,44,Lobophylliidae,Lobophyllia,corymbosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,41,Lobophylliidae,Lobophyllia,corymbosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,112,Lobophylliidae,Lobophyllia,hataii,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,136,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,134,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,131,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,110,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,94,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,81,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,67,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,33,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,15,Lobophylliidae,Lobophyllia,Lobophyllia hemprichii,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,4,Lobophylliidae,Lobophyllia,Lobophyllia hemprichii,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,2,Lobophylliidae,Lobophyllia,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,4,Lobophylliidae,Lobophyllia,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,13,Lobophylliidae,Lobophyllia,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,23,Lobophylliidae,Lobophyllia,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,32,Lobophylliidae,Lobophyllia,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,58,Lobophylliidae,Lobophyllia,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,61,Lobophylliidae,Lobophyllia,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,71,Lobophylliidae,Lobophyllia,,Horizontal,2013,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,453,Lobophylliidae,Lobophyllia,pachysepta,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,437,Lobophylliidae,Lobophyllia,robusta,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,387,Lobophylliidae,Lobophyllia,corymbosa,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,421,Lobophylliidae,Lobophyllia,hataii,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,325,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,411,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,349,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,385,Lobophylliidae,Lobophyllia,pachysepta,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,221,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Durusdinium trenchii
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,544,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,168,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,513,Lobophylliidae,Lobophyllia,hemprichii,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,239,Lobophylliidae,Lobophyllia,robusta,Horizontal,2009,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,140,Lobophylliidae,Lobophyllia,,Horizontal,2013,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,90,Merulinidae,Merulina,scabricula,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,86,Merulinidae,Merulina,scabricula,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,54,Merulinidae,Merulina,scabricula,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,38,Merulinidae,Merulina,scabricula,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,31,Merulinidae,Merulina,scabriculata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,447,Merulinidae,Merulina,ampliata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,337,Merulinidae,Merulina,ampliata,Horizontal,2009,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,111,Merulinidae,Merulina,ampliata,Horizontal,2009,C21d
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,178,Merulinidae,Merulina,scabricula,Horizontal,2009,Cladocopium patulum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,234,Merulinidae,Merulina,ampliata,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,529,Merulinidae,Merulina,ampliata,Horizontal,2009,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,127,Montastraeidae,Montastrea,magnistellata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,120,Montastraeidae,Montastrea,magnistellata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,85,Montastraeidae,Montastrea,magnistellata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,48,Montastraeidae,Montastrea,magnistellata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,25,Montastraeidae,Montastrea,magnistellata,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,3,Montastraeidae,Montastrea,Montastrea magnistellata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,452,Montastraeidae,Montastrea,magnestillata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,364,Montastraeidae,Montastrea,magnestillata,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,613,Montastraeidae,Montastrea,curta,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,597,Montastraeidae,Montastrea,curta,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,574,Montastraeidae,Montastrea,curta,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,548,Montastraeidae,Montastrea,valenciennesi,Horizontal,2009,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,125,Merulinidae,Mycedium,elephantotus,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,18,Merulinidae,Mycedium,elephantotus,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,386,Merulinidae,Mycedium,elephantotus,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,196,Merulinidae,Mycedium,elephantotus,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,275,Merulinidae,Mycedium,elephantotus,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,176,Merulinidae,Mycedium,elephantotus,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,160,Merulinidae,Mycedium,elephantotus,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,527,Merulinidae,Mycedium,elephantotus,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,514,Merulinidae,Mycedium,elephantotus,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,35,Merulinidae,Oulophyllia,bennettae,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,363,Merulinidae,Oulophyllia,bennettae,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,287,Merulinidae,Oulophyllia,crispa,Horizontal,2009,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,61,Lobophylliidae,Oxypora,lacera,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,34,Lobophylliidae,Oxypora,lacera,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,7,Lobophylliidae,Oxypora,lacera,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,449,Lobophylliidae,Oxypora,lacera,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,207,Lobophylliidae,Oxypora,lacera,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,195,Lobophylliidae,Oxypora,lacera,Horizontal,2009,Cladocopium undescribed spp.
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,351,Lobophylliidae,Oxypora,lacera,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,28,Pachyseridae,Pachyseris,Pachyseris rugosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,27,Pachyseridae,Pachyseris,Pachyseris speciosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,5,Pachyseridae,Pachyseris,Pachyseris speciosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,116,Pachyseridae,Pachyseris,rugosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,64,Pachyseridae,Pachyseris,rugosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,46,Pachyseridae,Pachyseris,speciosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,132,Pachyseridae,Pachyseris,speciosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,24,Pachyseridae,Pachyseris,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,29,Pachyseridae,Pachyseris,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,36,Pachyseridae,Pachyseris,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,45,Pachyseridae,Pachyseris,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,52,Pachyseridae,Pachyseris,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,64,Pachyseridae,Pachyseris,,Horizontal,2013,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,84,Pachyseridae,Pachyseris,,Horizontal,2013,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,373,Pachyseridae,Pachyseris,rugosa,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,324,Pachyseridae,Pachyseris,speciosa,Horizontal,2009,Cladocopium patulum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,321,Pachyseridae,Pachyseris,rugosa,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,159,Pachyseridae,Pachyseris,rugosa,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,212,Pachyseridae,Pachyseris,speciosa,Horizontal,2009,Durusdinium trenchii
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,490,Pachyseridae,Pachyseris,rigida,Horizontal,2009,Durusdinium trenchii
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,39,Pachyseridae,Pachyseris,,Horizontal,2013,Durusdinium trenchii
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,72,Pachyseridae,Pachyseris,,Horizontal,2013,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,200,Pachyseridae,Pachyseris,speciosa,Horizontal,2009,Cladocopium undescribed spp. C21Pachyseris
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,535,Pachyseridae,Pachyseris,speciosa,Horizontal,2009,Cladocopium undescribed spp. C21Pachyseris
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,4,Pachyseridae,Pachyseris,,Horizontal,2013,Cladocopium undescribed spp. C21Pachyseris
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,6,Pachyseridae,Pachyseris,,Horizontal,2013,Cladocopium undescribed spp. C21Pachyseris
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,8,Pachyseridae,Pachyseris,,Horizontal,2013,Cladocopium undescribed spp. C21Pachyseris
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,21,Pachyseridae,Pachyseris,,Horizontal,2013,Cladocopium undescribed spp. C21Pachyseris
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,25,Pachyseridae,Pachyseris,,Horizontal,2013,Cladocopium undescribed spp. C21Pachyseris
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,18,37,Pachyseridae,Pachyseris,,Horizontal,2013,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,148,Astrocoeniidae,Palauastrea,ramosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,57,Agariciidae,Pavona,cactus,Horizontal,2009,Durusdinium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,151,Agariciidae,Pavona,decussata,Horizontal,2009,Durusdinium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,19,Agariciidae,Pavona,explanulata,Horizontal,2009,Durusdinium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,89,Agariciidae,Pavona,varians,Horizontal,2009,Durusdinium undescribed spp.
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,424,Agariciidae,Pavona,decussata,Horizontal,2009,Durusdinium undescribed spp.
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,459,Agariciidae,Pavona,explanulata,Horizontal,2009,Durusdinium undescribed spp.
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,419,Agariciidae,Pavona,explanulata,Horizontal,2009,Durusdinium undescribed spp.
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,335,Agariciidae,Pavona,explanulata,Horizontal,2009,Durusdinium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,247,Agariciidae,Pavona,clavus,Horizontal,2009,Durusdinium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,198,Agariciidae,Pavona,varians,Horizontal,2009,Durusdinium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,251,Agariciidae,Pavona,varians,Horizontal,2009,Durusdinium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,265,Agariciidae,Pavona,minuta,Horizontal,2009,Durusdinium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,270,Agariciidae,Pavona,varians,Horizontal,2009,Durusdinium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,283,Agariciidae,Pavona,venosa,Horizontal,2009,Durusdinium undescribed spp.
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,478,Agariciidae,Pavona,varians,Horizontal,2009,Durusdinium undescribed spp.
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,15,629,Agariciidae,Pavona,explanulata,Horizontal,2009,Durusdinium undescribed spp.
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,515,Agariciidae,Pavona,varians,Horizontal,2009,Durusdinium undescribed spp.
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,609,Agariciidae,Pavona,varians,Horizontal,2009,Durusdinium undescribed spp.
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,3,Agariciidae,Pavona,Varians,Horizontal,2013,Durusdinium undescribed spp.
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,82,Agariciidae,Pavona,,Horizontal,2013,Durusdinium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,208,Agariciidae,Pavona,explanulata,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,525,Agariciidae,Pavona,explanulata,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,311,Agariciidae,Pavona,explanulata,Horizontal,2009,Cladocopium undescribed spp.
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,552,Agariciidae,Pavona,varians,Horizontal,2009,Cladocopium patulum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,254,Agariciidae,Pavona,explanulata,Horizontal,2009,Cladocopium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,172,Agariciidae,Pavona,varians,Horizontal,2009,Cladocopium undescribed spp.
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,330,Agariciidae,Pavona,varians,Horizontal,2009,Durusdinium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,267,Agariciidae,Pavona,varians,Horizontal,2009,Durusdinium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,260,Agariciidae,Pavona,minuta,Horizontal,2009,Cladocopium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,14,Merulinidae,Pectinia,alcicornis,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,133,Merulinidae,Pectinia,alcicornis,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,30,Merulinidae,Pectinia,alcicornis,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,13,Merulinidae,Pectinia,alcicornis,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,381,Merulinidae,Pectinia,alcicornis,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,367,Merulinidae,Pectinia,alcicornis,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,213,Merulinidae,Pectinia,lactuca,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,528,Merulinidae,pectinia,aspera,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,37,Plerogyridae,Physogyra,lichtensteini,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,338,Plerogyridae,Physogyra,lichtensteini,Horizontal,2009,C130
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,185,Plerogyridae,Physogyra,lichtensteini,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,49,Merulinidae,Platygyra,daedalea,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,39,Merulinidae,Platygyra,lamellosa,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,456,Merulinidae,Platygyra,lamellina,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,405,Merulinidae,Platygyra,pini,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,429,Merulinidae,Platygyra,pini,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,350,Merulinidae,Platygyra,lamellosa,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,383,Merulinidae,Platygyra,pini,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,344,Merulinidae,Platygyra,pini,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,303,Merulinidae,Platygyra,yaeyamaensis,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,157,Merulinidae,Platygyra,ryukyunensis,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,180,Merulinidae,Platygyra,pini,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,517,Merulinidae,Platygyra,contorta,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,491,Merulinidae,Platygyra,sinensis,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,259,Merulinidae,Platygyra,pini,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,261,Merulinidae,Platygyra,sinensis,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,288,Merulinidae,Platygyra,yaeyamaensis,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,594,Merulinidae,Platygyra,sinensis,Horizontal,2009,Cladocopium madreporum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,578,Merulinidae,Platygyra,yaeyamaensis,Horizontal,2009,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,19,Merulinidae,Platygyra,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,71,Merulinidae,Platygyra,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,127,Merulinidae,Platygyra,,Horizontal,2013,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,98,Plerogyridae,Plerogyra,sinuosa,Horizontal,2009,Durusdinium trenchii
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,8,Plerogyridae,Plerogyra,sinuosa,Horizontal,2009,Durusdinium trenchii
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,551,Fungiidae,Podabacea,crustacea,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,546,Fungiidae,Podabacea,crustacea,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,549,Fungiidae,Polyphyllia,talpina,Horizontal,2009,Cladocopium patulum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,460,Psammocoridae,Psammocora,digitata,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,326,Psammocoridae,Psammocora,contigua,Horizontal,2009,Cladocopium undescribed spp. (ITS2 type C21)
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,412,Psammocoridae,Psammocora,contigua,Horizontal,2009,Cladocopium undescribed spp.
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,389,Psammocoridae,Psammocora,contigua,Horizontal,2009,Cladocopium madreporum
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,357,Psammocoridae,Psammocora,digitata,Horizontal,2009,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,121,Psammocoridae,Psammocora,contigua,Horizontal,2009,Cladocopium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,102,Psammocoridae,Psammocora,contigua,Horizontal,2009,Cladocopium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,106,Psammocoridae,Psammocora,superficialis,Horizontal,2009,Cladocopium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,47,Psammocoridae,Psammocora,,Horizontal,2013,Cladocopium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,60,Psammocoridae,Psammocora,,Horizontal,2013,Cladocopium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,67,Psammocoridae,Psammocora,,Horizontal,2013,Cladocopium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,77,Psammocoridae,Psammocora,,Horizontal,2013,Cladocopium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,83,Psammocoridae,Psammocora,,Horizontal,2013,Cladocopium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,86,Psammocoridae,Psammocora,,Horizontal,2013,Cladocopium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,12,88,Psammocoridae,Psammocora,,Horizontal,2013,Cladocopium undescribed spp.
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,458,Psammocoridae,Psammocora,contigua,Horizontal,2009,Cladocopium undescribed spp.
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,10,14,348,Psammocoridae,Psammocora,contigua,Horizontal,2009,Cladocopium undescribed spp.
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,98,Psammocoridae,Psammocora,digitata,Horizontal,2013,Cladocopium undescribed spp. (ITS2 type C21)
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,243,Psammocoridae,Psammocora,digitata,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,3,5,607,Psammocoridae,Psammocora,digitata,Horizontal,2009,Cladocopium madreporum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,263,Psammocoridae,Psammocora,contigua,Horizontal,2009,Cladocopium undescribed spp.
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,164,Psammocoridae,Psammocora,superficialis,Horizontal,2009,Cladocopium undescribed spp.
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,1,3,88,Fungiidae,Sandalolitha,robusta,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,434,Fungiidae,Sandalolitha,robusta,Horizontal,2009,Durusdinium trenchii
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,12,18,223,Fungiidae,Sandalolitha,robusta,Horizontal,2009,Cladocopium patulum
+Rebotel Barrier Reef,offshore,"7°14.93"" N, 134°14.149"" E",1,10,18,502,Fungiidae,Sandalolitha,robusta,Horizontal,2009,Cladocopium patulum
+East Outer Reef,offshore,"7°26.161"" N, 134°52.068"" E",4,3,5,306,Fungiidae,Sandalolitha,robusta,Horizontal,2009,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,35,Fungiidae,Sandalolitha,,Horizontal,2013,Cladocopium madreporum
+West Channel Coral Flat,offshore,"7°54.551"" N, 134°46.688"" E",5,2,10,139,Fungiidae,Sandalolitha,,Horizontal,2013,Cladocopium madreporum
+Ngermid Bay,nearshore,"7°19'28.2"" N 134°29'38.0"" E",3,8,12,16,Fungiidae,Sandalolitha,robusta,Horizontal,2009,Durusdinium trenchii
+Rock Island South,nearshore,"7°24.49"" N, 134°37.405"" E",2,2,4,409,Astrocoeniidae,Stylocoeniella,armata,Horizontal,2009,Cladocopium undescribed spp.

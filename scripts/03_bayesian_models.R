@@ -1,17 +1,22 @@
 ################################################################################
-# 03 BRMS MODELING WITH DIRILICHT VARIANCE PARTITION
+# BRMS/STAN MODELING OF SYMBIONT SWITCHING WITH DIRICHLET VARIANCE PARTITION
 ################################################################################
-
-# ==============================================================================
-# 1. LIBRARIES
-# ==============================================================================
+# Builds phylogenetic and trait covariance matrices for the coral host species,
+# then fits three Stan models (ordinal severity, binary, and first-switch-only)
+# testing symbiont switching against environmental PCs and prior symbiont
+# state, partitioning species-level variance into phylogenetic/trait/residual
+# components. Produces convergence diagnostics, fixed/random effect summaries,
+# variance-partition ternary plots, and phylo/trait-tree switching-probability
+# maps. Model fits (~20-45 min runtime each) are provided as .RDS objects so  
+# sampling can be optionally skipped.
+################################################################################
 
 library(tidyverse)
 library(brms)
 library(cmdstanr)
 library(ggtree)
 library(patchwork)
-library(rotl)
+#library(rotl)
 library(ape)
 library(phytools)
 library(phangorn)
@@ -25,10 +30,9 @@ library(Ternary)
 library(viridisLite)
 
 source("scripts/helpers.R")
-#Main Models #these need to be RDS objects not a standard save
 
 # ==============================================================================
-# 2. DATA PROCESSING
+# 1. DATA PROCESSING
 # ==============================================================================
 
 load("data/LongZooxInputData_wEnv.Rdata")
@@ -92,7 +96,7 @@ dat <- dat %>%
 
 
 # ==============================================================================
-# 3. PHYLOGENETIC TREE & COVARIANCE MATRIX
+# 2. PHYLOGENETIC TREE & COVARIANCE MATRIX
 # ==============================================================================
 # Source:Gault, Jordan A.; Bentlage, Bastian; Huang, Danwei; Kerr, Alexander M. (2021). Lineage-specific variation in the evolutionary stability of coral photosymbiosis. Science Advances. https://doi.org/10.1126/sciadv.abh4243
 # Data:   https://datadryad.org/dataset/doi:10.5061/dryad.tdz08kq0p
@@ -132,13 +136,9 @@ tree_final <- keep.tip(tree, unique(dat$clean.spec))
 tree_final <- force.ultrametric(tree_final, method = "extend")
 A          <- ape::vcv.phylo(tree_final, corr = TRUE)
 
-# ---- Build trait tree (for visualisation) ----
-# (requires T_mat; computed below — tree object created here for scope)
-# trait_tree built after T_mat is defined in Section 4
-
 
 # ==============================================================================
-# 4. TRAIT COVARIANCE MATRIX
+# 3. TRAIT COVARIANCE MATRIX
 # ==============================================================================
 # McWilliam, Hoogenboom & Baird (2018) trait PCs
 # Source: https://github.com/mikemcwilliam/biogeographical_disparity
@@ -192,11 +192,13 @@ trait_tree     <- as.phylo(trait_hclust)
 
 
 # ==============================================================================
-# 5.DIRICHLET ORDINAL MODEL  (cmdstanr, explicit partition prior)
+# 4.DIRICHLET ORDINAL MODEL  (cmdstanr, explicit partition prior)
 # ==============================================================================
+#NOTE! For all stan models, you do not need to actually run the model. The model output
+#is given as an .RDS object. It takes about 20-45 minutes to run each model
+#depending on whether or not your machine can run the chains in parallel
 
-
-# ----  5a. Fit model via custom stan script ----
+# ----  4a. Fit model via custom stan script ----
 mod      <- cmdstan_model("scripts/coral_dirichlet_partition.stan")
 stan_dat <- standata(
   shift_ord ~ log_delta_t + PC1 + PC2 + PC3 + last_genus +
@@ -223,11 +225,10 @@ fit_dirichlet_partition <- mod$sample(
 
 fit_dirichlet_partition$save_object(file = "data/stan_dirichlet_explicit.RDS")
 
-
+#LOAD OBJECT HERE IF YOU WANT TO SKIP THE MODEL RUN
 fit_dirichlet_partition <- readRDS("data/stan_dirichlet_explicit.RDS")
-#fit_dirichlet_partition$summary() |> arrange(desc(rhat)) |> print(n = 20)
 
-# ---- 5b. Evaluate convergence diagnostics  ----
+# ---- 4b. Evaluate convergence diagnostics  ----
 fit_dirichlet_partition$summary() |>
   arrange(desc(rhat)) |>
   print(n = 20)
@@ -251,7 +252,7 @@ post_summary <- fit_dirichlet_partition$summary(
 )
 post_summary
 
-# ---- 5c. Extract draws and reconstruct variables names  ----
+# ---- 4c. Extract draws and reconstruct variables names  ----
 draws    <- fit_dirichlet_partition$draws()
 draws_df <- as_draws_df(draws)
 
@@ -281,7 +282,7 @@ mcmc_intervals(draws, pars = b_names, prob = 0.5, prob_outer = 0.95) +
   labs(title = "Fixed effect posteriors", subtitle = "Inner = 50% CI, outer = 95% CI",
        x = "Coefficient (logit scale)", y = NULL) + theme_bw(base_size = 12)
 
-# ----- 5d. Extract fixed effects from draws ------- 
+# ----- 4d. Extract fixed effects from draws ------- 
 fes = draws_df |>
   select(all_of(b_names)) |>
   pivot_longer(everything(), names_to = "param", values_to = "value") |>
@@ -315,7 +316,7 @@ fes |> filter(category != "other") |>
   facet_wrap(~category, nrow = 2, scales = "free_y")
 ggsave("results/fes_zoox_enviro.pdf", width =4, height = 4)
 
-#------ 5e. Fixed and Random Effects Summary ----- 
+#------ 4e. Fixed and Random Effects Summary ----- 
 library(posterior)
 fixed_summary <- b_draws |>
   as_draws_df() |>
@@ -405,7 +406,7 @@ raw_draws_long %>%
 ggsave("results/Posterior_REs.tiff", width = 4, height = 6, units = "in", dpi = 1000)
 
 
-# ---- 5f. Variance partition (h2) from parameter estimation----
+# ---- 4f. Variance partition (h2) from parameter estimation----
 h2_draws <- draws_df |>
   select(starts_with("h2")) |>
   pivot_longer(everything(), names_to = "param", values_to = "value") |>
@@ -471,7 +472,7 @@ h2_summary <- h2_draws |>
             .groups = "drop")
 print(h2_summary)
 
-# ---- 5g. Extract draw matrices to estimate species-level switching ----
+# ---- 4g. Extract draw matrices to estimate species-level switching ----
 
 species_levels <- levels(phy.dat$clean.spec)
 n_spec         <- length(species_levels)
@@ -501,7 +502,7 @@ r3_pc1 <- extract_re(3, 2)
 r3_pc2 <- extract_re(3, 3)
 r3_pc3 <- extract_re(3, 4)
 
-# ---- 5f. Estimate switching w.r.t. low/mid/high environmental values & plot dendrograms  ----
+# ---- 4f. Estimate switching w.r.t. low/mid/high environmental values & plot dendrograms  ----
 
 species_levels <- levels(phy.dat$clean.spec)
 
@@ -556,10 +557,10 @@ p_trait + theme(text = element_text(size = 8)) + labs(fill = "E[Switch]") +
 ggsave("results/E_Switch_Trait_global.tiff", width = 3.25, height = 6, dpi = 1000)
 
 # ==============================================================================
-# 6.DIRICHLET BERNOULLI MODEL  (to test robustness of switching severity assumption)
+# 5.DIRICHLET BERNOULLI MODEL  (to test robustness of switching severity assumption)
 # ==============================================================================
 
-# ---- 6a. Fit model via custom stan script ----
+# ---- 5a. Fit model via custom stan script ----
 mod.ber      <- cmdstan_model("scripts/coral_dirichlet_partition_bernoulli.stan")
 stan_dat.ber <- standata(
   shifted ~ log_delta_t + PC1 + PC2 + PC3 + last_genus +
@@ -587,7 +588,7 @@ fit_dirichlet_partition_ber$save_object(file = "data/stan_dirichlet_explicit_ber
 
 fit_dirichlet_partition_ber <- readRDS("data/stan_dirichlet_explicit_bernoulli.RDS")
 
-# ---- 6b. Extract Draws & Evaluate convergence  ----
+# ---- 5b. Extract Draws & Evaluate convergence  ----
 draws.ber    <- fit_dirichlet_partition_ber$draws()
 draws_df.ber <- as_draws_df(draws.ber)
 
@@ -641,7 +642,7 @@ mcmc_intervals(draws.ber, pars = b_names.ber, prob = 0.5, prob_outer = 0.95) +
        x = "Coefficient (log-odds scale)", y = NULL) +
   theme_bw(base_size = 12)
 
-# ---- 6c. Fixed effect extraction and visualization ---- 
+# ---- 5c. Fixed effect extraction and visualization ---- 
 fes.ber <- draws_df.ber |>
   select(all_of(b_names.ber)) |>
   pivot_longer(everything(), names_to = "param", values_to = "value") |>
@@ -675,7 +676,7 @@ fes.ber |>
 ggsave("results/fes_zoox_enviro_bernoulli.pdf", width = 3, height = 4)
 
 
-# ---- 6d. Variance partition (h2) ----
+# ---- 5d. Variance partition (h2) ----
 h2_draws.ber <- draws_df.ber |>
   select(starts_with("h2")) |>
   pivot_longer(everything(), names_to = "param", values_to = "value") |>
@@ -742,7 +743,7 @@ h2_summary.ber <- h2_draws.ber |>
 print(h2_summary.ber)
 
 
-#---- 6e. Fixed and random effect summary ------ 
+#---- 5e. Fixed and random effect summary ------ 
 
 fixed_summary <- b_draws.ber |>
   as_draws_df() |>
@@ -826,9 +827,9 @@ ggsave("results/Posterior_REs_Bernoulli.tiff", width = 3, height = 4, units = "i
 
 
 # ==============================================================================
-# 7.DIRICHLET BERNOULLI MODEL: FIRST SWITCH ONLY  (to compare initial transition probs w/ msm)
+# 6.DIRICHLET BERNOULLI MODEL: FIRST SWITCH ONLY  (to compare initial transition probs w/ msm)
 # ==============================================================================
-#--------- 7a. Fit model via custom stan script ----------
+#--------- 6a. Fit model via custom stan script ----------
 #same model, different input data 
 mod.ber      <- cmdstan_model("scripts/coral_dirichlet_partition_bernoulli.stan")
 first.shift = phy.dat %>% group_by(COLONY_ID) %>%
@@ -861,7 +862,7 @@ fit_dirichlet_partition_ber_first$save_object(file = "data/stan_dirichlet_explic
 fit_dirichlet_partition_ber_first <- readRDS("data/stan_dirichlet_explicit_bernoulli_first.RDS")
 
 
-#----- 7b. Extract draws & evaluate convergence ------- 
+#----- 6b. Extract draws & evaluate convergence ------- 
 
 draws.ber    <- fit_dirichlet_partition_ber_first$draws()
 draws_df.ber <- as_draws_df(draws.ber)
@@ -907,7 +908,7 @@ mcmc_trace(draws.ber, pars = c("pi_1[1]", "pi_1[2]", "pi_1[3]")) +
 mcmc_trace(draws.ber, pars = vars(starts_with("b["))) +
   ggtitle("Trace: fixed effects") + theme_bw()
 
-# ---- 7c. Fixed effect extraction and visualization
+# ---- 6c. Fixed effect extraction and visualization
 mcmc_intervals(draws.ber, pars = b_names.ber, prob = 0.5, prob_outer = 0.95) +
   scale_y_discrete(labels = predictor_labels.ber) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
@@ -949,7 +950,7 @@ fes.ber |>
 
 ggsave("results/fes_zoox_enviro_bernoulli_first.pdf", width = 3, height = 4)
 
-# ---- 7d. Variance partition (h2) ----
+# ---- 6d. Variance partition (h2) ----
 h2_draws.ber <- draws_df.ber |>
   select(starts_with("h2")) |>
   pivot_longer(everything(), names_to = "param", values_to = "value") |>
@@ -1015,7 +1016,7 @@ h2_summary.ber <- h2_draws.ber |>
             .groups = "drop")
 print(h2_summary.ber)
 
-#---- 7e. Fixed and Random Effects Summary --------
+#---- 6e. Fixed and Random Effects Summary --------
 
 fixed_summary <- b_draws.ber |>
   as_draws_df() |>

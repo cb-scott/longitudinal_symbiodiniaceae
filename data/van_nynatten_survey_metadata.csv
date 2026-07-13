@@ -1,0 +1,41 @@
+﻿site_name,area,pub.name,pressure.group,level,lat,lon,continous.pressure.2km
+1,Captain cook,M10,Medium,3,1.99588,-157.35986,1613.276063
+2,Captain cook,L6,Low,2,2.01156,-157.39442,808.5521265
+3,North-west,L1,Low,2,2.0519,-157.45602,808.5521265
+4,South bay,L7,Low,2,1.853,-157.507,808.5521265
+5,Vaskess Bay,VL3,Very low,1,1.84,-157.481,0
+6,Poland,M6,Medium,3,1.86079,-157.55716,1563.82819
+7,Poland,M7,Medium,3,1.84306,-157.53719,1212.82819
+8,South west,M1,Medium,3,1.886,-157.552,1212.82819
+9,South west,L4,Low,2,1.92581,-157.50996,808.5521265
+10,Bay of wrecks,VL6,Very low,1,1.94902,-157.30957,0
+11,Bay of wrecks,VL9,Very low,1,1.914,-157.341,0
+12,Vaskess Bay,M9,Medium,3,1.85165,-157.51447,1212.82819
+13,Vaskess Bay,M8,Medium,3,1.848,-157.526,1212.82819
+14,South west/poland,M4,Medium,3,1.87482,-157.56383,1159.552126
+15,North wang,VL1,Very low,1,1.82843,-157.32182,0
+16,North wang,VL11,Very low,1,1.84793,-157.34068,0
+17,North wang,VL13,Very low,1,1.77606,-157.21608,0
+18,North wang,VL8,Very low,1,1.794167,-157.249211,0
+19,North wang,VL2,Very low,1,1.80255,-157.27339,0
+20,Bay of wrecks,VL5,Very low,1,1.864,-157.343,0
+21,Bay of wrecks,VL10,Very low,1,1.944,-157.319,0
+22,Captain cook,M11,Medium,3,1.99958,-157.37544,1116.031547
+23,Captain cook,L5,Low,2,1.99243,-157.33113,404.2760632
+24,North-west,L3,Low,2,2.03144,-157.41678,808.5521265
+25,North-west,M5,Medium,3,2.05002,-157.48611,1616.723937
+26,London,H2,High,4,2.03889,-157.49905,2074.674393
+27,London,VH1,Very high,5,2.00973,-157.48941,7276
+28,South wang,VL15,Very low,1,1.715,-157.251,0
+29,South wang,VL14,Very low,1,1.719,-157.254,0
+30,London,VH3,Very high,5,2.02572,-157.498,5085.684783
+31,Lagoon mouth/london,VH4,Very high,5,1.9921,-157.48289,5328.680152
+32,Lagoon mouth/london,VH2,Very high,5,1.984,-157.482,4860.745702
+33,Lagoon mouth/south west,M12,Medium,3,1.93884,-157.49638,1212.82819
+34,South west,M3,Medium,3,1.90992,-157.53456,1212.82819
+35,South west,M2,Medium,3,1.89417,-157.54283,1212.82819
+36,Vaskess Bay,VL7,Very low,1,1.84967,-157.49196,0
+37,Vaskess Bay,VL4,Very low,1,1.82799,-157.47693,0
+38,North-west,L2,Low,2,2.04572,-157.43373,808.5521265
+39,North wang,VL12,Very low,1,1.81111,-157.30023,0
+40,Lagoon mouth,H1,High,4,1.96364,-157.48775,2425.276063

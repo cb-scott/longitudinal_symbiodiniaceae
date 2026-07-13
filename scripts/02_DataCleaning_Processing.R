@@ -1,8 +1,20 @@
-library(tidyverse)
+#########################################################################
+# DATASET SUMMARY STATS, SPECIES COMPLEX ASSIGNMENT, & SYMBIONT SWITCH CALLING
+#########################################################################
+# Loads env PCs + manual symbiont data, generates basic dataset summary
+# stats and a by-study summary table (results/StudySummary.xlsx), collapses
+# select species into recognized species complexes, joins env PC data by
+# lat/lon/date, and calls genus-level symbiont switching events per colony
+# (NONE/MINOR/MAJOR/SUBTYPE_SWITCH) based on sequential sampling within
+# each colony.
+#########################################################################
 
+
+library(tidyverse)
+library(phyloseq)
+
+### ------------- Load in data -------------
 load("data/EnvData_PCs.Rdata")
-#problem, there must be one row where I have C_A and not A_C
-#try to read in my big data
 all_datapoints = readxl::read_excel("data/Long_Symbiont_Data_Manual.xlsx")
 #basic stats
 #number colonies represented
@@ -11,7 +23,7 @@ paste("Number Unique Sites =", length(unique(paste(all_datapoints$LONGITUDE, all
 paste("Number Studies =", length(unique(all_datapoints$STUDY)))
 paste("Number Species Represented =", length(unique(all_datapoints$SPECIES)))
 
-#Get a by study summary
+# ------------ Get a by study summary- -----------------
 study_sum = all_datapoints %>% group_by(STUDY) %>%
   summarise(lat_min = round(min(LATITUDE), 2),
             lat_max = round(max(LATITUDE), 2),
@@ -28,8 +40,12 @@ study_sum = all_datapoints %>% group_by(STUDY) %>%
                                         paste(-1*lon_min, "W -", -1*lon_max, "W", sep = " ")),
          date_range= ifelse(time_min != time_max, paste0(time_min, "-", time_max), time_min))
 writexl::write_xlsx(study_sum, path = "results/StudySummary.xlsx")
+
+#### ----- ASSIGN SPECIES COMPLEXES ------------
 #revise for species complexes
 #only consider really well recognized species complexes
+#Ultimately, I do not use most of these species complexes downstream, but rather let the small phylogenetic distances account for this
+
 all_datapoints = all_datapoints %>% 
   mutate(HOST_SPEC_REVISED = case_when(
     SPECIES %in% c("PORITES_LUTEA", "PORITES_LOBATA", "PORITES_SP.") ~ "MASSIVE PORITES SPECIES COMPLEX",
@@ -40,9 +56,7 @@ all_datapoints = all_datapoints %>%
 
 all_datapoints = left_join(all_datapoints, env.data.final, by = c("DATE"= "DATE", "LONGITUDE"="lon", "LATITUDE" = "lat"))
 
-#lets just work with the genus data first. We need to determine is a major or minor switch occured
-table(all_datapoints$GENUS) # a very reasonable number of unique genera. Mostly B/C/D, but a fair number of A 
-#let's see the distribution of major and minor switches by species. 
+#### ---- DETERMINE SWITCHING EVENTS ----------
 genlevel <- all_datapoints %>%
   separate(GENUS, into = c("Gen1", "Gen2", "Gen3"), sep = "_", remove = FALSE) %>%
   filter(!is.na(GENUS)) %>%
@@ -53,7 +67,6 @@ genlevel <- all_datapoints %>%
     lag_SUBTYPE = lag(SUBTYPE, 1),
     
     # Check if any Gen component of current row appears in lagged GENUS
-    # Vectorized: no sapply needed
     is_minor = {
       curr_parts <- pmap(list(Gen1, Gen2, Gen3), function(g1, g2, g3) {
         na.omit(c(g1, g2, g3))
@@ -80,10 +93,8 @@ genlevel <- all_datapoints %>%
     )
   ) %>%
   select(-lag_GENUS, -lag_SUBTYPE, -is_minor)
-#GenShift isn't being calculated correctly -- it's includeing NA values
 
 save(genlevel, all_datapoints, file = "data/LongZooxInputData_wEnv.Rdata")
-#Symbiont switchign is rare. We only observe it ~600 times in almost 5000 observations. So about 10% of the time
 
 
 
