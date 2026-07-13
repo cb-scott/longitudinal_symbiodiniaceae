@@ -101,7 +101,7 @@ cleaned `.xlsx`, which is then manually merged into
 `Long_Symbiont_Data_Manual.xlsx`. Not every source study is included here;
 some reported data only in figure form and were extracted manually.
 
-- **Inputs:** `data/van_nynatten_colony_metadata.csv`, `van_nynatten_sample_metadata.csv`, `van_nynatten_survey_metadata.csv`, `van_nynatten_expeditions.csv`, `van_nynatten20250527T170756.profiles.absolute.abund_and_meta.txt`, `clones_meta_me6.RData`, `Claar_Metadata.csv`, `Claar_RawRead_matrix.csv`, `Starko_Porites_DIV.RData`, `2015_Starko_Mortality_and_bleaching.csv`, `2016_Starko_Mortality_and_bleaching.csv`, `Cunning_Symportal_111_...txt`, `Cunning_Meta_STJ_Metadata_2017_2019.csv`, `Tarraneo_Meta.xlsx`, `Tarreano_Symportal.xlsx`, `Huffmyer_Meta_20230425_Cunning_Symportal_datasheet.csv`, `Huffmyer-Symportal.txt`, `Leinbach_profs.csv`, `get.taxa.nunez.Rdata`, `Nunez_OTUtable.ITS2.Rdata`, `PRJNA794042_meta.csv`, `NunezMeta.tsv`, `Palau_symbiont_diversity_data.csv`, `deSouza_Symportal.xlsx`, `Powell_OT_ITS2.dominanttype.CW_2020.csv`, `Glass_2026/PostMED_relative_abundance.csv`
+- **Inputs:** Many from individual study supplemental datasests; see script for data calls.
 - **Dependencies:** `tidyverse`, `writexl`, `janitor`, `readxl`, `phyloseq`
 
 
