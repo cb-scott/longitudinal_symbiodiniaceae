@@ -13,7 +13,7 @@ Contact: Carly Scott, cabscott@unc.edu
 
 
 > [!NOTE]
-> ### Do you have relevant data or publications you'd like to see added or that I missed? Want to collaborate on a bigger longitudinal data initiative?
+> ### Do you have relevant data or publications you'd like to see added? Want to collaborate on a bigger longitudinal data initiative?
 > Please contact me at cabscott@unc.edu, or fill out this [Google Form](https://forms.gle/nG9z4qEJfJ7kMbBUA)!
 >
 > If you have colony-level data from a scleractinian species with repeat symbiont quantification over time, I'd love to include it, even if switching wasn't your original research focus. Published data will be cited; unpublished contributors are welcome to discuss folding data into a larger initiative, with potential co-authorship on future analyses.
