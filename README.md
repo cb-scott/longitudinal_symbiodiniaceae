@@ -1,8 +1,8 @@
 # Coral Symbiont Switching Meta-Analysis
 
 This repository contains the data-cleaning, environmental data extraction,
-and statistical modeling pipeline for a ~26-year, multi-study meta-analysis
-of coral-symbiont (Symbiodiniaceae) genus/subtype switching, its
+and statistical modeling pipeline for a meta-analysis
+of coral-symbiont (Symbiodiniaceae) genus/lineage switching, its
 relationship to environmental conditions (SST/heat stress, chlorophyll,
 turbidity, precipitation), and its phylogenetic/trait-based structure
 across host coral species.
