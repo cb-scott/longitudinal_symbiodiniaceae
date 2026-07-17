@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
+data/stan_dirichlet_explicit_delta.RDS
+data/stan_dirichlet_explicit_within.RDS

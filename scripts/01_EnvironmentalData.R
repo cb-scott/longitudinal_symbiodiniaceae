@@ -464,6 +464,7 @@ by_year %>%
         legend.key.width    = unit(0.125, "in"))
 ggsave(file = "results/studiesperyear.png", width = 2.5, height = 1.5, units = "in", dpi = 1000)
 
+
 ### ----------- Viz Species ----------------
 
 obs_per_spec = all_datapoints %>% group_by(SPECIES) %>%
@@ -486,3 +487,53 @@ p <- obs_per_spec %>% ggplot(aes(x=nobs)) +
         plot.margin = margin(5, 15, 5, 5, "pt"))
 p
 ggsave(p, file = "results/Obs_per_species.tiff", width = 2.5, height = 1.5, units = "in", dpi = 1000)
+
+
+
+### ----------- Viz Sites ----------------
+all_datapoints %>% mutate(site = paste(LONGITUDE, LATITUDE)) %>%
+  group_by(STUDY) %>% summarise(sites = n_distinct(site))
+
+### ----------- Assign Reef Region to Unique Sites ----------------
+
+# Build a table of unique lon/lat combinations from all_datapoints
+site_coords <- all_datapoints %>%
+  distinct(LONGITUDE, LATITUDE) %>%
+  filter(!is.na(LONGITUDE), !is.na(LATITUDE))
+
+aims_region_path <- "data/World_AIMS_Reef-regions-main/finaldata/World_AIMS_Reef-regions_V1.shp"
+if (file.exists(aims_region_path)) {
+  if (!requireNamespace("sf", quietly = TRUE)) {
+    stop("Package 'sf' is required for the region join. Install it with install.packages('sf').")
+  }
+  aims_regions <- sf::st_read(aims_region_path, quiet = TRUE)
+  pts <- sf::st_as_sf(site_coords, coords = c("LONGITUDE", "LATITUDE"), crs = 4326, remove = FALSE)
+
+  joined <- suppressWarnings(sf::st_join(pts, aims_regions[, "Region"]))
+  missing <- is.na(joined$Region)
+  if (any(missing)) {
+    nearest_idx <- sf::st_nearest_feature(pts[missing, ], aims_regions)
+    joined$Region[missing] <- aims_regions$Region[nearest_idx]
+    fallback_dist_km <- as.numeric(sf::st_distance(pts[missing, ], aims_regions[nearest_idx, ], by_element = TRUE)) / 1000
+    message(sum(missing), " site(s) fell outside all AIMS region polygons -- ",
+            "assigned to nearest region instead (max fallback distance: ",
+            round(max(fallback_dist_km), 1), " km). Worth spot-checking these.")
+  }
+  
+  site_coords$site_region <- joined$Region
+  message("Joined ", nrow(site_coords), " unique site(s) to AIMS reef regions.")
+} else {
+  message(aims_region_path, " not found -- site_region will be NA for all sites. ",
+          "Clone https://github.com/eatlas/World_AIMS_Reef-regions and copy finaldata/* to ",
+          "data/World_AIMS_Reef-regions/ to enable this.")
+  site_coords$site_region <- NA_character_
+}
+
+# Merge the region assignment back onto every row of all_datapoints
+all_datapoints <- all_datapoints %>%
+  left_join(site_coords, by = c("LONGITUDE", "LATITUDE"))
+
+region = all_datapoints %>% mutate(site = paste(LONGITUDE, LATITUDE), year = year(DATE)) %>%
+  group_by(STUDY, site_region) %>% summarise(sites = n_distinct(site), year = median(year)) %>% arrange(year)
+
+writexl::write_xlsx(region, path = "data/Sites_per_Study.xlsx")
