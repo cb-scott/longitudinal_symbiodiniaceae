@@ -44,6 +44,12 @@ dat <- dat |>
   group_by(COLONY_ID) |>
   filter(n() > 1) |>
   mutate(numeric_years = (as.numeric(as.Date(DATE))-min(as.numeric(as.Date(DATE))))/365) |>
+  group_by(STUDY, HOST_SPEC_REVISED, SPECIES, COLONY_ID) |>
+  mutate(
+    delta_PC1   = PC1 - lag(PC1, 1),
+    delta_PC2 = PC2 - lag(PC2, 1),
+    delta_PC3 = PC3 - lag(PC3, 1)
+  ) %>%
   ungroup()
 
 #------ Supply initial transition probabilities ------- 
@@ -64,7 +70,7 @@ fit
 fit.pcs <- msm(state ~ numeric_years, subject = COLONY_ID,
            data = dat,
            qmatrix = Q_init,
-          covariates = ~ PC1 + PC2 + PC3)
+          covariates = ~ delta_PC1 + delta_PC2 + delta_PC3)
 fit.pcs 
 
 
@@ -74,15 +80,15 @@ msm.out <- data.frame(
   base.Estimate = msm.form.qoutput(fit.pcs)$base.Estimate,
   base.L        = msm.form.qoutput(fit.pcs)$base.L,
   base.U        = msm.form.qoutput(fit.pcs)$base.U,
-  PC1.Estimate  = msm.form.qoutput(fit.pcs)$PC1[, "Estimate"],
-  PC1.L         = msm.form.qoutput(fit.pcs)$PC1[, "L"],
-  PC1.U         = msm.form.qoutput(fit.pcs)$PC1[, "U"],
-  PC2.Estimate  = msm.form.qoutput(fit.pcs)$PC2[, "Estimate"],
-  PC2.L         = msm.form.qoutput(fit.pcs)$PC2[, "L"],
-  PC2.U         = msm.form.qoutput(fit.pcs)$PC2[, "U"],
-  PC3.Estimate  = msm.form.qoutput(fit.pcs)$PC3[, "Estimate"],
-  PC3.L         = msm.form.qoutput(fit.pcs)$PC3[, "L"],
-  PC3.U         = msm.form.qoutput(fit.pcs)$PC3[, "U"]
+  PC1.Estimate  = msm.form.qoutput(fit.pcs)$delta_PC1[, "Estimate"],
+  PC1.L         = msm.form.qoutput(fit.pcs)$delta_PC1[, "L"],
+  PC1.U         = msm.form.qoutput(fit.pcs)$delta_PC1[, "U"],
+  PC2.Estimate  = msm.form.qoutput(fit.pcs)$delta_PC2[, "Estimate"],
+  PC2.L         = msm.form.qoutput(fit.pcs)$delta_PC2[, "L"],
+  PC2.U         = msm.form.qoutput(fit.pcs)$delta_PC2[, "U"],
+  PC3.Estimate  = msm.form.qoutput(fit.pcs)$delta_PC3[, "Estimate"],
+  PC3.L         = msm.form.qoutput(fit.pcs)$delta_PC3[, "L"],
+  PC3.U         = msm.form.qoutput(fit.pcs)$delta_PC3[, "U"]
 )
 
 hr_long <- msm.out |>
@@ -107,6 +113,7 @@ hrs %>% ggplot(aes(x = HR, y=covariate, col = sig)) +
   geom_vline(xintercept = 1) + 
   geom_point(size = 3) + 
   scale_color_manual(values = c( "gray60", "black")) + 
+  scale_x_continuous(breaks = c(1, 1.1, 1.2)) +
   theme_classic() + 
   theme(legend.position = "none",
         text = element_text(size = 8),

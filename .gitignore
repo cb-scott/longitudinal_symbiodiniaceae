@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+data/stan_dirichlet_explicit_delta.RDS
+data/stan_dirichlet_explicit_within.RDS
+data/stan_dirichlet_explicit_bernoulli.RDS
+data/stan_dirichlet_explicit_bernoulli_first.RDS

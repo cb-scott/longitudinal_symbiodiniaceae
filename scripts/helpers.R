@@ -418,3 +418,61 @@ extract_re <- function(block, coef_slot) {
   if (length(missing) > 0) stop("Missing columns: ", paste(missing[1:3], collapse = ", "), "...")
   as.matrix(draws_df[, cols])
 }
+
+
+# ------------------------------------------------------------------------------
+# compute_species_switching_genus()
+# Same as compute_species_switching(), but adds each species' modal last_genus
+# fixed effect into mu, rather than silently using the reference level for
+# every species.
+# ------------------------------------------------------------------------------
+compute_species_switching_genus <- function(spec_df, pc_col, pc_level_name,
+                                            vary_pc = c("PC1", "PC2", "PC3"),
+                                            ndraws = 500) {
+  vary_pc           <- match.arg(vary_pc)
+  draw_idx          <- sample(nrow(b_mat), ndraws)
+  b_log_delta_t_idx <- which(colnames(stan_dat$X) == "log_delta_t")
+  
+  purrr::map_dfr(seq_along(species_levels), function(sp_idx) {
+    sp     <- species_levels[sp_idx]
+    sp_row <- spec_df[spec_df$clean.spec == sp, ]
+    if (nrow(sp_row) == 0) return(NULL)
+    
+    pc1 <- sp_row$PC1_mean
+    pc2 <- sp_row$PC2_mean
+    pc3 <- sp_row$PC3_mean
+    
+    if (vary_pc == "PC1") pc1 <- sp_row[[pc_col]]
+    if (vary_pc == "PC2") pc2 <- sp_row[[pc_col]]
+    if (vary_pc == "PC3") pc3 <- sp_row[[pc_col]]
+    
+    # Look up the b_mat column for this species' modal genus, if it isn't
+    # the reference level (reference level contributes 0, column won't exist)
+    genus_col <- paste0("last_genus", sp_row$modal_genus)
+    genus_effect <- if (genus_col %in% colnames(b_mat)) {
+      b_mat[draw_idx, genus_col]
+    } else {
+      0
+    }
+    
+    mu <- r1_int[draw_idx, sp_idx] + r1_pc1[draw_idx, sp_idx] * pc1 +
+      r1_pc2[draw_idx, sp_idx] * pc2 + r1_pc3[draw_idx, sp_idx] * pc3 +
+      r2_int[draw_idx, sp_idx] + r2_pc1[draw_idx, sp_idx] * pc1 +
+      r2_pc2[draw_idx, sp_idx] * pc2 + r2_pc3[draw_idx, sp_idx] * pc3 +
+      r3_int[draw_idx, sp_idx] + r3_pc1[draw_idx, sp_idx] * pc1 +
+      r3_pc2[draw_idx, sp_idx] * pc2 + r3_pc3[draw_idx, sp_idx] * pc3 +
+      b_mat[draw_idx, b_log_delta_t_idx] *
+      (log(360) - mean(stan_dat$X[, b_log_delta_t_idx])) +
+      genus_effect
+    
+    thres    <- int_mat[draw_idx, ]
+    e_switch <- purrr::map_dbl(seq_along(draw_idx), function(i) {
+      cum_p <- plogis(as.numeric(thres[i, ]) - mu[i])
+      cat_p <- c(cum_p, 1) - c(0, cum_p)
+      sum(cat_p * category_values)
+    })
+    
+    tibble(clean.spec = sp, pc_level = pc_level_name,
+           e_switch = e_switch, .draw = draw_idx)
+  })
+}
