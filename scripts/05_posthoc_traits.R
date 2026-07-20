@@ -1,47 +1,49 @@
 #########################################################################
-# EXTRACT r3_pc1 DRAWS + MERGE WITH TRAIT PCs
+# EXTRACT r3_pc1 DRAWS + MERGE WITH TRAIT PCs  (delta_PC1 version)
 #########################################################################
 # Builds a tidy, long-format (draw x species) table with the trait-
-# covariance component of the PC1 (temperature) random slope alongside
-# each species' TRAIT PC scores (not raw traits) -- ready for a per-draw
-# multiple regression. Trait PCs are used here rather than the 7 raw
-# traits specifically because they're orthogonal by construction, so a
-# multiple regression on them isn't confounded by collinearity between
-# traits (e.g. colony height/diameter are likely correlated with each
-# other in the raw trait space).
+# covariance component of the delta_PC1 (temperature CHANGE) random
+# slope alongside each species' TRAIT PC scores -- ready for a per-draw
+# multiple regression. Same rationale as the original: trait PCs are
+# orthogonal by construction, so a multiple regression on them isn't
+# confounded by collinearity between raw traits.
 #
-# Uses shiny_app_data.RDS rather than re-deriving from
-# stan_dirichlet_explicit.RDS directly: r3_pc1 in that file is already
-# correctly extracted and species-indexed (verified against the model's
-# real design matrix via standata() in 05_prep_shiny_data.R), so this
-# avoids re-solving that same species-ordering problem here.
+# KEY CHANGE FROM ORIGINAL: r3_pc1 (the r_3_2 Stan parameter) now
+# represents the trait-covariance component of sensitivity to a CHANGE
+# in PC1 (delta_PC1), not the raw/absolute PC1 value. Interpretively,
+# this is "how strongly does a species' trait profile predict how much
+# MORE (or less) it switches per unit of environmental shift" rather
+# than "...per unit of absolute environmental state."
 #
-# INPUT:  data/shiny_app_data.RDS
-# OUTPUT: model_data (in-memory tibble; not saved to file by default --
-#         add a saveRDS()/write_csv() at the bottom if you want it on disk)
+# Uses shiny_app_data_delta.RDS (the delta-model analog of
+# shiny_app_data.RDS) rather than re-deriving from
+# stan_dirichlet_explicit_delta.RDS directly, for the same reason as the
+# original script: r3_pc1 in that file should already be correctly
+# extracted and species-indexed via standata() in the delta model's prep
+# script.
+#
+# INPUT:  data/shiny_app_data_delta.RDS
+# OUTPUT: model_data (in-memory tibble; not saved to file by default)
 #########################################################################
 
 library(tidyverse)
 
 dir.create("results", showWarnings = FALSE, recursive = TRUE)
 
-app_data <- readRDS("data/shiny_app_data.RDS")
-darling <- read.csv("~/Documents/Coral/LongitudinalZoox/data/Darling_coral_species_traits.csv")
-darling = darling %>% select(Species, Life.history) %>% mutate(clean.spec = gsub(" ", "_", Species))
-#### ----------- r3_pc1 DRAWS (n_draws x n_species matrix) ----------- ####
+app_data <- readRDS("data/shiny_app_data_delta.RDS")
+darling <- read.csv("~/Documents/Coral/LongitudinalZoox_local/data/Darling_coral_species_traits.csv")
+darling <- darling %>% select(Species, Life.history) %>% mutate(clean.spec = gsub(" ", "_", Species))
 
-r3_pc1 <- app_data$r3_pc1
-# r3_pc1's column names as stored are raw Stan parameter names
-# (e.g. "r_3_4[12]"), not species -- species identity is only carried by
-# POSITION, matching app_data$species_levels. Set real names explicitly
-# before reshaping, or a pivot_longer() below would silently mislabel
-# every species.
+#### ----------- r3_pc1 DRAWS (n_draws x n_species matrix) ----------- ####
+# NOTE: this is the delta_PC1 trait-component slope, not raw PC1
+
+r3_pc1 <- app_data$r3_pc3
+# species identity is carried by POSITION, matching app_data$species_levels
 colnames(r3_pc1) <- app_data$species_levels
 
-#### ----------- TRAIT PCs (already computed, orthogonal by construction) ----------- ####
+#### ----------- TRAIT PCs (unchanged -- traits themselves didn't change) ----------- ####
 
 trait_pc_cols <- grep("^PC[0-9]+$", colnames(app_data$trait_pca_lookup), value = TRUE)
-app_data$
 message("Trait PCs available: ", paste(trait_pc_cols, collapse = ", "))
 
 traits_sp <- app_data$trait_pca_lookup %>%
@@ -54,11 +56,15 @@ r3_pc1_long <- as_tibble(r3_pc1) %>%
   pivot_longer(-draw, names_to = "clean.spec", values_to = "r3_pc1")
 
 model_data <- r3_pc1_long %>%
-  inner_join(traits_sp, by = "clean.spec") %>% left_join(darling)
+  inner_join(traits_sp, by = "clean.spec") %>%
+  left_join(darling, by = "clean.spec")
+
 model_data %>% group_by(draw, Life.history) %>%
   drop_na() %>%
   mutate(mean_r3 = mean(r3_pc1)) %>%
-  ggplot(aes(x=Life.history,  y=mean_r3)) + geom_boxplot()
+  ggplot(aes(x = Life.history, y = mean_r3)) +
+  geom_boxplot() +
+  labs(y = "Trait component of \u0394PC1 (temperature change) slope")
 
 missing_species <- setdiff(app_data$species_levels, unique(model_data$clean.spec))
 if (length(missing_species) > 0) {
@@ -70,9 +76,6 @@ message("model_data ready: ", n_distinct(model_data$draw), " draws x ",
         n_distinct(model_data$clean.spec), " species with trait PC data (",
         nrow(model_data), " total rows).")
 
-# model_data columns: draw, clean.spec, r3_pc1, PC1, PC2, PC3, PC4 (however
-# many trait PCs were retained)
-
 #### ----------- PER-DRAW REGRESSION ----------- ####
 
 library(broom)
@@ -83,10 +86,8 @@ fits <- model_data %>%
 
 #### ----------- SUMMARIZE ACROSS ALL DRAWS ----------- ####
 
-# One row per (draw x coefficient) -- broom::tidy() extracts estimate,
-# std.error, statistic, p.value from each fitted lm
 coef_draws <- fits %>%
-  mutate(tidied = map(fit, tidy)) %>%
+  mutate(tidied = purrr::map(fit, tidy)) %>%
   select(draw, tidied) %>%
   unnest(tidied)
 
@@ -97,20 +98,17 @@ coef_summary <- coef_draws %>%
     median_estimate    = median(estimate),
     ci_low             = quantile(estimate, 0.025),
     ci_high            = quantile(estimate, 0.975),
-    prop_positive      = mean(estimate > 0),   # analog of a Bayesian "probability of direction"
-    prop_significant   = mean(p.value < 0.05), # how often this term reached p<0.05 across draws --
-    # descriptive consistency, not itself a p-value
+    prop_positive      = mean(estimate > 0),
+    prop_significant   = mean(p.value < 0.05),
     .groups = "drop"
   ) %>%
   arrange(desc(abs(median_estimate)))
 
-message("Coefficient summary across all posterior draws:")
+message("Coefficient summary across all posterior draws (delta_PC1 trait-slope model):")
 print(coef_summary)
 
-# Overall model fit (R^2) across draws -- how much of the trait-covariance
-# slope's variance the 4 trait PCs collectively explain
 r2_summary <- fits %>%
-  mutate(glanced = map(fit, glance)) %>%
+  mutate(glanced = purrr::map(fit, glance)) %>%
   select(draw, glanced) %>%
   unnest(glanced) %>%
   summarise(median_r2 = median(r.squared), ci_low = quantile(r.squared, 0.025), ci_high = quantile(r.squared, 0.975))
@@ -119,42 +117,25 @@ message("\nModel R^2 across all posterior draws:")
 print(r2_summary)
 
 #### ----------- SPAGHETTI PLOT: PC2 RELATIONSHIP ACROSS ALL DRAWS ----------- ####
-# Predicts r3_pc1 vs. trait PC2 from EVERY draw's fitted model, holding
-# PC1/PC3/PC4 at their mean -- each draw's prediction becomes one line.
-# Plotting all ~4000 draws directly (heavily transparent) shows the full
-# posterior spread; a random subsample would look the same but render
-# faster if 4000 lines is too slow/heavy for your machine.
 
 library(ggrepel)
 
-# Prediction grid: vary PC2 over its observed range, hold others at mean
 pc2_seq <- seq(min(model_data$PC2), max(model_data$PC2), length.out = 50)
 hold_means <- model_data %>% summarise(PC1 = mean(PC1), PC3 = mean(PC3), PC4 = mean(PC4))
 pred_grid <- tibble(PC2 = pc2_seq, PC1 = hold_means$PC1, PC3 = hold_means$PC3, PC4 = hold_means$PC4)
 
-# Predict from every draw's model -- this is the expensive step (4000
-# predict() calls); a few seconds is normal
 full_pred <- fits %>%
-  mutate(pred = map(fit, ~ pred_grid %>% mutate(r3_pc1_pred = predict(.x, newdata = pred_grid)))) %>%
+  mutate(pred = purrr::map(fit, ~ pred_grid %>% mutate(r3_pc1_pred = predict(.x, newdata = pred_grid)))) %>%
   select(draw, pred) %>%
   unnest(pred)
 
-# Median + 95% interval line, summarized across all draws at each PC2 value
 median_line <- full_pred %>%
   group_by(PC2) %>%
   summarise(median_pred = median(r3_pc1_pred), .groups = "drop")
 
-# Observed per-species point estimates (posterior median r3_pc1), for
-# context against the fitted lines
 species_points <- model_data %>%
   group_by(clean.spec, PC2) %>%
   summarise(r3_pc1_median = median(r3_pc1), .groups = "drop")
-
-# If you only want a subsample of draws plotted (faster render, same
-# visual impression), uncomment:
-# set.seed(1)
-# sample_draws <- sample(unique(full_pred$draw), 300)
-# full_pred <- full_pred %>% filter(draw %in% sample_draws)
 
 p_spaghetti <- ggplot() +
   geom_line(data = full_pred, aes(x = PC2, y = r3_pc1_pred, group = draw),
@@ -163,57 +144,47 @@ p_spaghetti <- ggplot() +
   geom_point(data = species_points, aes(x = PC2, y = r3_pc1_median), color = "black", size = 1.3) +
   labs(
     x = "Trait PC2",
-    y = "PC1 (temperature) random slope\n(trait component, r3_pc1)",
+    y = "\u0394PC1 (temperature change) random slope\n(trait component, r3_pc1)",
     title = "Posterior uncertainty in the trait PC2 relationship",
     subtitle = paste0(n_distinct(full_pred$draw), " posterior draws (thin lines) + median fit (bold)")
   ) +
   theme_bw(base_size = 11)
 
 if (interactive()) print(p_spaghetti)
-hist(species_points$PC2)
 
-ggsave("results/TraitPC2_spaghetti_posterior.tiff", plot = p_spaghetti, width = 6.5, height = 5, dpi = 600)
-
-
+ggsave("results/TraitPC2_spaghetti_posterior_delta.tiff", plot = p_spaghetti,
+       width = 6.5, height = 5, dpi = 600, device = ragg::agg_tiff)
 
 
 #########################################################################
-# WHICH RAW TRAITS PREDICT THE PC1 (TEMPERATURE) RANDOM SLOPE?
+# WHICH RAW TRAITS PREDICT THE delta_PC1 (TEMPERATURE CHANGE) RANDOM SLOPE?
 #########################################################################
-# Addresses reviewer comment: "It would seem worthwhile to say more about
-# which specific traits or trait combinations were important." Replaces
-# the earlier trait-PC-based regression (12_extract_r3pc1_merge_traits.R)
-# with the 7 RAW traits directly -- PCs are orthogonal and were the right
-# choice for a clean regression, but "PC2" isn't something you can name
-# in a discussion section the way "colony growth rate" is.
+# Same reviewer comment as the original ("which specific traits or trait
+# combinations were important"), applied to the delta model. Uses the 7
+# raw traits directly (not orthogonal trait PCs) so results can be named
+# in prose (e.g. "colony growth rate"), and re-checks where the two
+# manuscript-named species (Porites lutea, Orbicella faveolata) sit on
+# whichever trait(s) come out strongest -- now with respect to
+# SENSITIVITY TO CHANGE rather than absolute switching propensity.
 #
-# Also specifically checks where Porites lutea and Orbicella faveolata
-# (the two species already named in the manuscript text) sit on whichever
-# raw trait(s) come out strongest -- since confirming they're both
-# extreme on the same trait axis is what would let the discussion section
-# say something concrete rather than "host traits... may constrain
-# symbiotic flexibility."
-#
-# INPUT:  data/shiny_app_data.RDS, data/McWilliam_2018/data/traitbiogeography.csv
-# OUTPUT: results/RawTrait_PC1Slope_regression.xlsx
+# INPUT:  data/shiny_app_data_delta.RDS, data/McWilliam_2018/data/traitbiogeography.csv
+# OUTPUT: results/RawTrait_deltaPC1Slope_regression.xlsx
 #########################################################################
 
 library(tidyverse)
 library(broom)
-library(car)   # for VIF collinearity check -- install.packages("car") if needed
+library(car)
 
 dir.create("results", showWarnings = FALSE, recursive = TRUE)
 
-app_data <- readRDS("data/shiny_app_data.RDS")
+app_data <- readRDS("data/shiny_app_data_delta.RDS")
 
-#### ----------- r3_pc1 DRAWS ----------- ####
+#### ----------- r3_pc1 DRAWS (delta_PC1 trait component) ----------- ####
 
 r3_pc1 <- app_data$r3_pc1
-colnames(r3_pc1) <- app_data$species_levels  # see note in script 12 -- stored colnames are Stan
-# parameter names, not species; species identity is
-# positional, matching species_levels
+colnames(r3_pc1) <- app_data$species_levels
 
-#### ----------- RAW TRAIT DATA (same source/cleaning as elsewhere in this project) ----------- ####
+#### ----------- RAW TRAIT DATA (unchanged source/cleaning) ----------- ####
 
 trait_vars <- c("cat_growthrate", "cat_skeletaldensity", "cat_corallitesize",
                 "cat_colonydiameter", "cat_colonyheight", "cat_SA_vol", "cat_spacesize")
@@ -236,9 +207,6 @@ traits_sp <- na.omit(trait_raw[, c(trait_vars, "species")]) %>%
   select(clean.spec, all_of(trait_vars))
 
 #### ----------- COLLINEARITY CHECK (once, on point estimates) ----------- ####
-# Raw traits, unlike the orthogonal trait PCs, can be correlated with
-# each other (e.g. colony height/diameter) -- check VIF before trusting
-# individual coefficients. VIF > ~5 is generally considered concerning.
 
 species_point_est <- tibble(clean.spec = app_data$species_levels,
                             r3_pc1_median = apply(r3_pc1, 2, median)) %>%
@@ -272,7 +240,7 @@ fits <- model_data %>%
   summarise(fit = list(lm(trait_formula, data = pick(everything()))), .groups = "drop")
 
 coef_draws <- fits %>%
-  mutate(tidied = map(fit, tidy)) %>%
+  mutate(tidied = purrr::map(fit, tidy)) %>%
   select(draw, tidied) %>%
   unnest(tidied)
 
@@ -290,11 +258,11 @@ coef_summary <- coef_draws %>%
   ) %>%
   arrange(desc(abs(median_estimate)))
 
-message("\nRaw trait coefficient summary across all posterior draws:")
+message("\nRaw trait coefficient summary across all posterior draws (delta_PC1 slope):")
 print(coef_summary)
 
 r2_summary <- fits %>%
-  mutate(glanced = map(fit, glance)) %>%
+  mutate(glanced = purrr::map(fit, glance)) %>%
   select(draw, glanced) %>%
   unnest(glanced) %>%
   summarise(median_r2 = median(r.squared), ci_low = quantile(r.squared, 0.025), ci_high = quantile(r.squared, 0.975))
@@ -303,8 +271,6 @@ message("\nModel R^2 (all 7 raw traits) across all posterior draws:")
 print(r2_summary)
 
 #### ----------- WHERE DO P. LUTEA / O. FAVEOLATA SIT ON THE WINNING TRAIT(S)? ----------- ####
-# Checks the top 2 traits by |median_estimate| against the two species
-# already named in the manuscript text.
 
 top_traits <- coef_summary %>% slice_max(abs(median_estimate), n = 2) %>% pull(term)
 
@@ -321,7 +287,8 @@ focal_check <- traits_sp %>%
 all_species_trait_range <- traits_sp %>%
   summarise(across(all_of(top_traits), list(min = min, mean = mean, max = max)))
 
-message("\nTop trait(s) by |effect|: ", paste(trait_labels[top_traits], collapse = ", "))
+message("\nTop trait(s) by |effect| on sensitivity to environmental CHANGE: ",
+        paste(trait_labels[top_traits], collapse = ", "))
 message("Porites lutea / Orbicella faveolata values on these traits (standardized, z-scores):")
 print(focal_check)
 message("\nFor context, full-dataset range on these traits:")
@@ -332,152 +299,191 @@ print(all_species_trait_range)
 writexl::write_xlsx(
   list(coef_summary = coef_summary, r2_summary = r2_summary,
        focal_species_check = focal_check, vif = enframe(vif(vif_check), name = "trait", value = "VIF")),
-  "results/RawTrait_PC1Slope_regression.xlsx"
+  "results/RawTrait_deltaPC1Slope_regression.xlsx"
 )
 
 
-
 #########################################################################
-# STATISTICAL TEST OF PHYLOGENETIC/TRAIT CLUSTERING (Figure 3b)
+# TRAIT PC2 vs. delta_PC1 (temperature CHANGE) RANDOM SLOPE -- TRAIT COMPONENT
 #########################################################################
-# Addresses reviewer comment: "It would be stronger to report a
-# statistical test of this clustering" -- for species-level predicted
-# switching intensity at median environmental conditions, mapped onto
-# both the phylogenetic tree and the trait dendrogram.
+# Recreates the spaghetti plot showing each species' TRAIT PC2 score
+# against the posterior of r3_pc1 -- the TRAIT-covariance component
+# (gr(clean.spec_trait, cov = T_mat)) of the delta_PC1 random slope from
+# the Dirichlet-partitioned ordinal model. This isolates trait-driven
+# variation in temperature-change sensitivity, separate from the
+# phylogenetic (r1_pc1) and idiosyncratic/residual (r2_pc1) components.
 #
-# Uses Blomberg's K and Pagel's lambda (phytools::phylosig), which work
-# identically on a true phylogeny (tree_final) and on the trait
-# dendrogram (trait_tree -- itself a proper `phylo` object built via
-# as.phylo(hclust(...)) in 05_prep_shiny_data.R) -- same test, same
-# interpretation, applied to both axes shown in Fig 3b.
-#
-# "Median environmental conditions" here = PC1 = PC2 = PC3 = 0 (the
-# environmental PCA's dataset average, since these are mean-centered by
-# construction), applied as ONE SHARED scenario across all species, each
-# at its own default/most-common genus. If Figure 3b was actually built
-# some other way (e.g. species held at their own historical mean rather
-# than the global average), adjust the pc1/pc2/pc3 values below to match.
-#
-# INPUT:  data/shiny_app_data.RDS
-# OUTPUT: results/PhyloTraitSignal_SwitchingIntensity.xlsx
+# INPUT:  data/shiny_app_data_delta.RDS
+# OUTPUT: results/TraitPC2_vs_deltaPC1_slope.tiff
 #########################################################################
 
 library(tidyverse)
-library(phytools)
+library(broom)
 
 dir.create("results", showWarnings = FALSE, recursive = TRUE)
 
-app_data <- readRDS("data/shiny_app_data.RDS")
+app_data <- readRDS("data/shiny_app_data_delta.RDS")
 
-#### ----------- SELF-CONTAINED COPY OF predict_switching() FROM app.R ----------- ####
-# Duplicated rather than sourced, since app.R launches the Shiny app on
-# source() (shinyApp(ui, server) at the bottom) -- keep this in sync with
-# app.R if that function's logic changes there.
+#### ----------- r3_pc1 DRAWS (trait component of delta_PC1 slope) ----------- ####
 
-predict_switching <- function(pc1, pc2, pc3, species, app_data, delta_days = 365, genus_choice = "default") {
-  sp_idx <- match(species, app_data$species_levels)
-  valid  <- !is.na(sp_idx)
-  species <- species[valid]; sp_idx <- sp_idx[valid]
-  n_draws <- nrow(app_data$b_mat)
-  if (length(pc1) == 1) pc1 <- rep(pc1, length(species))
-  if (length(pc2) == 1) pc2 <- rep(pc2, length(species))
-  if (length(pc3) == 1) pc3 <- rep(pc3, length(species))
-  
-  log_dt_offset <- log(delta_days) - app_data$mean_log_delta_t
-  b_log_dt <- if ("log_delta_t" %in% colnames(app_data$b_mat)) app_data$b_mat[, "log_delta_t"] else 0
-  
-  genus_per_species <- if (identical(genus_choice, "default")) {
-    lookup <- app_data$species_default_genus
-    lookup$default_genus[match(species, lookup$clean.spec)]
-  } else {
-    rep(genus_choice, length(species))
-  }
-  
-  genus_dummy_names <- names(app_data$genus_col_means)
-  genus_contribution <- function(genus) {
-    raw_dummy <- setNames(rep(0, length(genus_dummy_names)), genus_dummy_names)
-    target_col <- paste0("last_genus", genus)
-    if (target_col %in% genus_dummy_names) raw_dummy[target_col] <- 1
-    centered <- raw_dummy - app_data$genus_col_means[genus_dummy_names]
-    as.numeric(app_data$b_mat[, genus_dummy_names, drop = FALSE] %*% centered)
-  }
-  
-  purrr::map_dfr(seq_along(species), function(i) {
-    sp <- species[i]; si <- sp_idx[i]
-    b_genus <- genus_contribution(genus_per_species[i])
-    mu <- app_data$r1_int[, si] + app_data$r1_pc1[, si] * pc1[i] +
-      app_data$r1_pc2[, si] * pc2[i] + app_data$r1_pc3[, si] * pc3[i] +
-      app_data$r2_int[, si] + app_data$r2_pc1[, si] * pc1[i] +
-      app_data$r2_pc2[, si] * pc2[i] + app_data$r2_pc3[, si] * pc3[i] +
-      app_data$r3_int[, si] + app_data$r3_pc1[, si] * pc1[i] +
-      app_data$r3_pc2[, si] * pc2[i] + app_data$r3_pc3[, si] * pc3[i] +
-      b_log_dt * log_dt_offset + b_genus
-    thres <- app_data$int_mat
-    cum_p <- plogis(thres - matrix(mu, nrow = n_draws, ncol = ncol(thres)))
-    cat_p <- cbind(cum_p, 1) - cbind(0, cum_p)
-    e_switch <- as.numeric(cat_p %*% app_data$category_values)
-    tibble(clean.spec = sp, draw = seq_len(n_draws), e_switch = e_switch)
-  })
+r3_pc1 <- app_data$r3_pc1
+colnames(r3_pc1) <- app_data$species_levels  # species identity is positional -- see prep-script note
+
+#### ----------- TRAIT PCs ----------- ####
+
+trait_pc_cols <- grep("^PC[0-9]+$", colnames(app_data$trait_pca_lookup), value = TRUE)
+traits_sp <- app_data$trait_pca_lookup %>%
+  select(clean.spec, all_of(trait_pc_cols))
+
+#### ----------- MERGE: LONG FORMAT (draw x species) ----------- ####
+
+r3_pc1_long <- as_tibble(r3_pc1) %>%
+  mutate(draw = row_number()) %>%
+  pivot_longer(-draw, names_to = "clean.spec", values_to = "r3_pc1")
+
+model_data <- r3_pc1_long %>%
+  inner_join(traits_sp, by = "clean.spec")
+
+missing_species <- setdiff(app_data$species_levels, unique(model_data$clean.spec))
+if (length(missing_species) > 0) {
+  message(length(missing_species), " species excluded (no trait PC data): ",
+          paste(missing_species, collapse = ", "))
 }
 
-#### ----------- PREDICT SWITCHING INTENSITY AT MEDIAN CONDITIONS ----------- ####
+#### ----------- PER-DRAW REGRESSION (all trait PCs, to hold others constant) ----------- ####
 
-species <- app_data$species_levels
-pred <- predict_switching(pc1 = 0, pc2 = 0, pc3 = 0, species = species,
-                          app_data = app_data, delta_days = 365, genus_choice = "default")
+fits <- model_data %>%
+  group_by(draw) %>%
+  summarise(fit = list(lm(r3_pc1 ~ PC1 + PC2 + PC3 + PC4, data = pick(everything()))),
+            .groups = "drop")
 
-species_switching <- pred %>%
-  group_by(clean.spec) %>%
-  summarise(e_switch_median = median(e_switch), .groups = "drop")
+#### ----------- PREDICTION GRID: VARY PC2, HOLD PC1/PC3/PC4 AT MEAN ----------- ####
 
-#### ----------- PHYLOGENETIC SIGNAL ----------- ####
+pc2_seq <- seq(min(model_data$PC2), max(model_data$PC2), length.out = 50)
+hold_means <- model_data %>% summarise(PC1 = mean(PC1), PC3 = mean(PC3), PC4 = mean(PC4))
+pred_grid <- tibble(PC2 = pc2_seq, PC1 = hold_means$PC1, PC3 = hold_means$PC3, PC4 = hold_means$PC4)
 
-phylo_vec <- setNames(species_switching$e_switch_median, species_switching$clean.spec)
-tree_phylo <- keep.tip(app_data$tree_final, intersect(names(phylo_vec), app_data$tree_final$tip.label))
-phylo_vec  <- phylo_vec[tree_phylo$tip.label]
+# Predict from every draw's model -- explicitly qualified purrr::map to
+# avoid the maps::map() namespace collision
+full_pred <- fits %>%
+  mutate(pred = purrr::map(fit, ~ pred_grid %>% mutate(r3_pc1_pred = predict(.x, newdata = pred_grid)))) %>%
+  select(draw, pred) %>%
+  unnest(pred)
 
-missing_phylo <- setdiff(species_switching$clean.spec, tree_phylo$tip.label)
-if (length(missing_phylo) > 0) {
-  message(length(missing_phylo), " species excluded from phylogenetic signal test (not in tree_final): ",
-          paste(missing_phylo, collapse = ", "))
-}
+median_line <- full_pred %>%
+  group_by(PC2) %>%
+  summarise(median_pred = median(r3_pc1_pred), .groups = "drop")
 
-phylo_K      <- phylosig(tree_phylo, phylo_vec, method = "K", test = TRUE, nsim = 999)
-phylo_lambda <- phylosig(tree_phylo, phylo_vec, method = "lambda", test = TRUE)
+species_points <- model_data %>%
+  group_by(clean.spec, PC2) %>%
+  summarise(r3_pc1_median = median(r3_pc1), .groups = "drop")
 
-message("\n=== PHYLOGENETIC SIGNAL (switching intensity @ median conditions) ===")
-message("Blomberg's K = ", round(phylo_K$K, 3), ", p = ", signif(phylo_K$P, 3), " (n = ", length(phylo_vec), " species)")
-message("Pagel's lambda = ", round(phylo_lambda$lambda, 3), ", p = ", signif(phylo_lambda$P, 3))
+#### ----------- PLOT ----------- ####
 
-#### ----------- TRAIT SIGNAL (same test, trait dendrogram instead of phylogeny) ----------- ####
+p_spaghetti <- ggplot() +
+  geom_line(data = full_pred, aes(x = PC2, y = r3_pc1_pred, group = draw),
+            color = "#2166ac", alpha = 0.05, linewidth = 0.3) +
+  geom_line(data = median_line, aes(x = PC2, y = median_pred), color = "black", linewidth = 1) +
+  geom_point(data = species_points, aes(x = PC2, y = r3_pc1_median), color = "black", size = 1.3) +
+  labs(
+    x = "Trait PC2",
+    y = "\u0394PC1 (temperature change) random slope\n(trait component, r3_pc1)",
+    title = "Posterior uncertainty in the trait PC2 relationship",
+    subtitle = paste0(n_distinct(full_pred$draw), " posterior draws (thin lines) + median fit (bold)")
+  ) +
+  theme_bw(base_size = 11)
 
-trait_vec  <- setNames(species_switching$e_switch_median, species_switching$clean.spec)
-tree_trait <- keep.tip(app_data$trait_tree, intersect(names(trait_vec), app_data$trait_tree$tip.label))
-trait_vec  <- trait_vec[tree_trait$tip.label]
+if (interactive()) print(p_spaghetti)
 
-missing_trait <- setdiff(species_switching$clean.spec, tree_trait$tip.label)
-if (length(missing_trait) > 0) {
-  message(length(missing_trait), " species excluded from trait signal test (not in trait_tree): ",
-          paste(missing_trait, collapse = ", "))
-}
+ggsave("results/TraitPC2_vs_deltaPC1_slope.tiff", plot = p_spaghetti,
+       width = 6.5, height = 5, dpi = 600, device = ragg::agg_tiff)
 
-trait_K      <- phylosig(tree_trait, trait_vec, method = "K", test = TRUE, nsim = 999)
-trait_lambda <- phylosig(tree_trait, trait_vec, method = "lambda", test = TRUE)
 
-message("\n=== TRAIT SIGNAL (switching intensity @ median conditions) ===")
-message("Blomberg's K = ", round(trait_K$K, 3), ", p = ", signif(trait_K$P, 3), " (n = ", length(trait_vec), " species)")
-message("Pagel's lambda = ", round(trait_lambda$lambda, 3), ", p = ", signif(trait_lambda$P, 3))
+#########################################################################
+# TRAIT PC2 vs. delta_PC1 TRAIT-COMPONENT SLOPE -- SPECIES-LEVEL MEDIAN VERSION
+#########################################################################
+# Simpler alternative to the per-draw spaghetti plot: collapses each
+# species' r3_pc1 posterior to its MEDIAN first, then fits a single lm()
+# of that species-level point estimate against trait PC2. geom_smooth()
+# gives the standard OLS 95% CI ribbon on this species-level relationship.
+#
+# Three species called out with triangle markers + labels, matching your
+# reference plot (Acropora hyacinthus, Porites lutea, Montipora capitata)
+# -- swap FOCAL_SPECIES below if you want different ones highlighted.
+#
+# INPUT:  data/shiny_app_data_delta.RDS
+# OUTPUT: results/TraitPC2_vs_deltaPC1_slope_median.tiff
+#########################################################################
 
-#### ----------- SAVE RESULTS ----------- ####
+library(tidyverse)
+library(ggrepel)
 
-signal_results <- tibble(
-  axis      = c("Phylogeny", "Phylogeny", "Trait dendrogram", "Trait dendrogram"),
-  statistic = c("Blomberg's K", "Pagel's lambda", "Blomberg's K", "Pagel's lambda"),
-  estimate  = c(phylo_K$K, phylo_lambda$lambda, trait_K$K, trait_lambda$lambda),
-  p_value   = c(phylo_K$P, phylo_lambda$P, trait_K$P, trait_lambda$P),
-  n_species = c(length(phylo_vec), length(phylo_vec), length(trait_vec), length(trait_vec))
+dir.create("results", showWarnings = FALSE, recursive = TRUE)
+
+app_data <- readRDS("data/shiny_app_data_delta.RDS")
+
+FOCAL_SPECIES <- c("Acropora_hyacinthus", "Porites_lutea", "Montipora_capitata")
+
+#### ----------- r3_pc1 DRAWS -> SPECIES-LEVEL MEDIAN ----------- ####
+
+r3_pc1 <- app_data$r3_pc3
+colnames(r3_pc1) <- app_data$species_levels
+
+species_median <- tibble(
+  clean.spec    = app_data$species_levels,
+  r3_pc1_median = apply(r3_pc1, 2, median)
 )
 
-signal_results
-writexl::write_xlsx(list(signal_test = signal_results, species_switching = species_switching),
-                    "results/PhyloTraitSignal_SwitchingIntensity.xlsx")
+#### ----------- MERGE WITH TRAIT PC2 ----------- ####
+
+traits_sp <- app_data$trait_pca_lookup %>% select(clean.spec, PC1:PC4)
+
+model_data <- species_median %>%
+  inner_join(traits_sp, by = "clean.spec")
+
+missing_species <- setdiff(app_data$species_levels, model_data$clean.spec)
+if (length(missing_species) > 0) {
+  message(length(missing_species), " species excluded (no trait PC data): ",
+          paste(missing_species, collapse = ", "))
+}
+
+#### ----------- SINGLE LM ON SPECIES-LEVEL MEDIANS ----------- ####
+
+fit <- lm(r3_pc1_median ~ PC1 + PC2 + PC3 + PC4, data = model_data)
+print(summary(fit))
+
+#### ----------- FLAG FOCAL SPECIES FOR LABELING ----------- ####
+
+model_data <- model_data %>%
+  mutate(
+    is_focal   = clean.spec %in% FOCAL_SPECIES,
+    label_text = ifelse(is_focal, gsub("_", " ", clean.spec), NA_character_)
+  )
+
+missing_focal <- setdiff(FOCAL_SPECIES, model_data$clean.spec)
+if (length(missing_focal) > 0) {
+  warning("Focal species not found in model_data: ", paste(missing_focal, collapse = ", "))
+}
+
+#### ----------- PLOT ----------- ####
+
+p_median <- ggplot(model_data, aes(x = PC1, y = r3_pc1_median)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_smooth(method = "lm", se = F, color = "#d7191c", fill = "#d7191c", alpha = 0.15, linewidth = 0.8) +
+  geom_point(data = filter(model_data, !is_focal),
+             color = "#2166ac", alpha = 0.6, size = 2) +
+  geom_point(data = filter(model_data, is_focal),
+             shape = 17, color = "black", size = 3) +
+  geom_text_repel(aes(label = label_text), fontface = "italic", size = 3.2,
+                  na.rm = TRUE, seed = 1, box.padding = 0.6) +
+  labs(
+    x = "Trait PC1 (Growth Rate)",
+    y = "\u0394P(Switch) ~ \u0394Temp."
+  ) +
+  theme_bw(base_size = 11) +
+  theme(panel.grid.minor = element_blank())
+
+if (interactive()) print(p_median)
+
+ggsave("results/TraitPC2_vs_deltaPC1_slope_median.tiff", plot = p_median,
+       width = 4.2, height = 3.5, dpi = 600, device = ragg::agg_tiff)
