@@ -476,3 +476,47 @@ compute_species_switching_genus <- function(spec_df, pc_col, pc_level_name,
            e_switch = e_switch, .draw = draw_idx)
   })
 }
+
+
+compute_pc1_switching_genus <- function(spec_df, pc_col, pc_level_name,
+                                        ndraws = 500) {
+  draw_idx          <- sample(nrow(b_mat), ndraws)
+  b_log_delta_t_idx <- which(colnames(stan_dat_delta$X) == "log_delta_t")
+  
+  purrr::map_dfr(seq_along(species_levels), function(sp_idx) {
+    sp     <- species_levels[sp_idx]
+    sp_row <- spec_df[spec_df$clean.spec == sp, ]
+    if (nrow(sp_row) == 0) return(NULL)
+    
+    pc1 <- sp_row[[pc_col]]
+    pc2 <- sp_row$PC2_mean
+    pc3 <- sp_row$PC3_mean
+    
+    genus_col <- paste0("last_genus", sp_row$modal_genus)
+    genus_effect <- if (genus_col %in% colnames(b_mat)) {
+      b_mat[draw_idx, genus_col]
+    } else {
+      0
+    }
+    
+    mu <- r1_int[draw_idx, sp_idx] + r1_pc1[draw_idx, sp_idx] * pc1 +
+      r1_pc2[draw_idx, sp_idx] * pc2 + r1_pc3[draw_idx, sp_idx] * pc3 +
+      r2_int[draw_idx, sp_idx] + r2_pc1[draw_idx, sp_idx] * pc1 +
+      r2_pc2[draw_idx, sp_idx] * pc2 + r2_pc3[draw_idx, sp_idx] * pc3 +
+      r3_int[draw_idx, sp_idx] + r3_pc1[draw_idx, sp_idx] * pc1 +
+      r3_pc2[draw_idx, sp_idx] * pc2 + r3_pc3[draw_idx, sp_idx] * pc3 +
+      b_mat[draw_idx, b_log_delta_t_idx] *
+      (log(360) - mean(stan_dat_delta$X[, b_log_delta_t_idx])) +
+      genus_effect
+    
+    thres    <- int_mat[draw_idx, ]
+    e_switch <- purrr::map_dbl(seq_along(draw_idx), function(i) {
+      cum_p <- plogis(as.numeric(thres[i, ]) - mu[i])
+      cat_p <- c(cum_p, 1) - c(0, cum_p)
+      sum(cat_p * category_values)
+    })
+    
+    tibble(clean.spec = sp, pc_level = pc_level_name,
+           e_switch = e_switch, .draw = draw_idx)
+  })
+}

@@ -615,6 +615,78 @@ ggsave("results/E_Switch_Trait_delta.tiff", width = 3.25, height = 6, dpi = 1000
 
 
 ### Also visualize predicted values across trait PC1
+spec_predict <- spec_summary |>
+  mutate(
+    PC1_high = 3,
+    PC1_mean = 0,
+    PC3_mean = 0
+  )
+
+high_pc1 <- compute_pc1_switching_genus(spec_predict, pc_col = "PC1_high", pc_level_name = "High PC1")
+high_pc1 %>% left_join(trait.sub, by = c("clean.spec" = "species")) %>%
+  ggplot(aes(x=trait_PC1, y=e_switch)) + geom_point(alpha  =.1) + theme_bw() + geom_smooth(method="lm")
+
+tst = high_pc1 %>% group_by(clean.spec) %>%
+  summarise(median_val = median(e_switch)) %>% left_join(trait.sub, by = c("clean.spec" = "species")) 
+summary(lm(median_val~ trait_PC2, data = tst))
+
+# common order: species present in ALL of A, T_mat, and pred.vals
+species <- Reduce(intersect, list(rownames(A), rownames(T_mat), tst$clean.spec))
+
+if (length(species) < nrow(A)) {
+  message(nrow(A) - length(species), " species dropped (not present in all of A, T_mat, tst): ",
+          paste(setdiff(rownames(A), species), collapse = ", "))
+}
+
+# force all three onto identical species order
+A_ord      <- A[species, species]
+T_mat_ord  <- T_mat[species, species]
+
+pred.vals        <- tst$median_val[match(species, tst$clean.spec)]
+names(pred.vals) <- species
+vals <- as.matrix(dist(pred.vals))   # rows/cols in `species` order by construction
+
+# now a single idx is valid for all three matrices
+idx <- which(upper.tri(A_ord), arr.ind = TRUE)
+
+pair_df <- tibble(
+  sp1 = species[idx[, 1]],
+  sp2 = species[idx[, 2]],
+  phylo_sim = A_ord[idx],      # high = closely related
+  trait_sim = T_mat_ord[idx],  # high = trait-similar
+  val_dist  = vals[idx]        # low = close together in pred.vals
+) %>%
+  mutate(
+    phylo_rank = rank(phylo_sim) / n(),     # low rank = distantly related
+    trait_rank = rank(trait_sim) / n(),     # high rank = trait-similar
+    val_rank   = rank(-val_dist) / n(),     # high rank = close together in pred.vals
+    # want: LOW phylo_sim, HIGH trait_sim, HIGH val_rank (close in pred.vals) -> convergence
+    convergence_score = trait_rank - phylo_rank + val_rank
+  ) %>%
+  arrange(desc(convergence_score))
+
+top_pairs <- pair_df %>% slice_head(n = 100)
+View(top_pairs)
+pair_df %>% filter(grepl("Acropora", sp1) == T) %>% View()
+
+
+specs_oi = c(	"Siderastrea_radians","Diploria_labyrinthiformis",
+              "Montipora_capitata", "Pocillopora_verrucosa",
+              "Acropora_hyacinthus", "Platygyra_sinensis",
+              "Montastraea_cavernosa",
+              "Pseudodiploria_strigosa")
+tst %>% mutate(label = ifelse(clean.spec %in% specs_oi, clean.spec, "")) %>%
+  ggplot(aes(x=trait_PC2, y=median_val)) + geom_point(alpha  =.5) +
+  theme_bw() +
+  geom_smooth(method="lm", se = F, formula = 'y~x') +
+  geom_text(aes(label = label))+
+  ylab('E[Switch]~\u0394Temp.') + 
+  xlab("Trait PC2 (Growth Form)")
+
+tst %>%
+  ggplot(aes(x=trait_PC1, y=trait_PC2, col = median_val)) + geom_point(alpha  =1) +
+  theme_bw() + 
+  scale_color_viridis_c(trans = "sqrt") + coord_equal()
 
 
 
@@ -887,7 +959,155 @@ raw_draws_long %>%
   theme(text=element_text(size = 8))
 ggsave("results/Posterior_REs_Bernoulli.tiff", width = 3, height = 4, units = "in", dpi = 1000)
 
+# ---- 5f. Species-level predicted switching probability connected with traits----
 
+ndraws   <- 500
+draw_idx <- sample(nrow(draws_df.ber), ndraws)
+
+X_names.ber <- colnames(stan_dat.ber$X)[colnames(stan_dat.ber$X) != "Intercept"]
+
+b_names.ber        <- paste0("b[", seq_along(X_names.ber), "]")
+b_mat.ber           <- as.matrix(draws_df.ber[, b_names.ber])
+colnames(b_mat.ber) <- X_names.ber
+
+b_log_delta_t_idx.ber <- which(colnames(b_mat.ber) == "log_delta_t")
+
+# species-level random effect matrices: phylo (r1), trait (r2), residual (r3)
+# species-level random effect matrices, confirmed via Lcov matching:
+#   r_1_* = phylogenetic (cov = A)
+#   r_2_* = residual (clean.spec_resid, no cov)
+#   r_3_* = trait (cov = T_mat)
+species_levels.ber <- levels(factor(phy.dat$clean.spec))
+n_sp.ber <- length(species_levels.ber)
+
+# phylogenetic (r_1)
+r1_int.ber <- as.matrix(draws_df.ber[, paste0("r_1_1[", 1:n_sp.ber, "]")])
+r1_pc1.ber <- as.matrix(draws_df.ber[, paste0("r_1_2[", 1:n_sp.ber, "]")])
+r1_pc2.ber <- as.matrix(draws_df.ber[, paste0("r_1_3[", 1:n_sp.ber, "]")])
+r1_pc3.ber <- as.matrix(draws_df.ber[, paste0("r_1_4[", 1:n_sp.ber, "]")])
+
+# residual (r_2)
+r2_int.ber <- as.matrix(draws_df.ber[, paste0("r_2_1[", 1:n_sp.ber, "]")])
+r2_pc1.ber <- as.matrix(draws_df.ber[, paste0("r_2_2[", 1:n_sp.ber, "]")])
+r2_pc2.ber <- as.matrix(draws_df.ber[, paste0("r_2_3[", 1:n_sp.ber, "]")])
+r2_pc3.ber <- as.matrix(draws_df.ber[, paste0("r_2_4[", 1:n_sp.ber, "]")])
+
+# trait (r_3)
+r3_int.ber <- as.matrix(draws_df.ber[, paste0("r_3_1[", 1:n_sp.ber, "]")])
+r3_pc1.ber <- as.matrix(draws_df.ber[, paste0("r_3_2[", 1:n_sp.ber, "]")])
+r3_pc2.ber <- as.matrix(draws_df.ber[, paste0("r_3_3[", 1:n_sp.ber, "]")])
+r3_pc3.ber <- as.matrix(draws_df.ber[, paste0("r_3_4[", 1:n_sp.ber, "]")])
+
+spec_summary <- phy.dat |>
+  distinct(clean.spec) |>
+  mutate(delta_PC1_mean = 0, delta_PC2_mean = 0, delta_PC3_mean = 0)
+
+modal_genus <- phy.dat |>
+  count(clean.spec, last_genus) |>
+  slice_max(n, by = clean.spec, with_ties = FALSE) |>
+  select(clean.spec, modal_genus = last_genus)
+
+spec_summary <- spec_summary |> left_join(modal_genus, by = "clean.spec")
+
+
+spec_df <- spec_summary |>
+  mutate(delta_PC1_eval = 1)  # then pass pc_col = "delta_PC1_eval"
+
+# loop over species directly -- no helper function, just build the tibble in place
+switch_prob.ber <- purrr::map_dfr(seq_len(n_sp.ber), function(sp_idx) {
+  sp     <- species_levels.ber[sp_idx]
+  sp_row <- spec_df[spec_df$clean.spec == sp, ]
+  if (nrow(sp_row) == 0) return(NULL)
+  
+  pc1 <- sp_row$delta_PC1_mean + 1
+  pc2 <- sp_row$delta_PC2_mean
+  pc3 <- sp_row$delta_PC3_mean
+  
+  genus_col    <- paste0("last_genus", sp_row$modal_genus)
+  genus_effect <- if (genus_col %in% colnames(b_mat.ber)) {
+    b_mat.ber[draw_idx, genus_col]
+  } else {
+    0
+  }
+  
+  mu <- r1_int.ber[draw_idx, sp_idx] + r1_pc1.ber[draw_idx, sp_idx] * pc1 +
+    r1_pc2.ber[draw_idx, sp_idx] * pc2 + r1_pc3.ber[draw_idx, sp_idx] * pc3 +
+    r2_int.ber[draw_idx, sp_idx] + r2_pc1.ber[draw_idx, sp_idx] * pc1 +
+    r2_pc2.ber[draw_idx, sp_idx] * pc2 + r2_pc3.ber[draw_idx, sp_idx] * pc3 +
+    r3_int.ber[draw_idx, sp_idx] + r3_pc1.ber[draw_idx, sp_idx] * pc1 +
+    r3_pc2.ber[draw_idx, sp_idx] * pc2 + r3_pc3.ber[draw_idx, sp_idx] * pc3 +
+    b_mat.ber[draw_idx, b_log_delta_t_idx.ber] *
+    (log(360) - mean(stan_dat.ber$X[, "log_delta_t"])) +
+    genus_effect
+  
+  tibble(clean.spec = sp, p_switch = plogis(mu), .draw = draw_idx)
+})
+
+
+
+tst.all = switch_prob.ber %>% left_join(trait.sub, by = c("clean.spec" = "species"))
+tst.all %>%
+  ggplot(aes(x=trait_PC2, y=p_switch)) + geom_point(alpha  =.1) + theme_bw() + geom_smooth(method="lm")
+
+tst = switch_prob.ber %>% group_by(clean.spec) %>%
+  summarise(median_val = median(p_switch)) %>% left_join(trait.sub, by = c("clean.spec" = "species")) 
+tst %>%
+  ggplot(aes(x=trait_PC2, y=median_val)) + geom_point(alpha  =.1) + theme_bw() + geom_smooth(method="lm")
+
+# total species-level delta_PC1 slope, per draw: sum of phylo + residual + trait components
+total_pc1_slope.ber <- r1_pc1.ber + r2_pc1.ber + r3_pc1.ber   # n_draws x n_sp matrix
+
+# summarise to one value per species (median across draws)
+pc1_slope_summary <- tibble(
+  clean.spec = species_levels.ber,
+  pc1_slope  = apply(total_pc1_slope.ber, 2, median)
+)
+
+pc1_slope_summary %>%
+  left_join(trait.sub, by = c("clean.spec" = "species")) %>%
+  ggplot(aes(x = trait_PC1, y = pc1_slope)) +
+  geom_point(alpha = .5) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "Trait PC1", y = "Species-level \u0394PC1 slope (log-odds)")
+
+summary(lm(pc1_slope ~ trait_PC1, data = pc1_slope_summary %>%
+             left_join(trait.sub, by = c("clean.spec" = "species"))))
+
+
+library(vegan)
+library(dendextend)
+
+trait_hclust = hclust(as.dist(1-T_mat))
+k <- 8  # start here; adjust after checking silhouette/gap stats if you want to justify k formally
+trait_clusters <- cutree(trait_hclust, k = k)
+
+cluster_df <- tibble(
+  clean.spec = names(trait_clusters),
+  trait_cluster = factor(trait_clusters)
+)
+
+model_df <- tst %>%  # or your switch_prob.ber species summary
+  left_join(cluster_df, by = "clean.spec")
+
+fit_linear  <- lm(median_val ~ trait_PC1 + trait_PC2, data = model_df)
+fit_cluster <- lm(median_val ~ trait_cluster, data = model_df)
+
+AIC(fit_linear, fit_cluster)
+summary(fit_cluster)  # F-test on cluster membership
+anova(fit_linear, fit_cluster)  # only valid if nested -- they're not, so use AIC/BIC instead
+library(ggforce)
+
+model_df %>%
+  ggplot(aes(x = trait_PC1, y = trait_PC2)) +
+  geom_mark_hull(aes(fill = trait_cluster, group = trait_cluster),
+                 concavity = 5, expand = unit(3, "mm"), alpha = 0.15, color = NA) +
+  geom_point(aes(color = median_val), size = 3) +
+  scale_color_viridis_c(trans = "sqrt", name = "E[Switch]") +
+  scale_fill_brewer(palette = "Set2", guide = "none") +
+  theme_bw(base_size = 12) +
+  labs(x = "Trait PC1", y = "Trait PC2",
+       title = "Predicted switching intensity across trait space")
 # ==============================================================================
 # 6.DIRICHLET BERNOULLI MODEL: FIRST SWITCH ONLY  (to compare initial transition probs w/ msm)
 # ==============================================================================
