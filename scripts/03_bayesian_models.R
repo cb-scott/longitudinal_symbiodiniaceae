@@ -193,6 +193,7 @@ trait_hclust   <- hclust(trait_dist_mat, method = "average")   # UPGMA
 trait_tree     <- as.phylo(trait_hclust)
 
 
+phy.dat <- phy.dat %>% mutate(SITE = paste(LONGITUDE, LATITUDE, sep = "_"))
 # ==============================================================================
 # 4. (new)  DIRILECHT VAR PARTITION WITH DELTA PCS
 # ==============================================================================
@@ -209,17 +210,12 @@ stan_dat_delta <- standata(
   family = cumulative(link = "logit")
 )
 
-cat("Kc:", stan_dat_within$Kc, "\n")
-cat("K:", stan_dat_within$K, "\n")
-cat("N_4:", stan_dat_within$N_4, "\n")
-cat("N_5:", stan_dat_within$N_5, "\n")
-cat("N_6:", stan_dat_within$N_6, "\n")
 names(stan_dat_delta)[grep("^Z_[123]", names(stan_dat_delta))]
 
 #--- 4b. read in the stan model that has a RE for site in addition to study and colony -----
 mod_within <- cmdstan_model("scripts/coral_dirichlet_partition_site.stan")
 
-stan_dat_within$prior_only <- 0L
+stan_dat_delta$prior_only <- 0L
 
 fit_dirichlet_partition_within <- mod_within$sample(
   data            = stan_dat_delta,
@@ -243,9 +239,9 @@ draws    <- fit_dirichlet_partition_within$draws()
 draws_df <- as_draws_df(draws)
 
 # Reconstruct centered design matrix (for PPC)
-Xc      <- sweep(stan_dat$X, 2, colMeans(stan_dat$X), "-")
-y_obs   <- stan_dat$Y
-b_names <- paste0("b[", 1:stan_dat$Kc, "]")
+Xc      <- sweep(stan_dat_delta$X, 2, colMeans(stan_dat_delta$X), "-")
+y_obs   <- stan_dat_delta$Y
+b_names <- paste0("b[", 1:stan_dat_delta$Kc, "]")
 b_draws <- as.matrix(draws_df[, b_names])
 intercept_draws <- as.matrix(draws_df[, c("Intercept[1]", "Intercept[2]", "Intercept[3]")])
 predictor_labels <- colnames(stan_dat_delta$X)
@@ -285,6 +281,7 @@ fe.p <- fes |> filter(category != "other") |>
   theme(legend.position = "none")+
   scale_fill_manual(values = c("#c3d781", "#81C3D7", "#d7c081"))+
   facet_wrap(~category, nrow = 2, scales = "free_y")
+fe.p
 ggsave(fe.p, file = "results/fes_zoox_enviro.tiff", width =4, height = 4, units = "in", dpi = 600, device = ragg::agg_tiff())
 
 #------ 4e. Fixed and Random Effects Summary ----- 
@@ -317,7 +314,7 @@ sd_labels_vec <- list(
 )
 
 vec_summary <- purrr::imap_dfr(sd_labels_vec, function(labels, sd_var) {
-  draws <- fit_dirichlet_partition$draws(variables = sd_var, format = "draws_df") |>
+  draws <- fit_dirichlet_partition_within$draws(variables = sd_var, format = "draws_df") |>
     subset_draws(variable = sd_var)
   
   summarize_draws(draws, median, ~quantile2(.x, probs = c(0.025, 0.975))) |>
@@ -333,7 +330,7 @@ scalar_labels <- c(
 )
 
 scalar_summary <- purrr::imap_dfr(scalar_labels, function(label, sd_var) {
-  draws <- fit_dirichlet_partition$draws(variables = sd_var, format = "draws_df")
+  draws <- fit_dirichlet_partition_within$draws(variables = sd_var, format = "draws_df")
   
   summarize_draws(draws, median, ~quantile2(.x, probs = c(0.025, 0.975))) |>
     mutate(term = label) |>
@@ -349,7 +346,7 @@ writexl::write_xlsx(random_summary, "results/RE_DiriOrdinal.xlsx")
 all_vars <- c(scalar_labels, sd_labels_vec)
 
 raw_draws_long <- purrr::imap_dfr(all_vars, function(labels, sd_var) {
-  draws <- fit_dirichlet_partition$draws(variables = sd_var, format = "draws_df") |>
+  draws <- fit_dirichlet_partition_within$draws(variables = sd_var, format = "draws_df") |>
     as_draws_df()
   
   # pivot the variable column(s) into long format, keep draw/chain ids
@@ -384,6 +381,20 @@ ggsave("results/Posterior_REs.tiff", width = 4, height = 6, units = "in", dpi = 
 
 
 # ---- 4f. Variance partition (h2) from parameter estimation----
+
+h2_draws <- draws_df |>
+  select(starts_with("h2")) |>
+  pivot_longer(everything(), names_to = "param", values_to = "value") |>
+  mutate(
+    coef_idx   = as.integer(str_extract(param, "(?<=\\[)\\d(?=,)")),
+    source_idx = as.integer(str_extract(param, "(?<=,)\\d(?=\\])")),
+    coefficient = factor(coef_idx, levels = 1:4,
+                         labels = c("Baseline rate", "PC1 sensitivity",
+                                    "PC2 sensitivity", "PC3 sensitivity")),
+    source = factor(source_idx, levels = 1:3,
+                    labels = c("Phylogenetic", "Idiosyncratic", "Trait"))
+  )
+
 h2_draws |>
   group_by(coefficient, source) |>
   mutate(.draw = row_number()) |>
@@ -514,7 +525,7 @@ species_levels <- levels(phy.dat$clean.spec)
 n_spec         <- length(species_levels)
 
 # Fixed effects and thresholds
-b_names <- paste0("b[", 1:stan_dat$Kc, "]")
+b_names <- paste0("b[", 1:stan_dat_delta$Kc, "]")
 b_mat   <- as.matrix(draws_df[, b_names])
 colnames(b_mat) <- colnames(stan_dat$X)
 
@@ -601,6 +612,11 @@ ggsave("results/E_Switch_Phylo_delta.tiff", width = 3.25, height = 6, dpi = 1000
 p_trait + theme(text = element_text(size = 8)) + labs(fill = "E[Switch]") +
   ggtitle("") + theme(legend.position = "none")
 ggsave("results/E_Switch_Trait_delta.tiff", width = 3.25, height = 6, dpi = 1000)
+
+
+### Also visualize predicted values across trait PC1
+
+
 
 # ==============================================================================
 # 5.DIRICHLET BERNOULLI MODEL  (to test robustness of switching severity assumption)

@@ -254,7 +254,7 @@ compute_species_switching <- function(spec_df, pc_col, pc_level_name,
                                       ndraws = 500) {
   vary_pc           <- match.arg(vary_pc)
   draw_idx          <- sample(nrow(b_mat), ndraws)
-  b_log_delta_t_idx <- which(colnames(stan_dat$X) == "log_delta_t")
+  b_log_delta_t_idx <- which(colnames(stan_dat_delta$X) == "log_delta_t")
   
   purrr::map_dfr(seq_along(species_levels), function(sp_idx) {
     sp     <- species_levels[sp_idx]
@@ -276,7 +276,7 @@ compute_species_switching <- function(spec_df, pc_col, pc_level_name,
       r3_int[draw_idx, sp_idx] + r3_pc1[draw_idx, sp_idx] * pc1 +
       r3_pc2[draw_idx, sp_idx] * pc2 + r3_pc3[draw_idx, sp_idx] * pc3 +
       b_mat[draw_idx, b_log_delta_t_idx] *
-      (log(360) - mean(stan_dat$X[, b_log_delta_t_idx]))
+      (log(360) - mean(stan_dat_delta$X[, b_log_delta_t_idx]))
     
     thres    <- int_mat[draw_idx, ]
     e_switch <- purrr::map_dbl(seq_along(draw_idx), function(i) {
@@ -349,7 +349,7 @@ plot_switching_tree <- function(tree, pred_pc3, fill_limits, title = "",
 add_epred_draws_manual <- function(newdata, b_draws, intercept_draws,
                                    re_draws, means_X, species_levels,
                                    category_values, ndraws = 500) {
-  X_new  <- as.matrix(newdata[, colnames(stan_dat$X)])
+  X_new  <- as.matrix(newdata[, colnames(stan_dat_delta$X)])
   Xc_new <- sweep(X_new, 2, means_X, "-")
   draw_idx <- sample(nrow(b_draws), ndraws)
   n_obs    <- nrow(newdata)
@@ -431,7 +431,7 @@ compute_species_switching_genus <- function(spec_df, pc_col, pc_level_name,
                                             ndraws = 500) {
   vary_pc           <- match.arg(vary_pc)
   draw_idx          <- sample(nrow(b_mat), ndraws)
-  b_log_delta_t_idx <- which(colnames(stan_dat$X) == "log_delta_t")
+  b_log_delta_t_idx <- which(colnames(stan_dat_delta$X) == "log_delta_t")
   
   purrr::map_dfr(seq_along(species_levels), function(sp_idx) {
     sp     <- species_levels[sp_idx]
@@ -462,7 +462,7 @@ compute_species_switching_genus <- function(spec_df, pc_col, pc_level_name,
       r3_int[draw_idx, sp_idx] + r3_pc1[draw_idx, sp_idx] * pc1 +
       r3_pc2[draw_idx, sp_idx] * pc2 + r3_pc3[draw_idx, sp_idx] * pc3 +
       b_mat[draw_idx, b_log_delta_t_idx] *
-      (log(360) - mean(stan_dat$X[, b_log_delta_t_idx])) +
+      (log(360) - mean(stan_dat_delta$X[, b_log_delta_t_idx])) +
       genus_effect
     
     thres    <- int_mat[draw_idx, ]
