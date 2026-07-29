@@ -1103,7 +1103,7 @@ model_df %>%
   geom_mark_hull(aes(fill = trait_cluster, group = trait_cluster),
                  concavity = 5, expand = unit(3, "mm"), alpha = 0.15, color = NA) +
   geom_point(aes(color = median_val), size = 3) +
-  scale_color_viridis_c(trans = "sqrt", name = "E[Switch]") +
+  scale_color_viridis_c( name = "E[Switch]") +
   scale_fill_brewer(palette = "Set2", guide = "none") +
   theme_bw(base_size = 12) +
   labs(x = "Trait PC1", y = "Trait PC2",
