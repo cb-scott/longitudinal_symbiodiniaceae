@@ -315,6 +315,28 @@ plot(g,
      vertex.label.family = "Arial")
 dev.off()
 
+png("results/ZooxNetwork_simple.png", width = 1.5, height = 1.5, units = "in", res = 500)
+par(mar = c(.5, .5, .5, .5), bg = "white", family = "Arial", ps = 8)
+
+plot(g,
+     layout             = layout_coords,
+     edge.width         = log10(edges$rate + 1) * 100,
+     edge.arrow.size    = log10(edges$rate + 1) * 15,
+     edge.arrow.width  = 2,
+     edge.curved        = edge_curves,
+     edge.color = rgb(red = 224/256, green = 178/256, blue = 90/256, alpha = 1) ,
+     #edge.label         = round(edges$rate, 3),
+    # edge.label.cex     = 8/12,
+     #edge.label.color   = "black",
+     #edge.label.family  = "Arial",
+     #edge.color         = "#81C3D7",
+     vertex.size        = 25,
+     vertex.color       = "gray95",
+     vertex.frame.color = "black",
+     vertex.label.color = "black",
+     vertex.label.cex   = 1.0,
+     vertex.label.family = "Arial")
+dev.off()
 #------ Plot pairwise switching forest plot------- 
 df.est <- as.data.frame(Q_est) |>
   tibble::rownames_to_column("from") |>

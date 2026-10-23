@@ -462,3 +462,53 @@ glass26 = read.csv(file = "data/Glass_2026/PostMED_relative_abundance.csv") %>%
   group_by(COLONY_ID) %>% mutate(nobs = n()) %>% filter(nobs > 1)
 
 writexl::write_xlsx(glass26, path = "data/GlassClean.xlsx")
+
+
+
+######## CLEAN JUNG ET AL 2021 #####
+injung = readxl::read_excel("data/Jung_2021_Symportal_post_med_absolut abundances_meta.xlsx") %>%
+  pivot_longer(`11843_A`:`11852_C`, names_to = "zoox", values_to = "abund") %>%
+  group_by(`Sample ID`) %>% mutate(relabun = abund/sum(abund)) %>%
+  select(`Sample ID`, sample_name, zoox, relabun) %>% separate(`Sample ID`, into = c("Mon", "Tidal", "Bleached", "sample_name")) %>%
+  filter(relabun >= .1) %>%
+  mutate(GENUS = substr(zoox, 1,1)) %>%
+  #mutate(SUBTYPE = ifelse(GENUS %in% LETTERS == T, 0, NA)) %>%
+  mutate(GENUS = ifelse(GENUS %in% LETTERS == F, substr(zoox, nchar(zoox), nchar(zoox)), GENUS)) %>% 
+  mutate(DATE = case_when(Mon == "Apr" ~ as.Date("04/01/2016", format = "%m/%d/%Y"), 
+                          Mon == "Nov" ~ as.Date("11/01/2016", format = "%m/%d/%Y"))) %>%
+  mutate(COLONY_ID = sample_name) %>% 
+  mutate(zoox = ifelse(grepl("_", zoox) == T, NA, zoox)) %>% 
+  group_by(DATE, COLONY_ID) %>%
+  mutate(SUBTYPE = paste(sort(na.omit(unique(zoox))), collapse = "_"))  %>% select(!c(zoox, Mon, relabun)) %>% distinct() %>%
+  group_by(COLONY_ID) %>% mutate(nobs = n()) %>% filter(nobs > 1)
+
+outjung = injung %>% mutate(lat = -16.479, lon = 123.0435, 
+                  BLEACHED = ifelse(Bleached == "NB", "N", "Y"), 
+                  Notes = ifelse(Tidal == "IT", "Intertidal", "Subtidal"),
+                  COLONY_ID = paste("Jung_AASP_", COLONY_ID, sep = ""),
+                  SPECIES = "ACROPORA_ASPERA"
+)
+
+writexl::write_xlsx(outjung, path = "data/JungClean.xlsx")
+
+######## CLEAN ALESSI ET AL 2024 #####
+inalessi <- read.csv("data/Alessi_ITS2_results.csv") %>% 
+  mutate(BLEACHED = ifelse(grepl("Z", Treat) == T, "Y", "N"),
+         COLONY_ID = paste("ALESSI", "AMUR", ID, sep = "_")) %>%
+  pivot_longer(C1:C21bh, names_to = "zoox", values_to = "relabun") %>% 
+ mutate(DATE = ifelse(Time == "T1", "01/18/2021",
+              "05/05/2021")) %>%
+  filter(relabun >= .1) %>% 
+  mutate(GENUS = substr(zoox, 1,1)) %>%
+  mutate(GENUS = ifelse(GENUS %in% LETTERS == F, substr(zoox, nchar(zoox), nchar(zoox)), GENUS)) %>% 
+  mutate(COLONY_ID = paste("ALESSI_AMUR_", ID, sep = "")) %>% 
+  mutate(zoox = ifelse(grepl("_", zoox) == T, NA, zoox)) %>% 
+  group_by(DATE, COLONY_ID) %>%
+  mutate(SUBTYPE = paste(sort(na.omit(unique(gsub("[a-z]", "", zoox)))), collapse = "_"))  %>%
+  select(!c(zoox, ID, Time, Treat, others, relabun)) %>% distinct() %>%
+  group_by(COLONY_ID) %>% mutate(nobs = n()) %>% filter(nobs > 1) %>%
+  mutate(LAT = ifelse(Site == "Bouraké", 165.990, 165.945),
+         LON = ifelse(Site == "Bouraké", -21.952, -21.965)) %>% arrange(COLONY_ID)
+
+writexl::write_xlsx(outjung, path = "data/JungClean.xlsx")
+
