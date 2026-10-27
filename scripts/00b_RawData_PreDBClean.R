@@ -17,11 +17,16 @@
 
 #Not every study is contained here, as many reported data in figure form
 #in the text, which was manually extracted.
+
+#Here, also extract symportal abundances
 #########################################################################
 
 library(tidyverse)
 library(writexl)
-#Van nyatten 2025
+
+
+
+# ------- Van nyatten 2025 -------------
 vn.meta <- read.csv("data/van_nynatten_colony_metadata.csv")
 vn.seqid <- read.csv("data/van_nynatten_sample_metadata.csv")
 vn.sites <- read.csv("data/van_nynatten_survey_metadata.csv")
@@ -72,6 +77,61 @@ dominance = vn.all %>%
 write_xlsx(dominance, "data/cleaned_vn_2025.xlsx")
 
 
+#### PROBLEM: USING THE ITS-PROFILES, WE END UP SUMMARIZING MINOR STRAINS TOGETHER, MAKING IT LOOK LIKE TURNOVER, WHEN IT'S PROBABLY REALLY THE AQUISITION OF A NEW MINOR TYPE
+get_profile_turnover = vn.all %>% 
+  filter(sample_id != "") %>% 
+  group_by(sample_id) %>% 
+  filter(count > 0) %>%
+  mutate(count = as.numeric(count)) %>%
+  mutate(relabun = count/sum(count, na.rm = T))  %>%  mutate(COLONY_ID=paste0("VN_", substr(toupper(host_genus), 1, 1),
+                                                                   substr(toupper(host_species), 1, 3), "_",
+                                                                   coral_tag)) %>%
+  mutate(SPECIES = paste(toupper(host_genus), toupper(host_species), sep = "_")) %>%
+  left_join(vn.meta, by=c("coral_tag" = "coral_tag", "expedition" = "expedition")) %>%
+  mutate(DEAD = ifelse(grepl("dead", health_status) == T, "Y", "N")) %>%
+  mutate(BLEACHING_OBS = NA) %>%
+  left_join(vn.sites, by = c("site_name" = "site_name")) %>%
+  group_by(sample_id) %>% distinct() %>%
+  mutate(DATE = Mean.date) %>%
+  mutate(DEPTH_M = NA) %>%
+  mutate(LATITUDE = lat, 
+         LONGITUDE = lon, 
+         STUDY = "Van Nynatten et al., 2025") %>% select(!count) %>%
+  select(sample_id, COLONY_ID, DATE, LATITUDE, LONGITUDE, SPECIES, zoox_type, relabun) %>%
+  pivot_wider(names_from = zoox_type, values_from = relabun, values_fill = 0)
+
+turn.df = data.frame(get_profile_turnover %>% select(sample_id, c42a_c42_2_c1_c42g:f3f_f3g))
+meta.profiles = data.frame(get_profile_turnover %>% select(!c42a_c42_2_c1_c42g:f3f_f3g))
+rownames(turn.df) = turn.df$sample_id
+turn.df$sample_id= NULL
+#turn.df = turn.df[rowSums(turn.df) > 0,]
+pheatmap::pheatmap(vegan::vegdist(turn.df, na.rm = T))
+
+d <- as.matrix(vegan::vegdist(turn.df, na.rm = TRUE))
+idx <- which(row(d) != col(d), arr.ind = TRUE)
+
+dist.df <- data.frame(
+  from_samp = rownames(d)[idx[, "row"]],
+  to_samp   = colnames(d)[idx[, "col"]],
+  dist      = d[idx]
+)
+
+meta.profiles <- meta.profiles %>%
+  mutate(DATE = as.Date(DATE, format = "%m/%d/%Y"))
+
+dist.df %>%
+  left_join(meta.profiles, by = c("from_samp" = "sample_id")) %>%
+  left_join(meta.profiles, by = c("to_samp" = "sample_id")) %>%
+  filter(COLONY_ID.x == COLONY_ID.y) %>%
+  mutate(date.dist = as.numeric(DATE.y - DATE.x)) %>%
+  filter(date.dist > 0) %>%
+  group_by(COLONY_ID.x, from_samp) %>%
+  slice_min(date.dist, n = 1, with_ties = TRUE) %>%
+  ungroup() %>%
+  select(COLONY_ID.x, DATE.x, DATE.y, LATITUDE.x, LONGITUDE.x,
+         SPECIES.x, date.dist, dist) %>%
+  arrange(COLONY_ID.x, DATE.x)
+
 #Get Manzello Data -- just need teh bleaching ids
 x=load("data/clones_meta_me6.RData")
 write_xlsx(me6 %>% select(Tag.Number, bleach) %>% mutate(BLEACH_OBS=ifelse(bleach %in% c("1","2"), "Y", "N")),path = "data/Manzello_BleachScores.xlsx")
@@ -112,7 +172,7 @@ filtered = zoox_in %>% group_by(sample_name) %>%
 write_xlsx(filtered, "data/Claar_Cleaned.xlsx")
 
 
-### starko
+### ------- starko -------- 
 load("data/Starko_Porites_DIV.RData")
 #full metadata is included, thank you!
 meta = sample_data(Porites_DIV)
@@ -510,5 +570,5 @@ inalessi <- read.csv("data/Alessi_ITS2_results.csv") %>%
   mutate(LAT = ifelse(Site == "Bouraké", 165.990, 165.945),
          LON = ifelse(Site == "Bouraké", -21.952, -21.965)) %>% arrange(COLONY_ID)
 
-writexl::write_xlsx(outjung, path = "data/JungClean.xlsx")
+writexl::write_xlsx(inalessi, path = "data/Alessi_Clean.xlsx")
 
