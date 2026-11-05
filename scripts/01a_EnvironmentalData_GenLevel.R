@@ -301,7 +301,7 @@ env.data.final = cbind(join.data, data.frame(env.score)) %>%
 plot(env.data.final$PC1, env.data.final$mean_ANOM)
 #there's a problem with the data in moorea from 2011-2012. Changing the lon/lats slightly did not fix.
 tiff("results/pc_loadings.tiff", width = 3.25, height = 3.25, units = "in", res = 600)
-pheatmap::pheatmap(env.pc$rotation[,1:3], cluster_cols = F)
+pheatmap::pheatmap(env.pc$rotation[,1:3], cluster_cols = F) #why is this now fundamentally different. Check it
 dev.off()
 save(env.data.final, file = "data/EnvData_PCs.Rdata")
 
