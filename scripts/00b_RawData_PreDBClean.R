@@ -167,7 +167,7 @@ filtered = zoox_in %>% group_by(sample_name) %>%
          COLONY_ID = paste("CLAAR", coral_tag, sep = "_")) %>%
  select(SPECIES, COLONY_ID, new_date, GENUS, SUBTYPE, DEPTH, LATITUDE, LONGITUDE ) %>%
   distinct() %>% group_by(COLONY_ID) %>%
-  mutate(nobs = n()) %>% filter(nobs > 1) 
+  mutate(nobs = n()) %>% filter(nobs > 1) %>% filter(SPECIES != "PLATYGYRA_SP")
 
 write_xlsx(filtered, "data/Claar_Cleaned.xlsx")
 
@@ -572,3 +572,113 @@ inalessi <- read.csv("data/Alessi_ITS2_results.csv") %>%
 
 writexl::write_xlsx(inalessi, path = "data/Alessi_Clean.xlsx")
 
+#----- Lee
+
+lee.divs <- read.table("data/symportal_profiles/Lee2026_DIVs_corr.txt", sep = "\t", header = T)
+lee.meta <- read_xlsx("data/symportal_profiles/Lee_Symportal_Metadata.xlsx", skip=1)
+head(lee.meta)
+#5.611236805538839, 103.06104205143536 coordinates for study
+
+#first do colony level calls to include in database
+lee.out <- lee.divs %>%
+  select(sample_name, A6b:G3x) %>%
+  left_join(lee.meta, by = "sample_name") %>%
+  mutate(
+    collection_latitude = 5.611236805538839,
+    collection_longitude = 103.06104205143536,
+    DATE = as.Date(collection_date, format = "%Y%m%d")
+  ) %>%
+  pivot_longer(A6b:G3x, names_to = "zoox", values_to = "relabun") %>%
+  mutate(
+    GENUS = str_extract(zoox, "^[A-WY-Z]"),
+    short.sub = sub("^([^a-z.]*).*", "\\1", zoox)
+  ) %>%
+  filter(!is.na(GENUS)) %>%
+  group_by(sample_name, short.sub, GENUS) %>%
+  summarise(relabun = sum(relabun), .groups = "drop") %>%
+  filter(relabun > 0.1) %>%
+  group_by(sample_name) %>%
+  summarise(
+    GENUS = paste(sort(unique(GENUS)), collapse = "_"),
+    SUBTYPE = paste(sort(unique(short.sub)), collapse = "_"),
+    .groups = "drop"
+  ) %>%
+  left_join(lee.meta, by = "sample_name") %>%
+  mutate(
+    collection_latitude = 5.611236805538839,
+    collection_longitude = 103.06104205143536,
+    DATE = as.Date(collection_date, format = "%Y%m%d")
+  ) %>% filter(sample_name != "") %>%
+  mutate(COLONYID = paste("LEE_ADIG", colonyID, sep = "_"),
+         SPECIES = toupper(paste(host_genus, host_species, sep = "_"))) %>%
+  arrange(COLONYID, DATE) %>%
+  select(COLONYID, SPECIES, DATE, GENUS, SUBTYPE, collection_latitude, collection_longitude)
+write_xlsx(lee.out, "data/Lee_2026_clean.xlsx")
+
+
+####------- Buzzoni et al., 2026 ------ 
+#I'm pretty sure many of these colonies overlap the P. ryukyuensis from claar 2020. We'll omit these from claar in the metadata
+
+
+buzz.divs <- read.csv(
+  "data/symportal_profiles/Buzzoni2026_DIVs.csv",
+  check.names = FALSE
+)
+
+buzz.meta <- read.csv(
+  "data/symportal_profiles/Buzzoni2026_metadata.csv"
+)
+
+# Only retain samples with both metadata and DIVs
+shared.samps <- intersect(
+  buzz.divs$sample_name,
+  buzz.meta$sample_name
+)
+
+# Prepare metadata
+buzz.meta.full <- buzz.meta %>%
+  filter(sample_name %in% shared.samps) %>%
+  mutate(
+    SPECIES = "PLATYGYRA_RYUKYUENSIS",
+    DATE = as.Date(as.character(collection_date), format = "%Y%m%d"),
+    COLONYID = paste("BUZZ", "PRYUK", coral_tag, sep = "_")
+  ) %>%
+  distinct()
+
+# Assign dominant and co-dominant subtypes (>10%)
+buzz.out <- buzz.divs %>%
+  semi_join(buzz.meta.full, by = "sample_name") %>%
+  select(sample_name, A5b:`1269165_G`) %>%
+  pivot_longer(
+    -sample_name,
+    names_to = "zoox",
+    values_to = "abundance"
+  ) %>%
+  group_by(sample_name) %>%
+  mutate(relabun = abundance / sum(abundance)) %>%
+  ungroup() %>%
+  mutate(
+    GENUS = str_extract(zoox, "^[A-WY-Z]"),
+    short.sub = sub("^([^a-z.]*).*", "\\1", zoox)
+  ) %>%
+  filter(!is.na(GENUS)) %>%
+  group_by(sample_name, short.sub, GENUS) %>%
+  summarise(
+    relabun = sum(relabun),
+    .groups = "drop"
+  ) %>%
+  filter(relabun > 0.1) %>%
+  group_by(sample_name) %>%
+  summarise(
+    GENUS = paste(sort(unique(GENUS)), collapse = "_"),
+    SUBTYPE = paste(sort(unique(short.sub)), collapse = "_"),
+    .groups = "drop"
+  ) %>%
+  left_join(buzz.meta.full, by = "sample_name") %>%
+  arrange(COLONYID, DATE) %>%
+  select(
+    COLONYID, SPECIES, DATE, GENUS, SUBTYPE,
+    collection_latitude, collection_longitude
+  )
+
+write_xlsx(buzz.out, "data/Buzzoni_2026_clean.xlsx")
