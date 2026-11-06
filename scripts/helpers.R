@@ -412,13 +412,21 @@ rordered_logistic_vec <- function(mu, thres) {
 # extract_re()
 #  Extract n_spec-column matrix for one RE block + coefficient slot
 # ------------------------------------------------------------------------------
-extract_re <- function(block, coef_slot) {
-  cols <- paste0("r_", block, "_", coef_slot, "[", 1:n_spec, "]")
-  missing <- setdiff(cols, names(draws_df))
-  if (length(missing) > 0) stop("Missing columns: ", paste(missing[1:3], collapse = ", "), "...")
-  as.matrix(draws_df[, cols])
-}
+# extract_re <- function(block, coef_slot) {
+#   cols <- paste0("r_", block, "_", coef_slot, "[", 1:n_spec, "]")
+#   missing <- setdiff(cols, names(draws_df))
+#   if (length(missing) > 0) stop("Missing columns: ", paste(missing[1:3], collapse = ", "), "...")
+#   as.matrix(draws_df[, cols])
+# }
 
+extract_re <- function(block, coef_slot) {
+  cols <- paste0("r_", block, "[", seq_len(n_spec), ",", coef_slot, "]")
+  missing <- setdiff(cols, names(draws_df))
+  if (length(missing) > 0) {
+    stop("Missing columns: ", paste(head(missing, 3), collapse = ", "), "...")
+  }
+  as.matrix(draws_df[, cols, drop = FALSE])
+}
 
 # ------------------------------------------------------------------------------
 # compute_species_switching_genus()

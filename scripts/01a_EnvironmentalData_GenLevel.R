@@ -24,6 +24,10 @@ load("data/ColonyDistances.Rdata")
 bray_datapoints = all.colonydists %>% select(FROM_DATE, TO_DATE, LONGITUDE, LATITUDE) %>%
   pivot_longer(FROM_DATE:TO_DATE, names_to = "whichdate", values_to = "DATE") %>% select(!whichdate) %>%
   distinct()
+get_lee_env = all.colonydists %>% filter(STUDY == "LEE") %>% select(FROM_DATE, TO_DATE, LONGITUDE, LATITUDE) %>%
+  pivot_longer(FROM_DATE:TO_DATE, names_to = "whichdate", values_to = "DATE") %>% select(!whichdate) %>%
+  distinct() %>% mutate(LONGITUDE = 103.06064931859011, LATITUDE = 5.610409515086883)
+#5.610409515086883, 103.06064931859011
 # ==============================================================================
 # GET ENVIRONMENTAL DATA
 # ==============================================================================
@@ -32,6 +36,7 @@ library(rerddap)
 #get unique lon, lats dates
 library(zoo)
 to_grab = all_datapoints %>% select(LONGITUDE, LATITUDE, DATE) %>% rbind(bray_datapoints)%>%
+  rbind(get_lee_env) %>%
   distinct() %>% 
   mutate(to_date = 
            case_when(day(DATE) == 1 ~ DATE + (30),
@@ -126,7 +131,14 @@ plan(sequential)
 plan(multisession, workers = 11)  # adjust worker count
 #ACTUALLY ONLY NEED OCEAN COLOR FOR BIOGEOCHEMICAL
 future_map(1:nrow(to_grab), function(row) {
-  outfile <- paste0("data/envdata/color_", row, "env.txt")
+  site_id <- paste(
+    to_grab$LATITUDE[row],
+    to_grab$LONGITUDE[row],
+    to_grab$DATE[row],
+    sep = "_"
+  )
+  outfile <- paste0("data/envdata/color_", site_id, "env.txt")
+  
   if (file.exists(outfile) && file.size(outfile) > 0) return(NULL)
   
   tryCatch({
@@ -167,12 +179,7 @@ future_map(1:nrow(to_grab), function(row) {
     )
     
     Sys.sleep(2)
-    site_id <- paste(
-      to_grab$LATITUDE[row],
-      to_grab$LONGITUDE[row],
-      to_grab$DATE[row],
-      sep = "_"
-    )
+
     write.table(env_data,
                 file      = paste0("data/envdata/color_", site_id, "env.txt"),
                 col.names = FALSE,
@@ -192,7 +199,14 @@ plan(sequential)
 plan(multisession, workers = 11)  # adjust worker count
 
 future_map(1:nrow(to_grab), function(row) {
-  outfile <- paste0("data/envdata/precip_", row, "env.txt")
+  site_id <- paste(
+    to_grab$LATITUDE[row],
+    to_grab$LONGITUDE[row],
+    to_grab$DATE[row],
+    sep = "_"
+  )
+
+  outfile <- paste0("data/envdata/precip_", site_id, "env.txt")
   if (file.exists(outfile) && file.size(outfile) > 0) return(NULL)
   
   tryCatch({
@@ -217,12 +231,7 @@ future_map(1:nrow(to_grab), function(row) {
     )
     
     Sys.sleep(2)
-    site_id <- paste(
-      to_grab$LATITUDE[row],
-      to_grab$LONGITUDE[row],
-      to_grab$DATE[row],
-      sep = "_"
-    )
+
     write.table(env_data,
                 file      = paste0("data/envdata/precip_", site_id, "env.txt"),
                 col.names = FALSE,

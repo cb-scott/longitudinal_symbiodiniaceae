@@ -50,7 +50,7 @@ dat <- genlevel |>
   group_by(STUDY, HOST_SPEC_REVISED, SPECIES, COLONY_ID) |>
   mutate(
     shifted     = case_when(
-      GenShift %in% c("MAJOR", "MINOR", "SUBTYPE_SWITCH") ~ 1,
+      GenShift %in% c("MAJOR", "MINOR", "SUBTYPE_SWITCH") ~ 1, #actually no longer count these subtype switches as per reviewer suggestions
       GenShift %in% c("NONE")                              ~ 0,
       is.na(GenShift)                                      ~ NA_real_
     ),
@@ -92,6 +92,10 @@ dat <- dat %>%
     clean.spec == "Platygyra_daedalea"  ~ "Platygyra_daedalea",
     clean.spec == "Porites_sp."         ~ "Porites_lobata",
     clean.spec == "Pachyseris_rugosa"   ~ "Pachyseris_speciosa",
+    clean.spec == "Dipastraea_pallida" ~ "Dipsastraea_pallida",
+    clean.spec == "Porites_harrisoni" ~ "Porites_lobata",
+    clean.spec == "Cyphastrea_microphtalma" ~ "Cyphastrea_microphthalma",
+    clean.spec == "Pocillopora_spp" ~ "Pocillopora_capitata",
     .default = clean.spec
   )) %>%
   filter(clean.spec != "Acropora_sp.")
@@ -138,7 +142,7 @@ tree_final <- keep.tip(tree, unique(dat$clean.spec))
 tree_final <- force.ultrametric(tree_final, method = "extend")
 A          <- ape::vcv.phylo(tree_final, corr = TRUE)
 
-
+plot(tree_final)
 # ==============================================================================
 # 3. TRAIT COVARIANCE MATRIX
 # ==============================================================================
@@ -167,11 +171,11 @@ phy.dat <- phy.dat |>
     shift_ord = factor(
       case_when(
         GenShift == "NONE"          ~ 0,
-        GenShift == "SUBTYPE_SWITCH" ~ 1,
-        GenShift == "MINOR"          ~ 2,
-        GenShift == "MAJOR"          ~ 3
+        GenShift == "SUBTYPE_SWITCH" ~ 0, ###CHANGED HERE TO BETTER REFLECT REVIEWRE COMMENTS - ONLY LOOK AT GENUS LEVEL SHIFTS FIRST
+        GenShift == "MINOR"          ~ 1,
+        GenShift == "MAJOR"          ~ 2
       ),
-      levels  = c(0, 1, 2, 3),
+      levels  = c(0,1, 2),
       ordered = TRUE
     )
   )
@@ -179,7 +183,7 @@ phy.dat <- phy.dat |>
 category_values <- as.numeric(levels(factor(phy.dat$shift_ord)))
 
 # ---- Trait distance matrix ----
-trait.sub   <- mcmillian.sc[as.character(unique(phy.dat$clean.spec)), ]
+trait.sub   <- mcmillian.sc[as.character(unique(phy.dat$clean.spec)), ] %>% drop_na()
 trait.dists <- as.matrix(dist(trait.sub, method = "euclidean"))
 T_mat       <- 1 - (trait.dists / max(trait.dists))
 diag(T_mat) <- 1
@@ -192,8 +196,11 @@ trait_dist_mat <- as.dist(1 - T_mat)
 trait_hclust   <- hclust(trait_dist_mat, method = "average")   # UPGMA
 trait_tree     <- as.phylo(trait_hclust)
 
-
+plot(trait_tree)
 phy.dat <- phy.dat %>% mutate(SITE = paste(LONGITUDE, LATITUDE, sep = "_"))
+phy.dat <- phy.dat %>%
+  filter(clean.spec_trait != "Dipsastraea_pallida") %>%
+  mutate(clean.spec_trait = droplevels(clean.spec_trait))
 # ==============================================================================
 # 4. (new)  DIRILECHT VAR PARTITION WITH DELTA PCS
 # ==============================================================================
@@ -213,7 +220,7 @@ stan_dat_delta <- standata(
 names(stan_dat_delta)[grep("^Z_[123]", names(stan_dat_delta))]
 
 #--- 4b. read in the stan model that has a RE for site in addition to study and colony -----
-mod_within <- cmdstan_model("scripts/coral_dirichlet_partition_site.stan")
+mod_within <- cmdstan_model("scripts/coral_dirichlet_partition_site.stan", force_recompile = T)
 
 stan_dat_delta$prior_only <- 0L
 
@@ -243,7 +250,7 @@ Xc      <- sweep(stan_dat_delta$X, 2, colMeans(stan_dat_delta$X), "-")
 y_obs   <- stan_dat_delta$Y
 b_names <- paste0("b[", 1:stan_dat_delta$Kc, "]")
 b_draws <- as.matrix(draws_df[, b_names])
-intercept_draws <- as.matrix(draws_df[, c("Intercept[1]", "Intercept[2]", "Intercept[3]")])
+intercept_draws <- as.matrix(draws_df[, c("Intercept[1]", "Intercept[2]")])
 predictor_labels <- colnames(stan_dat_delta$X)
 names(predictor_labels) <- b_names
 
@@ -521,15 +528,15 @@ print(h2_summary)
 
 # ---- 4g. Extract draw matrices to estimate species-level switching ----
 
-species_levels <- levels(phy.dat$clean.spec)
-n_spec         <- length(species_levels)
+species_levels <- levels(phy.dat$clean.spec_trait)
+n_spec         <- stan_dat_delta$N_1
 
 # Fixed effects and thresholds
 b_names <- paste0("b[", 1:stan_dat_delta$Kc, "]")
 b_mat   <- as.matrix(draws_df[, b_names])
-colnames(b_mat) <- colnames(stan_dat$X)
+colnames(b_mat) <- colnames(stan_dat_delta$X)
 
-int_mat <- as.matrix(draws_df[, c("Intercept[1]", "Intercept[2]", "Intercept[3]")])
+int_mat <- as.matrix(draws_df[, c("Intercept[1]", "Intercept[2]")])
 
 # r_1 = phylogenetic
 r1_int <- extract_re(1, 1)
@@ -551,7 +558,7 @@ r3_pc3 <- extract_re(3, 4)
 
 # ---- 4f. Estimate switching w.r.t. low/mid/high environmental values & plot dendrograms  ----
 
-species_levels <- levels(phy.dat$clean.spec)
+species_levels <- levels(phy.dat$clean.spec_trait)
 
 # Baseline: all species held at delta_PC = 0 (no environmental shift) for the
 # PC(s) not being varied in a given call
@@ -606,11 +613,13 @@ p_trait <- plot_switching_tree(trait_tree, pred_pc1_summary,
                                levs = c(0.01, 0.03, 0.05), textoffset = .06)
 
 p_phylo + theme(text = element_text(size = 8)) + labs(fill = "E[Switch]") +
-  ggtitle("") + theme(legend.position = "none")
+  ggtitle("") + theme(legend.position = "none") #probably need to switch to PC2 now that everything has changed
+
 ggsave("results/E_Switch_Phylo_delta.tiff", width = 3.25, height = 6, dpi = 1000)
 
 p_trait + theme(text = element_text(size = 8)) + labs(fill = "E[Switch]") +
   ggtitle("") + theme(legend.position = "none")
+
 ggsave("results/E_Switch_Trait_delta.tiff", width = 3.25, height = 6, dpi = 1000)
 
 

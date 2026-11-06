@@ -233,9 +233,8 @@ transformed parameters {
 
   // ---- PRIORS (lprior) ----
   // Intercept thresholds -- your data-derived values
-  lprior += normal_lpdf(Intercept[1] | 1.68, 1.0);
-  lprior += normal_lpdf(Intercept[2] | 1.90, 1.0);
-  lprior += normal_lpdf(Intercept[3] | 3.11, 1.0);
+  lprior += normal_lpdf(Intercept[1] | 1.81, 1.0);
+  lprior += normal_lpdf(Intercept[2] | 3.13, 1.0);
 
   // Fixed effects
   lprior += normal_lpdf(b | 0, 1);

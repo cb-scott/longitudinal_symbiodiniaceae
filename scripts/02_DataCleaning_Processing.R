@@ -15,7 +15,7 @@ library(phyloseq)
 
 ### ------------- Load in data -------------
 load("data/EnvData_PCs.Rdata")
-all_datapoints = readxl::read_excel("data/Long_Symbiont_Data_Manual.xlsx")
+all_datapoints = readxl::read_excel("data/Long_Symbiont_Manual.xlsx")
 #basic stats
 #number colonies represented
 paste("Number Unique Colonies =", length(unique(all_datapoints$COLONY_ID)))
