@@ -2,11 +2,11 @@
 
 This repository contains a curated longitudinal database of coral-Symbiodiniaceae
 associations and the reproducible analysis pipeline used to evaluate symbiont
-switching across environmental change, coral phylogeny, and coral functional
+turnover across environmental change, coral phylogeny, and coral functional
 traits. The analyses operate at two complementary resolutions:
 
-- dominant symbiont genus states, used to classify genus-level switching and
-  estimate switching, reversion, and pairwise transition probabilities; and
+- dominant symbiont genus states, used to classify genus-level turnover and
+  estimate turnover, reversion, and pairwise transition probabilities; and
 - SymPortal defining intragenomic variants (DIVs), used to quantify continuous
   community change with Bray-Curtis and weighted UniFrac distances.
 
@@ -34,7 +34,7 @@ Contact: Carly Scott, cabscott@unc.edu
    host-species variance among phylogenetic, trait-associated, and residual
    components. The main community-distance model uses DIV-level Bray-Curtis
    distance, with weighted UniFrac as a sensitivity analysis.
-6. Multistate Markov models estimate annual switching and reversion
+6. Multistate Markov models estimate annual turnover and reversion
    probabilities and pairwise transition rates among dominant symbiont genera.
 
 ## Repository structure
@@ -170,7 +170,7 @@ root.
 | `03c_Bayesian_FirstTurnoverBernoulli.R` | Genus-level intervals, host phylogeny, traits, and environmental PCs | First-turnover Bernoulli sensitivity results in `results/03c_Bayesian_FirstTurnoverBernoulli/` |
 | `03d_Bayesian_DIVBrayCurtis.R` | DIV intervals, environmental PCs, host phylogeny, and traits | Main DIV-distance model results in `results/03d_Bayesian_DIVBrayCurtis/` |
 | `03e_Bayesian_DIVUniFrac.R` | DIV intervals, environmental PCs, host phylogeny, and traits | Weighted-UniFrac sensitivity results in `results/03e_Bayesian_DIVUniFrac/` |
-| `04a_MSM_Modeling.R` | Genus-level intervals with environmental PCs | Switching/reversion and pairwise-transition results in `results/04a_MSM_Modeling/` |
+| `04a_MSM_Modeling.R` | Genus-level intervals with environmental PCs | turnover/reversion and pairwise-transition results in `results/04a_MSM_Modeling/` |
 
 ## Script details
 
@@ -226,9 +226,9 @@ R dependencies: `tidyverse`, `lubridate`, `missForest`, `future`,
 
 Joins environmental PCs to the longitudinal observations, standardizes selected
 host-species names, summarizes study coverage, and constructs sequential
-genus-level intervals. The current switching outcome distinguishes no genus
+genus-level intervals. The current turnover outcome distinguishes no genus
 change, emergent co-dominance, and complete genus replacement; legacy subtype
-differences are not treated as modeled switching events.
+differences are not treated as modeled turnover events.
 
 R dependencies: `tidyverse`, `readxl`, and `writexl`.
 
