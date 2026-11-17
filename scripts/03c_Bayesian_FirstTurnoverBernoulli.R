@@ -76,7 +76,6 @@ dat <- genlevel |>
 
 dat$last_genus <- relevel(dat$last_genus, ref = "C")
 
-
 #-------- Standardize host species names ------------
 dat$HOST_SPEC <- ifelse(dat$HOST_SPEC == "INTERMEDIA(NOBILIS)", "INTERMEDIA", dat$HOST_SPEC)
 dat$HOST_GEN  <- case_when(
