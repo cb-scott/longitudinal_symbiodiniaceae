@@ -104,11 +104,14 @@ hrs = hr_long %>% filter(transition != "State 1 - State 1") %>%
   filter(transition != "State 2 - State 2") %>%
   filter(grepl("^State 2", transition) == F)
 
-hrs = hrs %>% filter(covariate != "base") %>% mutate(sig = ifelse(L < 1 & U > 1, "ns", "significant"))
+hrs = hrs %>% filter(covariate != "base") %>% mutate(sig = ifelse(L < 1 & U > 1, "ns", "significant")) %>%
+  mutate(covariate = paste("\u0394", covariate, sep = ""))
 hrs$covariate = factor(hrs$covariate, levels = rev(sort(hrs$covariate)))
 
 # ------ Plot hazard ratios --------
-hrs %>% ggplot(aes(x = HR, y=covariate, col = sig)) +
+dev.off()
+hrs %>%
+  ggplot(aes(x = HR, y=covariate, col = sig)) +
   geom_errorbarh(aes(xmin = L, xmax = U), width = .1) + 
   geom_vline(xintercept = 1) + 
   geom_point(size = 3) + 
@@ -119,74 +122,112 @@ hrs %>% ggplot(aes(x = HR, y=covariate, col = sig)) +
         text = element_text(size = 8),
         panel.border = element_rect(color = "black", fill = NA, linewidth = .5)) +
   ylab("") + 
-  xlab("HR Initial Switch")
-ggsave("results/Switch_fxn_PCs.png", width = 1.5, height = 2, units = "in", dpi = 500)
+  xlab("HR Genus Turnover")
+ggsave("results/Switch_fxn_PCs.svg", width = 1.5, height = 2)
 
-# ------ Plot switch and revert graph ----- 
+# Annual transition probabilities at mean environmental covariates
+P_annual <- pmatrix.msm(
+  fit.pcs,
+  t = 1,
+  covariates = "mean",
+  ci = "normal",
+  cl = 0.95,
+  B = 2000
+)
 
-# Extract Q matrix estimates
-Q_est <- qmatrix.msm(fit.pcs)$estimates
-Q_L <- qmatrix.msm(fit.pcs)$L
-Q_H <- qmatrix.msm(fit.pcs)$U
-#Q_est <- pmatrix.msm(fit, t = 1)
+P_annual$estimates  # Estimated annual probabilities
 
-# State names
-state_names <- c("Base", "Switch")
-rownames(Q_est) <- state_names
-colnames(Q_est) <- state_names
-rownames(Q_L) <- state_names
-colnames(Q_L) <- state_names
-rownames(Q_H) <- state_names
-colnames(Q_H) <- state_names
-# Build edge list
-edges <- data.frame(from = character(), to = character(), rate = numeric())
 
-for (i in 1:nrow(Q_est)) {
-  for (j in 1:ncol(Q_est)) {
-    if (i != j && Q_est[i, j] > 0) {
-      edges <- rbind(edges, data.frame(
-        from = state_names[i],
-        to   = state_names[j],
-        rate = Q_est[i, j]
-      ))
-    }
-  }
-}
+# ================================================================
+# PLOT ANNUAL TRANSITION PROBABILITIES
+# ================================================================
+library(msm)
+library(igraph)
 
-# Build graph
-g <- graph_from_data_frame(edges, directed = TRUE)
+set.seed(123)
 
-# Curve bidirectional edges, leave unidirectional straight
-mutual_edges <- which_mutual(g)
-edge_curves  <- ifelse(mutual_edges, 0.3, 0)
+# Annual transition probabilities at mean covariate values
+P_annual <- pmatrix.msm(
+  fit.pcs,
+  t = 1,
+  covariates = "mean",
+  ci = "normal",
+  cl = 0.95,
+  B = 2000
+)
 
-# Fix layout
-layout_coords <- layout_in_circle(g)
+state_names <- c("Base", "Novel")
+transition_index <- rbind(c(1, 2), c(2, 1))
 
-# Plot
-png("results/Baseline_Switch.png", width = 2, height = 2, units = "in", res = 500)
-par(mar = c(.5, .5, .5, .5), bg = "white", family = "Arial", ps = 12)
-plot(g,
-     layout             = layout_coords,
-     edge.width         = edges$rate * 5,
-     edge.arrow.size    = 0.5,
-     edge.arrow.width   = 2,
-     edge.curved        = edge_curves,
-     edge.label         = round(edges$rate, 3),
-     edge.label.cex     = 8/12,
-     edge.label.color   = "black",
-     edge.label.family  = "Arial",
-     edge.color         = "#81C3D7",
-     vertex.shape       = "circle",
-     vertex.size        = 60,
-     vertex.color       = "gray95",
-     vertex.frame.color = "black",
-     vertex.label.color = "black",
-     vertex.label.cex   = 8/12,
-     vertex.label.family = "Arial")
+edges <- data.frame(
+  from = c("Base", "Novel"),
+  to   = c("Novel", "Base"),
+  prob = P_annual$estimates[transition_index],
+  L    = P_annual$L[transition_index],
+  U    = P_annual$U[transition_index]
+)
+
+edges$label <- sprintf(
+  "%.3g\n(%.3g\u2013%.3g)",
+  edges$prob,
+  edges$L,
+  edges$U
+)
+
+g <- graph_from_data_frame(
+  edges,
+  directed = TRUE,
+  vertices = data.frame(name = state_names)
+)
+
+# Base at lower left, Novel at upper right
+layout_coords <- rbind(
+  Base  = c(-0.5, -0.5),
+  Novel = c( 0.5,  0.5)
+)
+
+# Place each label outside its curve
+label_offset <- 0.2
+label_side <- ifelse(ends(g, E(g))[, 1] == "Base", 1, -1)
+
+svg(
+  "results/Annual_Transition_Probability_Network.svg",
+  width = 3.5,
+  height = 3.5,
+  pointsize = 12,
+  bg = "white",
+  family = "Arial"
+)
+
+par(mar = rep(0.5, 4))
+
+plot(
+  g,
+  layout              = layout_coords,
+  rescale             = FALSE,
+  xlim                = c(-0.9, 0.9),
+  ylim                = c(-0.9, 0.9),
+  asp                 = 1,
+  edge.width          = 8 * E(g)$prob,
+  edge.arrow.size     = 0.5,
+  edge.arrow.width    = 2,
+  edge.curved         = 0.3,
+  edge.color          = "#81C3D7",
+  edge.label          = E(g)$label,
+  edge.label.x        = -label_side * label_offset,
+  edge.label.y        =  label_side * label_offset,
+  edge.label.cex      = 8 / 12,
+  edge.label.color    = "black",
+  edge.label.family   = "Arial",
+  vertex.size         = 35,
+  vertex.color        = "gray95",
+  vertex.frame.color  = "black",
+  vertex.label.color  = "black",
+  vertex.label.cex    = 1,
+  vertex.label.family = "Arial"
+)
+
 dev.off()
-
-
 #===============================================================
 # MODEL ANNUAL SYMBIONT GENUS PAIRWISE TRANSITION RATES 
 #===============================================================
@@ -198,7 +239,7 @@ dat <- genlevel |>
   group_by(COLONY_ID) |>
   distinct(STUDY, HOST_SPEC_REVISED, SPECIES, COLONY_ID, DATE, .keep_all = TRUE) |>
   arrange(DATE) |>
-  filter(GENUS %in% c("A", "A_C", "A_D", "B", "B_C", "C", "C_D", "D")) %>%
+  filter(GENUS %in% c("A", "A_B", "A_C", "A_D", "A_C_D", "B", "B_C", "B_C_D", "C", "C_D", "D")) %>%
   ungroup() %>% dplyr::mutate(ocean_basin = assign_ocean_basin(LONGITUDE, LATITUDE)) %>%
   mutate(Year = year(DATE),
          Years_Since_2000 = Year - 2000) %>%
@@ -214,7 +255,7 @@ stateids = data.frame(GENUS = sort(unique(dat$GENUS)), state = 1:length(unique(d
 dat = left_join(dat, stateids)
 
 #---- censor mixed states ----- 
-mixed_states = c("A_C", "A_D", "B_C", "C_D")
+mixed_states = c("A_B", "A_C", "A_D", "A_C_D", "B_C", "B_C_D", "C_D")
 dat <- dat |>
   mutate(state_censored = ifelse(GENUS %in% mixed_states, NA, state))
 
@@ -224,7 +265,7 @@ stateids_pure <- data.frame(
 )
 stateids_censored <- data.frame(
   GENUS=mixed_states,
-  state = 900:903
+  state = 900:906
 )
 new_stateids = rbind(stateids_pure, stateids_censored)
 
@@ -245,8 +286,12 @@ fit <- msm(state ~ numeric_years, subject = COLONY_ID,
            data = dat,
            qmatrix = Q_init,
            control = list(fnscale = 8000, maxit = 3000),
-           censor = c(900, 901, 902, 903),
-           censor.states = list(c(1,3), c(1,4), c(2,3), c(3,4)))
+           censor = c(900, 901, 902, 903,
+                      904, 905,
+                      906),
+           censor.states = list(c(1,2), c(1,3), c(1,4), c(1,3,4),
+                                c(2,3), c(2,3,4),
+                                c(3,4)))
 fit
 
 # Extract hazard ratios from model
@@ -254,10 +299,14 @@ hr_table <- hazard.msm(fit)
 
 # ------ Plot pairwise switching graph ----- 
 
-# Extract Q matrix estimates
-Q_est <- qmatrix.msm(fit)$estimates
-Q_L <- qmatrix.msm(fit)$L
-Q_H <- qmatrix.msm(fit)$U
+# Extract Q matrix estimates (transition rates; instead let's use pvalues)
+#Q_est <- qmatrix.msm(fit)$estimates
+pmat = pmatrix.msm(fit, ci = "normal", t = 1)
+Q_est <- pmat$estimates
+#Q_L <- qmatrix.msm(fit)$L
+Q_L <- pmat$L
+#Q_H <- qmatrix.msm(fit)$U
+Q_H <- pmat$U
 #Q_est <- pmatrix.msm(fit, t = 1)
 
 # State names
@@ -294,7 +343,7 @@ edge_curves  <- ifelse(mutual_edges, 0.3, 0)
 layout_coords <- layout_with_fr(g)
 
 # Plot
-png("results/ZooxNetwork.png", width = 3.5, height = 3.5, units = "in", res = 500)
+svg("results/ZooxNetwork.svg", width = 3.5, height = 3.5)
 par(mar = c(.5, .5, .5, .5), bg = "white", family = "Arial", ps = 12)
 plot(g,
      layout             = layout_coords,
@@ -370,7 +419,7 @@ df.overlap %>%
   theme_classic() +
   scale_color_manual(values = c("black", "gray60")) +
   ylab("") + 
-  xlab("Annual Switching Rate") + 
+  xlab("Annual Switching Probability") + 
   facet_wrap(~pair, ncol = 1, scales = "free_y") +
   theme(
     legend.position = "none",
@@ -380,4 +429,4 @@ df.overlap %>%
     panel.border = element_rect(color = "black", fill = NA, linewidth = .5)
   )
 
-ggsave("results/Ann_Switch_Rate.png", width = 3, height = 3.5, units = "in", dpi = 500)
+ggsave("results/Ann_Switch_Rate.svg", width = 3, height = 3.5)

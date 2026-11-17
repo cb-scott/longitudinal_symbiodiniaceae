@@ -248,3 +248,37 @@ flexlaunch.py \
   --max-parallel 1  
   
   
+#also need to make a symportal phylogeny to get UniFrac distances
+cd /hickory/users/c/a/cabscott/from_work/long_coral
+
+mamba activate phylogenetics
+echo "mafft --auto --thread 16 \
+  SymPortal_unique_DIVs.fasta \
+  > SymPortal_DIVs_aligned.fasta" > mafft
+flexlaunch.py \
+--job-name mafft \
+--job-file mafft \
+--cpus-per-task 16 \
+--mem 24 \
+--time 02:00:00 \
+--output mafft.slurm \
+--max-parallel 1  
+
+echo "FastTree -nt -gtr \
+  SymPortal_DIVs_aligned.fasta \
+  > SymPortal_DIVs_tree.nwk" > make.tree
+ flexlaunch.py \
+--job-name make.tree \
+--job-file make.tree \
+--cpus-per-task 1 \
+--mem 24 \
+--time 02:00:00 \
+--output make.tree.slurm \
+--max-parallel 1   
+  
+
+FastTree -nt -gtr \
+  SymPortal_DIVs_aligned.fasta \
+  > SymPortal_DIVs_tree.nwk
+
+  

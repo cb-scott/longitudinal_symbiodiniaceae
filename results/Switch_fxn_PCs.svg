@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='108.00pt' height='144.00pt' viewBox='0 0 108.00 144.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHwxMDguMDB8MC4wMHwxNDQuMDA='>
+    <rect x='0.00' y='0.00' width='108.00' height='144.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHwxMDguMDB8MC4wMHwxNDQuMDA=)'>
+<rect x='0.00' y='0.00' width='108.00' height='144.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='cpMzcuMjV8MTAyLjUyfDUuNDh8MTE3LjUx'>
+    <rect x='37.25' y='5.48' width='65.27' height='112.04' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMzcuMjV8MTAyLjUyfDUuNDh8MTE3LjUx)'>
+<rect x='37.25' y='5.48' width='65.27' height='112.04' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<polyline points='62.63,28.24 62.63,24.74 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='62.63,26.49 40.22,26.49 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='40.22,28.24 40.22,24.74 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='77.87,63.25 77.87,59.75 ' style='stroke-width: 1.07; stroke: #999999; stroke-linecap: butt;' />
+<polyline points='77.87,61.50 53.09,61.50 ' style='stroke-width: 1.07; stroke: #999999; stroke-linecap: butt;' />
+<polyline points='53.09,63.25 53.09,59.75 ' style='stroke-width: 1.07; stroke: #999999; stroke-linecap: butt;' />
+<polyline points='99.55,98.26 99.55,94.76 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='99.55,96.51 70.85,96.51 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='70.85,98.26 70.85,94.76 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<line x1='63.90' y1='117.51' x2='63.90' y2='5.48' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<circle cx='51.10' cy='26.49' r='3.56' style='stroke-width: 0.71; fill: #000000;' />
+<circle cx='65.10' cy='61.50' r='3.56' style='stroke-width: 0.71; stroke: #999999; fill: #999999;' />
+<circle cx='84.75' cy='96.51' r='3.56' style='stroke-width: 0.71; fill: #000000;' />
+<rect x='37.25' y='5.48' width='65.27' height='112.04' style='stroke-width: 1.07;' />
+</g>
+<g clip-path='url(#cpMC4wMHwxMDguMDB8MC4wMHwxNDQuMDA=)'>
+<polyline points='37.25,117.51 37.25,5.48 ' style='stroke-width: 1.07; stroke-linecap: square;' />
+<text x='32.32' y='98.80' text-anchor='end' style='font-size: 6.40px; font-family: "Arial";' textLength='16.69px' lengthAdjust='spacingAndGlyphs'>ΔPC3</text>
+<text x='32.32' y='63.79' text-anchor='end' style='font-size: 6.40px; font-family: "Arial";' textLength='16.69px' lengthAdjust='spacingAndGlyphs'>ΔPC2</text>
+<text x='32.32' y='28.78' text-anchor='end' style='font-size: 6.40px; font-family: "Arial";' textLength='16.69px' lengthAdjust='spacingAndGlyphs'>ΔPC1</text>
+<polyline points='34.51,96.51 37.25,96.51 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='34.51,61.50 37.25,61.50 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='34.51,26.49 37.25,26.49 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='37.25,117.51 102.52,117.51 ' style='stroke-width: 1.07; stroke-linecap: square;' />
+<polyline points='63.90,120.25 63.90,117.51 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='84.33,120.25 84.33,117.51 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<text x='63.90' y='127.03' text-anchor='middle' style='font-size: 6.40px; font-family: "Arial";' textLength='8.88px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<text x='84.33' y='127.03' text-anchor='middle' style='font-size: 6.40px; font-family: "Arial";' textLength='8.88px' lengthAdjust='spacingAndGlyphs'>1.1</text>
+<text x='69.89' y='136.84' text-anchor='middle' style='font-size: 8.00px; font-family: "Arial";' textLength='71.19px' lengthAdjust='spacingAndGlyphs'>HR Genus Turnover</text>
+</g>
+</g>
+</svg>

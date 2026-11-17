@@ -1,0 +1,2 @@
+lat,lon,date,min_precip,max_precip,sd_precip,mean_precip,precip_n_cells,precip_nearest_km,precip_farthest_km,precip_n_times
+-17.4815,-149.84908,2020-01-06,121.44000498453777,165.12000528971353,30.88642441802025,143.28000513712564,3,3.508024948743773,11.090043456345544,2

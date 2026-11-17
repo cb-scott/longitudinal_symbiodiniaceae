@@ -288,7 +288,7 @@ means.only = join.data %>% select( mean_ANOM, min_ANOM, max_ANOM,
 
 mean.stand = decostand(means.only, method = "standardize")
 env.pc = prcomp(mean.stand, center = TRUE, scale = TRUE)
-env.score = scores(env.pc)
+env.score = vegan::scores(env.pc)
 
 dev.off()
 screeplot(env.pc, bstick = T)
@@ -309,8 +309,17 @@ env.data.final = cbind(join.data, data.frame(env.score)) %>%
 
 plot(env.data.final$PC1, env.data.final$mean_ANOM)
 #there's a problem with the data in moorea from 2011-2012. Changing the lon/lats slightly did not fix.
-tiff("results/pc_loadings.tiff", width = 3.25, height = 3.25, units = "in", res = 600)
-pheatmap::pheatmap(env.pc$rotation[,1:3], cluster_cols = F) #why is this now fundamentally different. Check it
+svg("results/pc_loadings.svg", width = 3.25, height = 3.25)# units = "in", res = 600)
+mat <- env.pc$rotation[, 1:3]
+
+lim <- max(abs(mat), na.rm = TRUE)
+
+pheatmap::pheatmap(
+  mat,
+  cluster_cols = FALSE,
+  color = colorRampPalette(c("#2166AC", "white", "#B2182B"))(100),
+  breaks = seq(-lim, lim, length.out = 101)
+)
 dev.off()
 save(env.data.final, file = "data/EnvData_PCs.Rdata")
 
@@ -426,7 +435,8 @@ ggplot() +
     plot.margin = margin(10, 15, 10, 10),
     legend.position = "right"
   )
-ggsave("results/env.pcs.tiff", width = 3.25, height = 3.25, units = "in", dpi = 1000)
+
+ggsave("results/env.pcs.svg", width = 3.25, height = 3.25)#, units = "in", dpi = 1000)
 
 
 # ==============================================================================
@@ -448,7 +458,19 @@ points_density <- all_datapoints %>%
     mean_lon = mean(LONGITUDE),
     mean_lat = mean(LATITUDE),
     .groups = "drop"
-  )
+  ) 
+plot_cdist = all.colonydists %>% select(LATITUDE, LONGITUDE) %>%
+  mutate(
+  lon_bin = floor(LONGITUDE),
+  lat_bin = floor(LATITUDE)
+  ) %>%
+  group_by(lon_bin, lat_bin) %>%
+  summarise(
+    nobs = n(), 
+    mean_lon = mean(LONGITUDE),
+    mean_lat = mean(LATITUDE),
+    .groups = "drop"
+  ) 
 ggplot() +
   geom_polygon(data = world, aes(x = long, y = lat, group = group),
                fill = "gray80", color = "gray80", linewidth = 0.2) +
@@ -461,12 +483,15 @@ ggplot() +
     labels = scales::comma,
     name   = "N Obs:"
   ) +
+  geom_point(data = plot_cdist, aes(y=mean_lat, x=mean_lon, size = nobs), pch = 1) +
+
   coord_fixed(1.3) + 
   theme_void() + 
   theme(legend.position = "bottom",
         text = element_text(size = 8))#, #xlim = c(-151, -149), ylim = c(-18, -17)) #+
-ggsave("results/sample_map.png", width = 4, height = 3, units = "in", dpi = 1000)
+ggsave("results/sample_map.svg", width = 4, height = 3)
 #have a bad point entry
+
 
 #### ---------- Viz Time -------------
 library(lubridate)
@@ -518,7 +543,7 @@ p <- obs_per_spec %>% ggplot(aes(x=nobs)) +
   theme(text = element_text(size = 8),
         plot.margin = margin(5, 15, 5, 5, "pt"))
 p
-ggsave(p, file = "results/Obs_per_species.tiff", width = 2.5, height = 1.5, units = "in", dpi = 1000)
+ggsave(p, file = "results/Obs_per_species.svg", width = 2.5, height = 1.5)
 
 
 
