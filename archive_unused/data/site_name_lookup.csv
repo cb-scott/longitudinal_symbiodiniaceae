@@ -1,0 +1,33 @@
+cluster_id,lat,lon,n_subsites,basin_region,reef_name
+1,23.7832,-76.11314999999999,2,"Northern Carribbean, Florida & Bahamas",NA
+2,24.9168773477832,-80.57582637737572,4,"Northern Carribbean, Florida & Bahamas",NA
+3,25.081699999999998,-80.34805,2,"Northern Carribbean, Florida & Bahamas",NA
+4,1.831011999999998,-157.3163179999998,5,Eastern Micronesia,NA
+5,1.8828723076923068,-157.52995538461516,13,Eastern Micronesia,NA
+6,2.0160821052631572,-157.47666210526305,19,Eastern Micronesia,NA
+7,-23.4540665,151.9835665,2,Great Barrier Reef & Torres Strait,NA
+8,17.934883,-67.04885,1,Southeastern Caribbean,NA
+9,-17.5061385,-149.8235069,10,Central South Pacific,NA
+10,24.553919999999998,-81.57986,2,"Northern Carribbean, Florida & Bahamas",NA
+11,21.953274999999998,120.7406475,4,North Eastern Asia,NA
+12,24.5208,52.2781,1,Northwestern Arabian Sea,NA
+13,24.5986,54.4201,1,Northwestern Arabian Sea,NA
+14,24.8482,54.6903,1,Northwestern Arabian Sea,NA
+15,26.5379,56.30255,1,Northwestern Arabian Sea,NA
+16,7.815,-81.759,1,Eastern Tropical Pacific,NA
+17,24.25,-76.5,1,"Northern Carribbean, Florida & Bahamas",NA
+18,18.300184666666667,-64.71683333333334,3,Southeastern Caribbean,NA
+19,13.4666,144.75,1,Western Micronesia,NA
+20,-22.477683,166.463033,1,South West Pacific,NA
+21,-22.27089015,166.53441650000002,2,South West Pacific,NA
+22,-22.285833,166.183167,1,South West Pacific,NA
+23,-23.15,150.9,1,Great Barrier Reef & Torres Strait,NA
+24,12.642717,100.861147,1,Southeastern Asia,NA
+25,18.317183,109.7687,1,Southeastern Asia,NA
+26,21.465989999999998,-157.82316500000002,2,Hawaiian Islands,NA
+27,-18.597969,146.489677,1,Great Barrier Reef & Torres Strait,NA
+28,1.2189,103.84805,2,Southeast Asian Archipelago,NA
+29,7.2359,134.2374,1,Western Micronesia,NA
+30,12.068585,-68.859345,2,Southeastern Caribbean,NA
+31,12.268005,-69.128425,2,Southeastern Caribbean,NA
+32,9.327147499999999,-82.2726675,4,Mesoamerica,NA

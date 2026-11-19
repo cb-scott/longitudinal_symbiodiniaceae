@@ -1,0 +1,3542 @@
+panelc <- list()#
+for(i in nrow(cc)){#
+ df <- funs[funs$region==cc[i,1],]#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+plot <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+panelc[[i]] <- plot#
+}
+panelb[[1]]
+panelc[[1]]
+cc <- cbind(rep(unique(doms$region),2), rep(c("accretion", "biomass"), each=2))#
+panelc <- list()#
+for(i in nrow(cc)){#
+ df <- funs[funs$region==cc[i,1],]#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+plot <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+panelc[[i]] <- plot#
+}
+i <- 1#
+ df <- funs[funs$region==cc[i,1],]#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+plot <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))
+head(df, 10)
+df[!is.na(df$funct),]
+plot
+i <- 1#
+ df <- funs[funs$region==cc[i,1],]#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+plot <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+plot
+plot+lims(y=c(-3,3.5), x=c(-4.8,5.4))
+cc[i,1]
+funs[funs$region==cc[i,1],]
+cc[i,1]
+################################## ----- Importance for functions#
+#
+# geometric models#
+source("R/geometry.R")#
+geo <- read.csv("data/geometry.csv")#
+#
+axes$region <- ifelse(pres_abs$Caribbean %in% 1, "Caribbean", ifelse(pres_abs$Australia %in% 1, "GBR",  NA))#
+#
+# apply geometric models based on morphology#
+t0 <- NULL#
+t1 <- NULL#
+for (i in 1:nrow(data)){#
+	#i <- 23#
+	gf <- data[i,"raw_growth_form"]#
+	funct <- geo$function.[geo$morphology==gf]#
+	pars <- geo[geo$morphology==gf, c("br","bh", "bpa", "th", "tb")]#
+	pars$d <- data[i,"dat_colonydiameter"]#
+	t0 <- cbind(t0, do.call(Map, c(f= as.name(funct), pars)))#
+	growth <- data[i,"dat_growth"]#
+	#pars#
+	#growth#
+	pars$d <- pars$d + growth/10#
+	#pars#
+	t1 <- cbind(t1, do.call(Map, c(f= as.name(funct), pars)))#
+}#
+#
+funs <- cbind(axes, do.call("rbind", t0))#
+funs$VOL2 <- cbind(do.call("rbind", t1))$VOL#
+funs$accretion <- (funs$VOL2 - funs$VOL) * data[,"dat_skeletal"]#
+funs$biomass <- funs$SA * funs$TB#
+head(funs)#
+tail(funs)
+i <- 1#
+ df <- funs[funs$region==cc[i,1],]#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+plot <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+plot+lims(y=c(-3,3.5), x=c(-4.8,5.4))
+plot
+plot+lims(y=c(-3,3.5), x=c(-4.8,5.4))
+cc <- cbind(rep(unique(doms$region),2), rep(c("accretion", "biomass"), each=2))#
+#panelc <- list()#
+#for(i in nrow(cc)){#
+	i <- 1#
+ df <- funs[funs$region==cc[i,1],]#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ #stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+plot <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+plot+lims(y=c(-3,3.5), x=c(-4.8,5.4))#
+#panelc[[i]] <- plot#
+#}
+i <- 1#
+ df <- funs[funs$region==cc[i,1],]#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ #stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+plot <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+plot+lims(y=c(-3,3.5), x=c(-4.8,5.4))
+cc <- cbind(rep(unique(doms$region),2), rep(c("accretion", "biomass"), each=2))#
+#panelc <- list()#
+#for(i in nrow(cc)){#
+	i <- 1#
+ df <- funs[funs$region==cc[i,1],]#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ #stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+plot <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+#
+plot+lims(y=c(-3,3.5), x=c(-4.8,5.4))#
+#panelc[[i]] <- plot#
+#}
+funs
+i <- 1#
+ df <- funs[funs$region==cc[i,1],]#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ #stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+plot <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+#
+plot+lims(y=c(-3,3.5), x=c(-4.8,5.4))#
+#panelc[[i]] <- plot#
+#}#
+#
+plot_grid(panelc[[1]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.5),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6))
+df <- funs[funs$region==cc[i,1],]#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10
+i <- 1#
+ df <- funs[funs$region==cc[i,1],]#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10
+head(df, 10)
+tail(df)
+ggplot()+#
+ #stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3
+plot<- ggplot()+#
+ #stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+plot <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+#
+plot+lims(y=c(-3,3.5), x=c(-4.8,5.4))
+df
+i <- 1#
+ df <- funs[funs$region==cc[i,1],]#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10
+df
+i <- 1#
+ df <- subset(funs, region==cc[i,1])
+df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10
+df
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+plot <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))
+plot+lims(y=c(-3,3.5), x=c(-4.8,5.4))
+cc <- cbind(rep(unique(doms$region),2), rep(c("accretion", "biomass"), each=2))#
+panelc <- list()#
+for(i in nrow(cc)){#
+	#i <- 1#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+plot <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+panelc[[i]] <- plot#
+}
+panelc[[1]]
+B <- plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.5),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6))#
+#
+cc <- cbind(rep(unique(doms$region),2), rep(c("accretion", "biomass"), each=2))#
+panelc <- list()#
+for(i in nrow(cc)){#
+	#i <- 1#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+panelc[[i]] <- pp#
+}#
+#
+panelc[[1]]
+panelc
+nrow(cc)
+cc
+cc <- cbind(rep(unique(doms$region),2), rep(c("accretion", "biomass"), each=2))#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+	#i <- 1#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+panelc[[i]] <- pp#
+}#
+#
+panelc[[1]]
+panelc[[1]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))
+plot_grid(#
+panelc[[1]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[2]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)))
+plot_grid(#
+panelc[[1]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[2]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+plot_grid(#
+panelc[[1]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[3]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[2]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+cc <- cbind(rep(unique(doms$region),2), rep(c("accretion", "biomass"), each=2))#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+	#i <- 1#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+#
+ annotate("text",x=0, y=0, label=cc[i,2], size=2)#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[3]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[2]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+# geometric models#
+source("R/geometry.R")#
+geo <- read.csv("data/geometry.csv")#
+#
+axes$region <- ifelse(pres_abs$Caribbean %in% 1, "Caribbean", ifelse(pres_abs$Australia %in% 1, "GBR",  NA))#
+#
+# apply geometric models based on morphology#
+t0 <- NULL#
+t1 <- NULL#
+for (i in 1:nrow(data)){#
+	gf <- data[i,"raw_growth_form"]#
+	funct <- geo$function.[geo$morphology==gf]#
+	pars <- geo[geo$morphology==gf, c("br","bh", "bpa", "th", "tb")]#
+	pars$d <- data[i,"dat_colonydiameter"]#
+	t0 <- cbind(t0, do.call(Map, c(f= as.name(funct), pars)))#
+	growth <- data[i,"dat_growth"]#
+	pars$d <- pars$d + growth/10#
+	t1 <- cbind(t1, do.call(Map, c(f= as.name(funct), pars)))#
+}#
+#
+funs <- cbind(axes, do.call("rbind", t0))#
+funs$VOL2 <- cbind(do.call("rbind", t1))$VOL#
+funs$accretion <- (funs$VOL2 - funs$VOL) * data[,"dat_skeletal"]#
+funs$biomass <- funs$SA * funs$TB#
+#
+par(mfrow=c(1,2))#
+hist(log(funs$accretion))#
+hist(log(funs$biomass))
+cc <- cbind(rep(unique(doms$region),2), rep(c("accretion", "biomass"), each=2))#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+	#i <- 1#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+#
+ annotate("text",x=0, y=0, label=cc[i,2], size=2)#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means, na.rm=T), max(means, na.rm=T)+0.5))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[3]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[2]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+# geometric models#
+source("R/geometry.R")#
+geo <- read.csv("data/geometry.csv")#
+#
+axes$region <- ifelse(pres_abs$Caribbean %in% 1, "Caribbean", ifelse(pres_abs$Australia %in% 1, "GBR",  NA))#
+#
+# apply geometric models based on morphology#
+t0 <- NULL#
+t1 <- NULL#
+for (i in 1:nrow(data)){#
+	gf <- data[i,"raw_growth_form"]#
+	funct <- geo$function.[geo$morphology==gf]#
+	pars <- geo[geo$morphology==gf, c("br","bh", "bpa", "th", "tb")]#
+	pars$d <- data[i,"dat_colonydiameter"]#
+	t0 <- cbind(t0, do.call(Map, c(f= as.name(funct), pars)))#
+	growth <- data[i,"dat_growth"]#
+	pars$d <- pars$d + growth/10#
+	t1 <- cbind(t1, do.call(Map, c(f= as.name(funct), pars)))#
+}#
+#
+funs <- cbind(axes, do.call("rbind", t0))#
+funs$VOL2 <- cbind(do.call("rbind", t1))$VOL#
+funs$accretion <- (funs$VOL2 - funs$VOL) * data[,"dat_skeletal"]#
+funs$biomass <- funs$SA * funs$TB#
+#
+par(mfrow=c(1,2))#
+hist(log(funs$accretion))#
+hist(log(funs$biomass))
+cc <- cbind(rep(unique(doms$region),2), rep(c("accretion", "biomass"), each=2))#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+	#i <- 1#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+#
+ annotate("text",x=0, y=0, label=cc[i,2], size=2)#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+0.5))#
+#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[3]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[2]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+cc <- cbind(rep(unique(doms$region),2), rep(c("accretion", "biomass"), each=2))#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+	#i <- 1#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+#
+ annotate("text",x=0, y=0, label=cc[i,2], size=2)#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)))#
+#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[3]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[2]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+cc <- cbind(rep(unique(doms$region),2), rep(c("accretion", "biomass"), each=2))#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+	#i <- 1#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x=0, y=0, label=cc[i,2], size=2)#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)))#
+#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[3]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelc[[2]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+plot_grid(#
+panelc[[1]], panelc[[3]],#
+panelc[[2]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+cc <- cbind(rep(unique(doms$region),2), rep(c("biomass", "accretion"), each=2))#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+	#i <- 1#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+ nbin <-  10#
+ plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x=0, y=0, label=cc[i,2], size=2)#
+means<-ggplot_build(plot)$data[[2]]$value#
+#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)))#
+#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[3]],#
+panelc[[2]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),2), rep(c("biomass", "accretion"), each=2))#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x=0, y=0, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+0.5))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[3]],#
+panelc[[2]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),2), rep(c("biomass", "accretion"), each=2))#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x=0, y=0, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[3]],#
+panelc[[2]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+cc
+cbind(rep(c("biomass", "accretion"), each=2), rep(unique(doms$region),2))
+nbin <-  10#
+cc <- cbind(rep(c("biomass", "accretion"), each=2), rep(unique(doms$region),2))#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,2])#
+ df$funct <- df[,cc[i,1]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x=0, y=0, label=cc[i,1], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}
+plot_grid(#
+panelc[[1]], panelc[[3]],#
+panelc[[2]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(c("biomass", "accretion"), each=2), rep(unique(doms$region),2))#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,2])#
+ df$funct <- df[,cc[i,1]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x=0, y=0, label=cc[i,1], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+panelc[[2]]
+cc
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+panelc <- list()
+cc
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x=0, y=0, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+cc
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+cc[,3] <- c(1,2,3,4)
+cc[,3]
+cc[3] <- c(1,2,3,4)
+cc
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+cc[3] <- c(1,2,3,4)#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = -Inf, y = Inf, hjust = 0, vjust = 1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+cc[3] <- c(1,2,3,4)#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = -Inf, y = Inf, hjust = 0, vjust = 1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+cc[3] <- c(1,2,3,4)#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))#+#
+ #annotate("text",x = -Inf, y = Inf, hjust = 0, vjust = 1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))#+#
+ #annotate("text",x = -Inf, y = Inf, hjust = 0, vjust = 1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = -Inf, y = Inf, hjust = 0, vjust = 1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = -Inf, y = Inf, hjust = 1, vjust = 1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = -Inf, y = Inf, hjust = 0.9, vjust = 1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = -Inf, y = Inf, hjust = 0.4, vjust = 1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = -Inf, y = Inf, hjust = 0.8, vjust = 1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = -Inf, y = Inf, hjust = 0.8, vjust = 0.8, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = -Inf, y = Inf, hjust = 0, vjust = 1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 0, vjust = 1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 0, vjust = 0, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf,  label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = -1, vjust = -1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 0, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.1 label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.1, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.2, vjust=1.2, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.2, vjust=1.4, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("biomass", "accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.2, vjust=2, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+################################## ----- Importance for functions#
+#
+# geometric models#
+source("R/geometry.R")#
+geo <- read.csv("data/geometry.csv")#
+#
+axes$region <- ifelse(pres_abs$Caribbean %in% 1, "Caribbean", ifelse(pres_abs$Australia %in% 1, "GBR",  NA))#
+#
+# apply geometric models based on morphology#
+t0 <- NULL#
+t1 <- NULL#
+for (i in 1:nrow(data)){#
+	gf <- data[i,"raw_growth_form"]#
+	funct <- geo$function.[geo$morphology==gf]#
+	pars <- geo[geo$morphology==gf, c("br","bh", "bpa", "th", "tb")]#
+	pars$d <- data[i,"dat_colonydiameter"]#
+	t0 <- cbind(t0, do.call(Map, c(f= as.name(funct), pars)))#
+	growth <- data[i,"dat_growth"]#
+	pars$d <- pars$d + growth/10#
+	t1 <- cbind(t1, do.call(Map, c(f= as.name(funct), pars)))#
+}#
+#
+funs <- cbind(axes, do.call("rbind", t0))#
+funs$VOL2 <- cbind(do.call("rbind", t1))$VOL#
+funs$Accretion <- (funs$VOL2 - funs$VOL) * data[,"dat_skeletal"]#
+funs$Biomass <- funs$SA * funs$TB#
+#
+par(mfrow=c(1,2))#
+hist(log(funs$Accretion))#
+hist(log(funs$Biomass))
+nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.2, vjust=2, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)
+plot_grid(A, B, C, nrow=3, heights=c(1,0.5, 0.25))
+# figure 3#
+#
+theme3 <- theme_bw()+#
+theme(axis.title.x=element_blank(), axis.title.y=element_blank(),#
+axis.text=element_blank(),  legend.position=c(0.82,0.91), axis.text.y=element_blank(), panel.grid = element_blank(), #
+axis.ticks=element_blank(), legend.text=element_text(size=6), legend.title=element_blank(),legend.key.size=unit(3,"mm"),legend.key = element_blank(),legend.background=element_rect(colour="grey"),plot.title = element_text(size=10))#
+#
+columnar<-readPNG("data/img/columnar.png")#
+columnar<-rasterGrob(columnar, interpolate=TRUE, )#
+digitate<-readPNG("data/img/digitate.png")#
+digitate<-rasterGrob(digitate, interpolate=TRUE)#
+encrusting<-readPNG("data/img/encrusting.png")#
+encrusting<-rasterGrob(encrusting, interpolate=TRUE)#
+hispidose<-readPNG("data/img/hispidose.png")#
+hispidose<-rasterGrob(hispidose, interpolate=TRUE)#
+laminar<-readPNG("data/img/laminar.png")#
+laminar<-rasterGrob(laminar, interpolate=TRUE)#
+massive<-readPNG("data/img/massive.png")#
+massive<-rasterGrob(massive, interpolate=TRUE)#
+branching<-readPNG("data/img/branching.png")#
+branching<-rasterGrob(branching, interpolate=TRUE)#
+solitary<-readPNG("data/img/solitary.png")#
+solitary<-rasterGrob(solitary, interpolate=TRUE)#
+submassive<-readPNG("data/img/submassive.png")#
+submassive<-rasterGrob(submassive, interpolate=TRUE)#
+tabular<-readPNG("data/img/tabular.png")#
+tabular<-rasterGrob(tabular, interpolate=TRUE)#
+#
+doms <- axes[!is.na(axes$region),]#
+#
+A <- ggplot(doms, aes(x=PC1, y=PC2))+#
+stat_density2d(geom="polygon", bins=4, alpha=0.25, fill="slategrey")+#
+stat_density2d(colour="black", bins=4, size=0.3)+#
+geom_polygon(data = axes[chull(axes$PC1, axes$PC2),], colour="grey", fill=NA, alpha = 0.5) +#
+geom_point(size=0.5, colour="slategrey")+#
+geom_point(aes(fill=region, shape=region), size=2, stroke=0.25)+#
+lims(x=c(-4, 4.3), y=c(-3,3))+#
+scale_fill_manual(values=c("#ff7f00","turquoise"))+#
+scale_shape_manual(values=c(24,21))+#
+annotation_custom(columnar, xmin=1, xmax=2.5, ymax=-1.8, ymin=-3)+#
+annotation_custom(branching, xmin=2.9, xmax=4.6, ymin=-1, ymax=-1.8)+#
+annotation_custom(hispidose, xmin=2, xmax=3.7, ymin=-0.9, ymax=-2.6)+#
+annotation_custom(digitate, xmin=1.7, xmax=3.3, ymin=0.9, ymax=2.4)+#
+annotation_custom(tabular, xmin=2.5, xmax=4.3, ymin=0.4, ymax=2)+#
+annotation_custom(laminar, xmin=-2.8, xmax=-0.5, ymin=2, ymax=3.6)+#
+annotation_custom(encrusting, xmin=-4.3, xmax=-2.9, ymin=0.5, ymax=2.1)+#
+annotation_custom(solitary, xmin=-4.4, xmax=-3, ymin=-0, ymax=-1.5)+#
+annotation_custom(massive, xmin=-4, xmax=-2, ymin=-1.4, ymax=-3.1)+#
+annotation_custom(submassive, xmin=-2.5, xmax=-1.3, ymin=-1.7, ymax=-3.1)+#
+theme3#
+#
+panelb <- list()#
+for (d in unique(doms$region)){#
+plot <- ggplot(doms[doms$region==d,], aes(PC1,PC2))+#
+stat_density2d(geom="polygon", aes(fill=..level..), alpha=0.25, bins=200)+#
+scale_fill_distiller(palette="Spectral", name="Density",limits=c(0,0.105), breaks=0.005*seq(0,10,by=2))+#
+guides(color="none",fill="none")+#
+ggtitle(d)+theme3#
+panelb[[d]] <- plot#
+}#
+#
+B <- plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.5),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6))#
+ nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.2, vjust=2, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)#
+plot_grid(A, B, C, nrow=3, heights=c(1,0.5, 0.25))
+plot_grid(A, B, C, nrow=3, heights=c(1,0.5, 0.25))
+plot_grid(A, B, C, nrow=3)
+plot_grid(A, B, C, nrow=3, rel_heights=c(1,0.5, 0.25))
+plot_grid(A, B, C, nrow=3, rel_heights=c(1,0.4, 0.25))
+plot_grid(A, B, C, nrow=3, rel_heights=c(1,0.6, 0.3))
+plot_grid(A, B, C, nrow=3, rel_heights=c(1,0.5, 0.3))
+head(axes)
+head(clust)
+colnames(data)
+ggplot()+ #
+geom_point(data=tdata, aes(pc1, pc2, fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(data=traitsf2, aes(pc1, pc2, group=factor(cluster)), geom="polygon", level=0.95, alpha=0.1, colour="grey")+#
+stat_ellipse(data=traitsf2, aes(pc1, pc2, group=factor(cluster)), level=0.95, colour="grey", size=0.2)+#
+#geom_polygon(data=hull1, aes(pc1, pc2), fill="grey", colour="black", size=0.35, alpha=0.2)+#
+geom_point(data=points1, aes(pc1, pc2), fill="grey", size=1.2, na.rm=TRUE, shape=21, stroke=0.3)+#
+#geom_polygon(data=hull2, aes(pc1, pc2), fill="red", colour="black", size=0.35, alpha=0.2)+#
+geom_point(data=points2, aes(pc1, pc2), fill="red", alpha=0.9, size=1.4, stroke=0.3, na.rm=TRUE, shape=24)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), #
+labels=c("Brooders", "Spawners"))+#
+labs(x=NULL, y=NULL)+#
+xlim(c(lims$x1,lims$x2))+#
+ylim(lims$y1, lims$y2+0.2)+#
+theme_bw()+#
+theme(plot.title = element_text(size=12),#
+axis.text=element_blank(),  #
+axis.ticks=element_blank(), #
+panel.grid.major = element_blank(), #
+panel.grid.minor = element_blank(),#
+legend.text=element_text(size=5),#
+legend.title=element_blank(),#
+legend.key.size=unit(1,"mm"), #
+legend.key=element_blank(), #
+legend.background=element_rect(colour="grey"),#
+legend.position=c(0.82,0.88))
+clust$repro[clust$repro=="MIXED"]
+clust$repro
+clust$repro <- data[,"reproductive_mode"]#
+clust$region <- axes[,"region"]
+clust$region <- axes[,"region"]#
+clust$repro
+ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(cluster)), geom="polygon", level=0.95, alpha=0.1, colour="grey")
+ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey")
+ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.2)
+ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.2)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey")
+ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.2)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"))
+ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(aes(fill=repro[!is.na(clust$repro),], shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.2)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"))
+ggplot(data=repro[!is.na(clust$repro),], aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.2)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"))
+ggplot(data=clust[!is.na(clust$repro),], aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.2)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"))
+clust[!is.na(clust$repro),]
+clust$repro
+clust$repro <- data[,"reproductive_mode"]#
+clust$region <- axes[,"region"]#
+clust$repro[clust$repro=="MIXED"] <- "brooder"#
+#
+ggplot(data=clust[!is.na(clust$repro),], aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.2)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"))
+ggplot(data=clust[!is.na(clust$repro),], aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.2)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))
+ggplot(data=clust[!is.na(clust$repro),], aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.2)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3
+ggplot(data=clust[!is.na(clust$repro),], aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.2)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))
+ggplot(data=clust[!is.na(clust$repro),], aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=1)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))
+ggplot(data=clust[!is.na(clust$repro),], aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))
+axes$repro <- axes[,"reproductive_mode"]#
+axes$repro[axes$repro=="MIXED"] <- "brooder"
+axes$repro <- data[,"reproductive_mode"]#
+axes$repro[axes$repro=="MIXED"] <- "brooder"
+# figure 3#
+#
+theme3 <- theme_bw()+#
+theme(axis.title.x=element_blank(), axis.title.y=element_blank(),#
+axis.text=element_blank(),  legend.position=c(0.82,0.91), axis.text.y=element_blank(), panel.grid = element_blank(), #
+axis.ticks=element_blank(), legend.text=element_text(size=6), legend.title=element_blank(),legend.key.size=unit(3,"mm"),legend.key = element_blank(),legend.background=element_rect(colour="grey"),plot.title = element_text(size=10))#
+#
+columnar<-readPNG("data/img/columnar.png")#
+columnar<-rasterGrob(columnar, interpolate=TRUE, )#
+digitate<-readPNG("data/img/digitate.png")#
+digitate<-rasterGrob(digitate, interpolate=TRUE)#
+encrusting<-readPNG("data/img/encrusting.png")#
+encrusting<-rasterGrob(encrusting, interpolate=TRUE)#
+hispidose<-readPNG("data/img/hispidose.png")#
+hispidose<-rasterGrob(hispidose, interpolate=TRUE)#
+laminar<-readPNG("data/img/laminar.png")#
+laminar<-rasterGrob(laminar, interpolate=TRUE)#
+massive<-readPNG("data/img/massive.png")#
+massive<-rasterGrob(massive, interpolate=TRUE)#
+branching<-readPNG("data/img/branching.png")#
+branching<-rasterGrob(branching, interpolate=TRUE)#
+solitary<-readPNG("data/img/solitary.png")#
+solitary<-rasterGrob(solitary, interpolate=TRUE)#
+submassive<-readPNG("data/img/submassive.png")#
+submassive<-rasterGrob(submassive, interpolate=TRUE)#
+tabular<-readPNG("data/img/tabular.png")#
+tabular<-rasterGrob(tabular, interpolate=TRUE)#
+axes$repro <- data[,"reproductive_mode"]#
+axes$repro[axes$repro=="MIXED"] <- "brooder"#
+doms <- axes[!is.na(axes$region),]#
+#
+A <- ggplot(doms, aes(x=PC1, y=PC2))+#
+stat_density2d(geom="polygon", bins=4, alpha=0.25, fill="slategrey")+#
+stat_density2d(colour="black", bins=4, size=0.3)+#
+geom_polygon(data = axes[chull(axes$PC1, axes$PC2),], colour="grey", fill=NA, alpha = 0.5) +#
+geom_point(size=0.5, colour="slategrey")+#
+geom_point(aes(fill=region, shape=region), size=2, stroke=0.25)+#
+lims(x=c(-4, 4.3), y=c(-3,3))+#
+scale_fill_manual(values=c("#ff7f00","turquoise"))+#
+scale_shape_manual(values=c(24,21))+#
+annotation_custom(columnar, xmin=1, xmax=2.5, ymax=-1.8, ymin=-3)+#
+annotation_custom(branching, xmin=2.9, xmax=4.6, ymin=-1, ymax=-1.8)+#
+annotation_custom(hispidose, xmin=2, xmax=3.7, ymin=-0.9, ymax=-2.6)+#
+annotation_custom(digitate, xmin=1.7, xmax=3.3, ymin=0.9, ymax=2.4)+#
+annotation_custom(tabular, xmin=2.5, xmax=4.3, ymin=0.4, ymax=2)+#
+annotation_custom(laminar, xmin=-2.8, xmax=-0.5, ymin=2, ymax=3.6)+#
+annotation_custom(encrusting, xmin=-4.3, xmax=-2.9, ymin=0.5, ymax=2.1)+#
+annotation_custom(solitary, xmin=-4.4, xmax=-3, ymin=-0, ymax=-1.5)+#
+annotation_custom(massive, xmin=-4, xmax=-2, ymin=-1.4, ymax=-3.1)+#
+annotation_custom(submassive, xmin=-2.5, xmax=-1.3, ymin=-1.7, ymax=-3.1)+#
+theme3#
+#
+panelb <- list()#
+for (d in unique(doms$region)){#
+plot <- ggplot(doms[doms$region==d,], aes(PC1,PC2))+#
+stat_density2d(geom="polygon", aes(fill=..level..), alpha=0.25, bins=200)+#
+scale_fill_distiller(palette="Spectral", name="Density",limits=c(0,0.105), breaks=0.005*seq(0,10,by=2))+#
+guides(color="none",fill="none")+#
+ggtitle(d)+theme3#
+panelb[[d]] <- plot#
+}#
+#
+B <- plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.5),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6))#
+ nbin <-  10#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.2, vjust=2, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- axes[axes$region==d,]#
+ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(data=df, aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- plot#
+}
+C<- plot_grid(#
+panelc[[1]], panelc[[2]],#
+panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)),#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1)#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(data=df, aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- plot#
+}
+plot_grid(A, B, C, nrow=3, rel_heights=c(1,0.5, 0.3))
+plot_grid(paneld[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1)))
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(data=df, aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- plot#
+}#
+#
+D <- plot_grid(paneld[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+paneld[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1)))
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(data=df, aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- plot#
+}#
+#
+ plot_grid(paneld[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+paneld[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1)))
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(data=df, aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+ plot_grid(paneld[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+paneld[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1)))
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+ plot_grid(paneld[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4)),#
+paneld[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1)))
+plot_grid(paneld[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1)))
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+lims(x=c(-4, 4.3), y=c(-3,3))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+ plot_grid(paneld[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1)))
+plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+ plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+plot_grid(A, B, C, nrow=3, rel_heights=c(1,0.5, 0.3))
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.5, 0.3, 0.5))
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.5, 0.3, 0.5))
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.5, 0.3, 0.5))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.5, 0.3, 0.5), labels=c("A","B","C","D"))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"))
+plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,0,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,0,1)), nrow=1)
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-1,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,0,1)), nrow=1)
+plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-1,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,0,1)), nrow=1)
+plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.1,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,0,1)), nrow=1)
+plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.05,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,0,1)), nrow=1)
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,0,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,0,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"))
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.05,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.05,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"))
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.07,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.07,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"))
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.1,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.1,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"))
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label.size=10)
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10)
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0,0,0,0))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.1,0.1,0.1,0.1))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.01,0.01,0.01,0.01))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.02,0.02,0.02,0.02))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03), label_y=c(1,0.7,0.55, 0.3))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03), label_y=c(1,0.8,0.55, 0.3))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03), label_y=c(1,0.85,0.6, 0.4))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03), label_y=c(1,0.84,0.65, 0.5))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03), label_y=c(0.98,0.84,0.65, 0.5))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03), label_y=c(0.98,0.84,0.7, 0.6))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03), label_y=c(0.98,0.84,0.98, 0.98))
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03), label_y=c(0.98,0.84,0.95, 0.95))
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03), label_y=c(0.98,0.84,0.95, 0.95))
+plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.5),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6))
+plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=6),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=5.5))
+plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.5),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.1))
+plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.5),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))
+plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.7),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))
+plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.8),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))
+B <- plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.8),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))#
+#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+nbin <-  10#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.05, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+plot_grid(A, B, C, D, nrow=4, rel_heights=c(1,0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03), label_y=c(0.98,0.84,0.95, 0.95))
+source("R/figure_3.R")
+################################## ----- plot figure 3#
+source("R/figure_3.R")#
+fig3#
+ggsave("figs/fig3.png", fig3, width=8.7, height=19, units="cm", dpi = 300)
+plot_grid(A, NULL, B, C, D, nrow=4, rel_heights=c(1,-0.1, 0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03), label_y=c(0.98,0.84,0.95, 0.95))
+plot_grid(A, NULL, B, C, D, nrow=4, rel_heights=c(1,-0.1, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))
+plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.1, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))
+plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.05, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))
+plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.04, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))
+plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))
+plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","B","C","D"), label_size=10, label_x=c(0.03,0.03,0.03,0.03), label_y=c(0.98,0.84,0.95, 0.95))
+plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.1, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))
+ggsave("figs/fig3.png", fig3, width=8.7, height=19, units="cm", dpi = 300)
+# figure 3#
+#
+theme3 <- theme_bw()+#
+theme(axis.title.x=element_blank(), axis.title.y=element_blank(),#
+axis.text=element_blank(),  legend.position=c(0.82,0.91), axis.text.y=element_blank(), panel.grid = element_blank(), #
+axis.ticks=element_blank(), legend.text=element_text(size=6), legend.title=element_blank(),legend.key.size=unit(3,"mm"),legend.key = element_blank(),legend.background=element_rect(colour="grey", size=1),plot.title = element_text(size=10))#
+#
+columnar<-readPNG("data/img/columnar.png")#
+columnar<-rasterGrob(columnar, interpolate=TRUE, )#
+digitate<-readPNG("data/img/digitate.png")#
+digitate<-rasterGrob(digitate, interpolate=TRUE)#
+encrusting<-readPNG("data/img/encrusting.png")#
+encrusting<-rasterGrob(encrusting, interpolate=TRUE)#
+hispidose<-readPNG("data/img/hispidose.png")#
+hispidose<-rasterGrob(hispidose, interpolate=TRUE)#
+laminar<-readPNG("data/img/laminar.png")#
+laminar<-rasterGrob(laminar, interpolate=TRUE)#
+massive<-readPNG("data/img/massive.png")#
+massive<-rasterGrob(massive, interpolate=TRUE)#
+branching<-readPNG("data/img/branching.png")#
+branching<-rasterGrob(branching, interpolate=TRUE)#
+solitary<-readPNG("data/img/solitary.png")#
+solitary<-rasterGrob(solitary, interpolate=TRUE)#
+submassive<-readPNG("data/img/submassive.png")#
+submassive<-rasterGrob(submassive, interpolate=TRUE)#
+tabular<-readPNG("data/img/tabular.png")#
+tabular<-rasterGrob(tabular, interpolate=TRUE)#
+#
+axes$repro <- data[,"reproductive_mode"]#
+axes$repro[axes$repro=="MIXED"] <- "brooder"#
+doms <- axes[!is.na(axes$region),]#
+#
+A <- ggplot(doms, aes(x=PC1, y=PC2))+#
+stat_density2d(geom="polygon", bins=4, alpha=0.25, fill="slategrey")+#
+stat_density2d(colour="black", bins=4, size=0.3)+#
+geom_polygon(data = axes[chull(axes$PC1, axes$PC2),], colour="grey", fill=NA, alpha = 0.5) +#
+geom_point(size=0.5, colour="slategrey")+#
+geom_point(aes(fill=region, shape=region), size=2, stroke=0.25)+#
+lims(x=c(-4, 4.3), y=c(-3,3))+#
+scale_fill_manual(values=c("#ff7f00","turquoise"))+#
+scale_shape_manual(values=c(24,21))+#
+annotation_custom(columnar, xmin=1, xmax=2.5, ymax=-1.8, ymin=-3)+#
+annotation_custom(branching, xmin=2.9, xmax=4.6, ymin=-1, ymax=-1.8)+#
+annotation_custom(hispidose, xmin=2, xmax=3.7, ymin=-0.9, ymax=-2.6)+#
+annotation_custom(digitate, xmin=1.7, xmax=3.3, ymin=0.9, ymax=2.4)+#
+annotation_custom(tabular, xmin=2.5, xmax=4.3, ymin=0.4, ymax=2)+#
+annotation_custom(laminar, xmin=-2.8, xmax=-0.5, ymin=2, ymax=3.6)+#
+annotation_custom(encrusting, xmin=-4.3, xmax=-2.9, ymin=0.5, ymax=2.1)+#
+annotation_custom(solitary, xmin=-4.4, xmax=-3, ymin=-0, ymax=-1.5)+#
+annotation_custom(massive, xmin=-4, xmax=-2, ymin=-1.4, ymax=-3.1)+#
+annotation_custom(submassive, xmin=-2.5, xmax=-1.3, ymin=-1.7, ymax=-3.1)+#
+theme3#
+#
+panelb <- list()#
+for (d in unique(doms$region)){#
+plot <- ggplot(doms[doms$region==d,], aes(PC1,PC2))+#
+stat_density2d(geom="polygon", aes(fill=..level..), alpha=0.25, bins=200)+#
+scale_fill_distiller(palette="Spectral", name="Density",limits=c(0,0.105), breaks=0.005*seq(0,10,by=2))+#
+guides(color="none",fill="none")+#
+ggtitle(d)+theme3#
+panelb[[d]] <- plot#
+}#
+#
+B <- plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.8),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))#
+#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+nbin <-  10#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.1, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))
+ggsave("figs/fig3.png", fig3, width=8.7, height=19, units="cm", dpi = 300)
+# figure 3#
+#
+theme3 <- theme_bw()+#
+theme(axis.title.x=element_blank(), axis.title.y=element_blank(),#
+axis.text=element_blank(),  legend.position=c(0.82,0.91), axis.text.y=element_blank(), panel.grid = element_blank(), #
+axis.ticks=element_blank(), legend.text=element_text(size=6), legend.title=element_blank(),legend.key.size=unit(3,"mm"),legend.key = element_blank(),legend.background=element_rect(colour="grey", size=2),plot.title = element_text(size=10))#
+#
+columnar<-readPNG("data/img/columnar.png")#
+columnar<-rasterGrob(columnar, interpolate=TRUE, )#
+digitate<-readPNG("data/img/digitate.png")#
+digitate<-rasterGrob(digitate, interpolate=TRUE)#
+encrusting<-readPNG("data/img/encrusting.png")#
+encrusting<-rasterGrob(encrusting, interpolate=TRUE)#
+hispidose<-readPNG("data/img/hispidose.png")#
+hispidose<-rasterGrob(hispidose, interpolate=TRUE)#
+laminar<-readPNG("data/img/laminar.png")#
+laminar<-rasterGrob(laminar, interpolate=TRUE)#
+massive<-readPNG("data/img/massive.png")#
+massive<-rasterGrob(massive, interpolate=TRUE)#
+branching<-readPNG("data/img/branching.png")#
+branching<-rasterGrob(branching, interpolate=TRUE)#
+solitary<-readPNG("data/img/solitary.png")#
+solitary<-rasterGrob(solitary, interpolate=TRUE)#
+submassive<-readPNG("data/img/submassive.png")#
+submassive<-rasterGrob(submassive, interpolate=TRUE)#
+tabular<-readPNG("data/img/tabular.png")#
+tabular<-rasterGrob(tabular, interpolate=TRUE)#
+#
+axes$repro <- data[,"reproductive_mode"]#
+axes$repro[axes$repro=="MIXED"] <- "brooder"#
+doms <- axes[!is.na(axes$region),]#
+#
+A <- ggplot(doms, aes(x=PC1, y=PC2))+#
+stat_density2d(geom="polygon", bins=4, alpha=0.25, fill="slategrey")+#
+stat_density2d(colour="black", bins=4, size=0.3)+#
+geom_polygon(data = axes[chull(axes$PC1, axes$PC2),], colour="grey", fill=NA, alpha = 0.5) +#
+geom_point(size=0.5, colour="slategrey")+#
+geom_point(aes(fill=region, shape=region), size=2, stroke=0.25)+#
+lims(x=c(-4, 4.3), y=c(-3,3))+#
+scale_fill_manual(values=c("#ff7f00","turquoise"))+#
+scale_shape_manual(values=c(24,21))+#
+annotation_custom(columnar, xmin=1, xmax=2.5, ymax=-1.8, ymin=-3)+#
+annotation_custom(branching, xmin=2.9, xmax=4.6, ymin=-1, ymax=-1.8)+#
+annotation_custom(hispidose, xmin=2, xmax=3.7, ymin=-0.9, ymax=-2.6)+#
+annotation_custom(digitate, xmin=1.7, xmax=3.3, ymin=0.9, ymax=2.4)+#
+annotation_custom(tabular, xmin=2.5, xmax=4.3, ymin=0.4, ymax=2)+#
+annotation_custom(laminar, xmin=-2.8, xmax=-0.5, ymin=2, ymax=3.6)+#
+annotation_custom(encrusting, xmin=-4.3, xmax=-2.9, ymin=0.5, ymax=2.1)+#
+annotation_custom(solitary, xmin=-4.4, xmax=-3, ymin=-0, ymax=-1.5)+#
+annotation_custom(massive, xmin=-4, xmax=-2, ymin=-1.4, ymax=-3.1)+#
+annotation_custom(submassive, xmin=-2.5, xmax=-1.3, ymin=-1.7, ymax=-3.1)+#
+theme3#
+#
+panelb <- list()#
+for (d in unique(doms$region)){#
+plot <- ggplot(doms[doms$region==d,], aes(PC1,PC2))+#
+stat_density2d(geom="polygon", aes(fill=..level..), alpha=0.25, bins=200)+#
+scale_fill_distiller(palette="Spectral", name="Density",limits=c(0,0.105), breaks=0.005*seq(0,10,by=2))+#
+guides(color="none",fill="none")+#
+ggtitle(d)+theme3#
+panelb[[d]] <- plot#
+}#
+#
+B <- plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.8),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))#
+#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+nbin <-  10#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.1, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))
+ggsave("figs/fig3.png", fig3, width=8.7, height=19, units="cm", dpi = 300)
+# figure 3#
+#
+theme3 <- theme_bw()+#
+theme(axis.title.x=element_blank(), axis.title.y=element_blank(),#
+axis.text=element_blank(),  legend.position=c(0.82,0.91), axis.text.y=element_blank(), panel.grid = element_blank(), #
+axis.ticks=element_blank(), legend.text=element_text(size=6), legend.title=element_blank(),legend.key.size=unit(3,"mm"),legend.key = element_blank(),legend.background=element_rect(colour="grey"),plot.title = element_text(size=10))#
+#
+columnar<-readPNG("data/img/columnar.png")#
+columnar<-rasterGrob(columnar, interpolate=TRUE, )#
+digitate<-readPNG("data/img/digitate.png")#
+digitate<-rasterGrob(digitate, interpolate=TRUE)#
+encrusting<-readPNG("data/img/encrusting.png")#
+encrusting<-rasterGrob(encrusting, interpolate=TRUE)#
+hispidose<-readPNG("data/img/hispidose.png")#
+hispidose<-rasterGrob(hispidose, interpolate=TRUE)#
+laminar<-readPNG("data/img/laminar.png")#
+laminar<-rasterGrob(laminar, interpolate=TRUE)#
+massive<-readPNG("data/img/massive.png")#
+massive<-rasterGrob(massive, interpolate=TRUE)#
+branching<-readPNG("data/img/branching.png")#
+branching<-rasterGrob(branching, interpolate=TRUE)#
+solitary<-readPNG("data/img/solitary.png")#
+solitary<-rasterGrob(solitary, interpolate=TRUE)#
+submassive<-readPNG("data/img/submassive.png")#
+submassive<-rasterGrob(submassive, interpolate=TRUE)#
+tabular<-readPNG("data/img/tabular.png")#
+tabular<-rasterGrob(tabular, interpolate=TRUE)#
+#
+axes$repro <- data[,"reproductive_mode"]#
+axes$repro[axes$repro=="MIXED"] <- "brooder"#
+doms <- axes[!is.na(axes$region),]#
+#
+A <- ggplot(doms, aes(x=PC1, y=PC2))+#
+stat_density2d(geom="polygon", bins=4, alpha=0.25, fill="slategrey")+#
+stat_density2d(colour="black", bins=4, size=0.3)+#
+geom_polygon(data = axes[chull(axes$PC1, axes$PC2),], colour="grey", fill=NA, alpha = 0.5) +#
+geom_point(size=0.5, colour="slategrey")+#
+geom_point(aes(fill=region, shape=region), size=2, stroke=0.25)+#
+lims(x=c(-4, 4.3), y=c(-3,3))+#
+scale_fill_manual(values=c("#ff7f00","turquoise"))+#
+scale_shape_manual(values=c(24,21))+#
+annotation_custom(columnar, xmin=1, xmax=2.5, ymax=-1.8, ymin=-3)+#
+annotation_custom(branching, xmin=2.9, xmax=4.6, ymin=-1, ymax=-1.8)+#
+annotation_custom(hispidose, xmin=2, xmax=3.7, ymin=-0.9, ymax=-2.6)+#
+annotation_custom(digitate, xmin=1.7, xmax=3.3, ymin=0.9, ymax=2.4)+#
+annotation_custom(tabular, xmin=2.5, xmax=4.3, ymin=0.4, ymax=2)+#
+annotation_custom(laminar, xmin=-2.8, xmax=-0.5, ymin=2, ymax=3.6)+#
+annotation_custom(encrusting, xmin=-4.3, xmax=-2.9, ymin=0.5, ymax=2.1)+#
+annotation_custom(solitary, xmin=-4.4, xmax=-3, ymin=-0, ymax=-1.5)+#
+annotation_custom(massive, xmin=-4, xmax=-2, ymin=-1.4, ymax=-3.1)+#
+annotation_custom(submassive, xmin=-2.5, xmax=-1.3, ymin=-1.7, ymax=-3.1)+#
+theme3#
+#
+panelb <- list()#
+for (d in unique(doms$region)){#
+plot <- ggplot(doms[doms$region==d,], aes(PC1,PC2))+#
+stat_density2d(geom="polygon", aes(fill=..level..), alpha=0.25, bins=200)+#
+scale_fill_distiller(palette="Spectral", name="Density",limits=c(0,0.105), breaks=0.005*seq(0,10,by=2))+#
+guides(color="none",fill="none")+#
+ggtitle(d)+theme3#
+panelb[[d]] <- plot#
+}#
+#
+B <- plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.8),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))#
+#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+nbin <-  10#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.1, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))
+# figure 3#
+#
+theme3 <- theme_bw()+#
+theme(axis.title.x=element_blank(), axis.title.y=element_blank(),#
+axis.text=element_blank(),  legend.position=c(0.82,0.91), axis.text.y=element_blank(), panel.grid = element_blank(), #
+axis.ticks=element_blank(), legend.text=element_text(size=6), legend.title=element_blank(),legend.key.size=unit(1,"mm"),legend.key = element_blank(),legend.background=element_rect(colour="grey"),plot.title = element_text(size=10))#
+#
+columnar<-readPNG("data/img/columnar.png")#
+columnar<-rasterGrob(columnar, interpolate=TRUE, )#
+digitate<-readPNG("data/img/digitate.png")#
+digitate<-rasterGrob(digitate, interpolate=TRUE)#
+encrusting<-readPNG("data/img/encrusting.png")#
+encrusting<-rasterGrob(encrusting, interpolate=TRUE)#
+hispidose<-readPNG("data/img/hispidose.png")#
+hispidose<-rasterGrob(hispidose, interpolate=TRUE)#
+laminar<-readPNG("data/img/laminar.png")#
+laminar<-rasterGrob(laminar, interpolate=TRUE)#
+massive<-readPNG("data/img/massive.png")#
+massive<-rasterGrob(massive, interpolate=TRUE)#
+branching<-readPNG("data/img/branching.png")#
+branching<-rasterGrob(branching, interpolate=TRUE)#
+solitary<-readPNG("data/img/solitary.png")#
+solitary<-rasterGrob(solitary, interpolate=TRUE)#
+submassive<-readPNG("data/img/submassive.png")#
+submassive<-rasterGrob(submassive, interpolate=TRUE)#
+tabular<-readPNG("data/img/tabular.png")#
+tabular<-rasterGrob(tabular, interpolate=TRUE)#
+#
+axes$repro <- data[,"reproductive_mode"]#
+axes$repro[axes$repro=="MIXED"] <- "brooder"#
+doms <- axes[!is.na(axes$region),]#
+#
+A <- ggplot(doms, aes(x=PC1, y=PC2))+#
+stat_density2d(geom="polygon", bins=4, alpha=0.25, fill="slategrey")+#
+stat_density2d(colour="black", bins=4, size=0.3)+#
+geom_polygon(data = axes[chull(axes$PC1, axes$PC2),], colour="grey", fill=NA, alpha = 0.5) +#
+geom_point(size=0.5, colour="slategrey")+#
+geom_point(aes(fill=region, shape=region), size=2, stroke=0.25)+#
+lims(x=c(-4, 4.3), y=c(-3,3))+#
+scale_fill_manual(values=c("#ff7f00","turquoise"))+#
+scale_shape_manual(values=c(24,21))+#
+annotation_custom(columnar, xmin=1, xmax=2.5, ymax=-1.8, ymin=-3)+#
+annotation_custom(branching, xmin=2.9, xmax=4.6, ymin=-1, ymax=-1.8)+#
+annotation_custom(hispidose, xmin=2, xmax=3.7, ymin=-0.9, ymax=-2.6)+#
+annotation_custom(digitate, xmin=1.7, xmax=3.3, ymin=0.9, ymax=2.4)+#
+annotation_custom(tabular, xmin=2.5, xmax=4.3, ymin=0.4, ymax=2)+#
+annotation_custom(laminar, xmin=-2.8, xmax=-0.5, ymin=2, ymax=3.6)+#
+annotation_custom(encrusting, xmin=-4.3, xmax=-2.9, ymin=0.5, ymax=2.1)+#
+annotation_custom(solitary, xmin=-4.4, xmax=-3, ymin=-0, ymax=-1.5)+#
+annotation_custom(massive, xmin=-4, xmax=-2, ymin=-1.4, ymax=-3.1)+#
+annotation_custom(submassive, xmin=-2.5, xmax=-1.3, ymin=-1.7, ymax=-3.1)+#
+theme3#
+#
+panelb <- list()#
+for (d in unique(doms$region)){#
+plot <- ggplot(doms[doms$region==d,], aes(PC1,PC2))+#
+stat_density2d(geom="polygon", aes(fill=..level..), alpha=0.25, bins=200)+#
+scale_fill_distiller(palette="Spectral", name="Density",limits=c(0,0.105), breaks=0.005*seq(0,10,by=2))+#
+guides(color="none",fill="none")+#
+ggtitle(d)+theme3#
+panelb[[d]] <- plot#
+}#
+#
+B <- plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.8),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))#
+#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+nbin <-  10#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.1, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.size=unit(0.2,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+ggsave("figs/fig3.png", fig3, width=8.7, height=19, units="cm", dpi = 300)
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.height=unit(0.3,"cm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.height=unit(0.3,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.height=unit(0.1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+# figure 3#
+#
+theme3 <- theme_bw()+#
+theme(axis.title.x=element_blank(), axis.title.y=element_blank(),#
+axis.text=element_blank(),  legend.position=c(0.82,0.91), axis.text.y=element_blank(), panel.grid = element_blank(), #
+axis.ticks=element_blank(), legend.text=element_text(size=6), legend.title=element_blank(),legend.key.size=unit(1,"mm"),legend.key = element_blank(),legend.background=element_rect(colour="grey"),plot.title = element_text(size=10))#
+#
+columnar<-readPNG("data/img/columnar.png")#
+columnar<-rasterGrob(columnar, interpolate=TRUE, )#
+digitate<-readPNG("data/img/digitate.png")#
+digitate<-rasterGrob(digitate, interpolate=TRUE)#
+encrusting<-readPNG("data/img/encrusting.png")#
+encrusting<-rasterGrob(encrusting, interpolate=TRUE)#
+hispidose<-readPNG("data/img/hispidose.png")#
+hispidose<-rasterGrob(hispidose, interpolate=TRUE)#
+laminar<-readPNG("data/img/laminar.png")#
+laminar<-rasterGrob(laminar, interpolate=TRUE)#
+massive<-readPNG("data/img/massive.png")#
+massive<-rasterGrob(massive, interpolate=TRUE)#
+branching<-readPNG("data/img/branching.png")#
+branching<-rasterGrob(branching, interpolate=TRUE)#
+solitary<-readPNG("data/img/solitary.png")#
+solitary<-rasterGrob(solitary, interpolate=TRUE)#
+submassive<-readPNG("data/img/submassive.png")#
+submassive<-rasterGrob(submassive, interpolate=TRUE)#
+tabular<-readPNG("data/img/tabular.png")#
+tabular<-rasterGrob(tabular, interpolate=TRUE)#
+#
+axes$repro <- data[,"reproductive_mode"]#
+axes$repro[axes$repro=="MIXED"] <- "brooder"#
+doms <- axes[!is.na(axes$region),]#
+#
+A <- ggplot(doms, aes(x=PC1, y=PC2))+#
+stat_density2d(geom="polygon", bins=4, alpha=0.25, fill="slategrey")+#
+stat_density2d(colour="black", bins=4, size=0.3)+#
+geom_polygon(data = axes[chull(axes$PC1, axes$PC2),], colour="grey", fill=NA, alpha = 0.5) +#
+geom_point(size=0.5, colour="slategrey")+#
+geom_point(aes(fill=region, shape=region), size=2, stroke=0.25)+#
+lims(x=c(-4, 4.3), y=c(-3,3))+#
+scale_fill_manual(values=c("#ff7f00","turquoise"))+#
+scale_shape_manual(values=c(24,21))+#
+annotation_custom(columnar, xmin=1, xmax=2.5, ymax=-1.8, ymin=-3)+#
+annotation_custom(branching, xmin=2.9, xmax=4.6, ymin=-1, ymax=-1.8)+#
+annotation_custom(hispidose, xmin=2, xmax=3.7, ymin=-0.9, ymax=-2.6)+#
+annotation_custom(digitate, xmin=1.7, xmax=3.3, ymin=0.9, ymax=2.4)+#
+annotation_custom(tabular, xmin=2.5, xmax=4.3, ymin=0.4, ymax=2)+#
+annotation_custom(laminar, xmin=-2.8, xmax=-0.5, ymin=2, ymax=3.6)+#
+annotation_custom(encrusting, xmin=-4.3, xmax=-2.9, ymin=0.5, ymax=2.1)+#
+annotation_custom(solitary, xmin=-4.4, xmax=-3, ymin=-0, ymax=-1.5)+#
+annotation_custom(massive, xmin=-4, xmax=-2, ymin=-1.4, ymax=-3.1)+#
+annotation_custom(submassive, xmin=-2.5, xmax=-1.3, ymin=-1.7, ymax=-3.1)+#
+theme3#
+#
+panelb <- list()#
+for (d in unique(doms$region)){#
+plot <- ggplot(doms[doms$region==d,], aes(PC1,PC2))+#
+stat_density2d(geom="polygon", aes(fill=..level..), alpha=0.25, bins=200)+#
+scale_fill_distiller(palette="Spectral", name="Density",limits=c(0,0.105), breaks=0.005*seq(0,10,by=2))+#
+guides(color="none",fill="none")+#
+ggtitle(d)+theme3#
+panelb[[d]] <- plot#
+}#
+#
+B <- plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.8),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))#
+#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+nbin <-  10#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.1, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.height=unit(0.1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+# figure 3#
+#
+theme3 <- theme_bw()+#
+theme(axis.title.x=element_blank(), axis.title.y=element_blank(),#
+axis.text=element_blank(),  legend.position=c(0.82,0.91), axis.text.y=element_blank(), panel.grid = element_blank(), #
+axis.ticks=element_blank(), legend.text=element_text(size=6), legend.title=element_blank(),legend.key.size=unit(0,"mm"),legend.key = element_blank(),legend.background=element_rect(colour="grey"),plot.title = element_text(size=10))#
+#
+columnar<-readPNG("data/img/columnar.png")#
+columnar<-rasterGrob(columnar, interpolate=TRUE, )#
+digitate<-readPNG("data/img/digitate.png")#
+digitate<-rasterGrob(digitate, interpolate=TRUE)#
+encrusting<-readPNG("data/img/encrusting.png")#
+encrusting<-rasterGrob(encrusting, interpolate=TRUE)#
+hispidose<-readPNG("data/img/hispidose.png")#
+hispidose<-rasterGrob(hispidose, interpolate=TRUE)#
+laminar<-readPNG("data/img/laminar.png")#
+laminar<-rasterGrob(laminar, interpolate=TRUE)#
+massive<-readPNG("data/img/massive.png")#
+massive<-rasterGrob(massive, interpolate=TRUE)#
+branching<-readPNG("data/img/branching.png")#
+branching<-rasterGrob(branching, interpolate=TRUE)#
+solitary<-readPNG("data/img/solitary.png")#
+solitary<-rasterGrob(solitary, interpolate=TRUE)#
+submassive<-readPNG("data/img/submassive.png")#
+submassive<-rasterGrob(submassive, interpolate=TRUE)#
+tabular<-readPNG("data/img/tabular.png")#
+tabular<-rasterGrob(tabular, interpolate=TRUE)#
+#
+axes$repro <- data[,"reproductive_mode"]#
+axes$repro[axes$repro=="MIXED"] <- "brooder"#
+doms <- axes[!is.na(axes$region),]#
+#
+A <- ggplot(doms, aes(x=PC1, y=PC2))+#
+stat_density2d(geom="polygon", bins=4, alpha=0.25, fill="slategrey")+#
+stat_density2d(colour="black", bins=4, size=0.3)+#
+geom_polygon(data = axes[chull(axes$PC1, axes$PC2),], colour="grey", fill=NA, alpha = 0.5) +#
+geom_point(size=0.5, colour="slategrey")+#
+geom_point(aes(fill=region, shape=region), size=2, stroke=0.25)+#
+lims(x=c(-4, 4.3), y=c(-3,3))+#
+scale_fill_manual(values=c("#ff7f00","turquoise"))+#
+scale_shape_manual(values=c(24,21))+#
+annotation_custom(columnar, xmin=1, xmax=2.5, ymax=-1.8, ymin=-3)+#
+annotation_custom(branching, xmin=2.9, xmax=4.6, ymin=-1, ymax=-1.8)+#
+annotation_custom(hispidose, xmin=2, xmax=3.7, ymin=-0.9, ymax=-2.6)+#
+annotation_custom(digitate, xmin=1.7, xmax=3.3, ymin=0.9, ymax=2.4)+#
+annotation_custom(tabular, xmin=2.5, xmax=4.3, ymin=0.4, ymax=2)+#
+annotation_custom(laminar, xmin=-2.8, xmax=-0.5, ymin=2, ymax=3.6)+#
+annotation_custom(encrusting, xmin=-4.3, xmax=-2.9, ymin=0.5, ymax=2.1)+#
+annotation_custom(solitary, xmin=-4.4, xmax=-3, ymin=-0, ymax=-1.5)+#
+annotation_custom(massive, xmin=-4, xmax=-2, ymin=-1.4, ymax=-3.1)+#
+annotation_custom(submassive, xmin=-2.5, xmax=-1.3, ymin=-1.7, ymax=-3.1)+#
+theme3#
+#
+panelb <- list()#
+for (d in unique(doms$region)){#
+plot <- ggplot(doms[doms$region==d,], aes(PC1,PC2))+#
+stat_density2d(geom="polygon", aes(fill=..level..), alpha=0.25, bins=200)+#
+scale_fill_distiller(palette="Spectral", name="Density",limits=c(0,0.105), breaks=0.005*seq(0,10,by=2))+#
+guides(color="none",fill="none")+#
+ggtitle(d)+theme3#
+panelb[[d]] <- plot#
+}#
+#
+B <- plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.8),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))#
+#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+nbin <-  10#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.1, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.height=unit(0.1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+# figure 3#
+#
+theme3 <- theme_bw()+#
+theme(axis.title.x=element_blank(), axis.title.y=element_blank(),#
+axis.text=element_blank(),  legend.position=c(0.82,0.91), axis.text.y=element_blank(), panel.grid = element_blank(), #
+axis.ticks=element_blank(), legend.text=element_text(size=6), legend.title=element_blank(),legend.key.size=unit(0,"mm"),legend.key = element_blank(),legend.background=element_rect(colour="grey"),plot.title = element_text(size=10),legend.margin=margin(0,0,0,0))#
+#
+columnar<-readPNG("data/img/columnar.png")#
+columnar<-rasterGrob(columnar, interpolate=TRUE, )#
+digitate<-readPNG("data/img/digitate.png")#
+digitate<-rasterGrob(digitate, interpolate=TRUE)#
+encrusting<-readPNG("data/img/encrusting.png")#
+encrusting<-rasterGrob(encrusting, interpolate=TRUE)#
+hispidose<-readPNG("data/img/hispidose.png")#
+hispidose<-rasterGrob(hispidose, interpolate=TRUE)#
+laminar<-readPNG("data/img/laminar.png")#
+laminar<-rasterGrob(laminar, interpolate=TRUE)#
+massive<-readPNG("data/img/massive.png")#
+massive<-rasterGrob(massive, interpolate=TRUE)#
+branching<-readPNG("data/img/branching.png")#
+branching<-rasterGrob(branching, interpolate=TRUE)#
+solitary<-readPNG("data/img/solitary.png")#
+solitary<-rasterGrob(solitary, interpolate=TRUE)#
+submassive<-readPNG("data/img/submassive.png")#
+submassive<-rasterGrob(submassive, interpolate=TRUE)#
+tabular<-readPNG("data/img/tabular.png")#
+tabular<-rasterGrob(tabular, interpolate=TRUE)#
+#
+axes$repro <- data[,"reproductive_mode"]#
+axes$repro[axes$repro=="MIXED"] <- "brooder"#
+doms <- axes[!is.na(axes$region),]#
+#
+A <- ggplot(doms, aes(x=PC1, y=PC2))+#
+stat_density2d(geom="polygon", bins=4, alpha=0.25, fill="slategrey")+#
+stat_density2d(colour="black", bins=4, size=0.3)+#
+geom_polygon(data = axes[chull(axes$PC1, axes$PC2),], colour="grey", fill=NA, alpha = 0.5) +#
+geom_point(size=0.5, colour="slategrey")+#
+geom_point(aes(fill=region, shape=region), size=2, stroke=0.25)+#
+lims(x=c(-4, 4.3), y=c(-3,3))+#
+scale_fill_manual(values=c("#ff7f00","turquoise"))+#
+scale_shape_manual(values=c(24,21))+#
+annotation_custom(columnar, xmin=1, xmax=2.5, ymax=-1.8, ymin=-3)+#
+annotation_custom(branching, xmin=2.9, xmax=4.6, ymin=-1, ymax=-1.8)+#
+annotation_custom(hispidose, xmin=2, xmax=3.7, ymin=-0.9, ymax=-2.6)+#
+annotation_custom(digitate, xmin=1.7, xmax=3.3, ymin=0.9, ymax=2.4)+#
+annotation_custom(tabular, xmin=2.5, xmax=4.3, ymin=0.4, ymax=2)+#
+annotation_custom(laminar, xmin=-2.8, xmax=-0.5, ymin=2, ymax=3.6)+#
+annotation_custom(encrusting, xmin=-4.3, xmax=-2.9, ymin=0.5, ymax=2.1)+#
+annotation_custom(solitary, xmin=-4.4, xmax=-3, ymin=-0, ymax=-1.5)+#
+annotation_custom(massive, xmin=-4, xmax=-2, ymin=-1.4, ymax=-3.1)+#
+annotation_custom(submassive, xmin=-2.5, xmax=-1.3, ymin=-1.7, ymax=-3.1)+#
+theme3#
+#
+panelb <- list()#
+for (d in unique(doms$region)){#
+plot <- ggplot(doms[doms$region==d,], aes(PC1,PC2))+#
+stat_density2d(geom="polygon", aes(fill=..level..), alpha=0.25, bins=200)+#
+scale_fill_distiller(palette="Spectral", name="Density",limits=c(0,0.105), breaks=0.005*seq(0,10,by=2))+#
+guides(color="none",fill="none")+#
+ggtitle(d)+theme3#
+panelb[[d]] <- plot#
+}#
+#
+B <- plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.8),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))#
+#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+nbin <-  10#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.1, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.key.height=unit(0.1,"mm"), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+# figure 3#
+#
+theme3 <- theme_bw()+#
+theme(axis.title.x=element_blank(), axis.title.y=element_blank(),#
+axis.text=element_blank(),  legend.position=c(0.82,0.91), axis.text.y=element_blank(), panel.grid = element_blank(), #
+axis.ticks=element_blank(), legend.text=element_text(size=6), legend.title=element_blank(),legend.key.size=unit(2,"mm"),legend.key = element_blank(),legend.background=element_rect(colour="grey"),plot.title = element_text(size=10))#
+#
+columnar<-readPNG("data/img/columnar.png")#
+columnar<-rasterGrob(columnar, interpolate=TRUE, )#
+digitate<-readPNG("data/img/digitate.png")#
+digitate<-rasterGrob(digitate, interpolate=TRUE)#
+encrusting<-readPNG("data/img/encrusting.png")#
+encrusting<-rasterGrob(encrusting, interpolate=TRUE)#
+hispidose<-readPNG("data/img/hispidose.png")#
+hispidose<-rasterGrob(hispidose, interpolate=TRUE)#
+laminar<-readPNG("data/img/laminar.png")#
+laminar<-rasterGrob(laminar, interpolate=TRUE)#
+massive<-readPNG("data/img/massive.png")#
+massive<-rasterGrob(massive, interpolate=TRUE)#
+branching<-readPNG("data/img/branching.png")#
+branching<-rasterGrob(branching, interpolate=TRUE)#
+solitary<-readPNG("data/img/solitary.png")#
+solitary<-rasterGrob(solitary, interpolate=TRUE)#
+submassive<-readPNG("data/img/submassive.png")#
+submassive<-rasterGrob(submassive, interpolate=TRUE)#
+tabular<-readPNG("data/img/tabular.png")#
+tabular<-rasterGrob(tabular, interpolate=TRUE)#
+#
+axes$repro <- data[,"reproductive_mode"]#
+axes$repro[axes$repro=="MIXED"] <- "brooder"#
+doms <- axes[!is.na(axes$region),]#
+#
+A <- ggplot(doms, aes(x=PC1, y=PC2))+#
+stat_density2d(geom="polygon", bins=4, alpha=0.25, fill="slategrey")+#
+stat_density2d(colour="black", bins=4, size=0.3)+#
+geom_polygon(data = axes[chull(axes$PC1, axes$PC2),], colour="grey", fill=NA, alpha = 0.5) +#
+geom_point(size=0.5, colour="slategrey")+#
+geom_point(aes(fill=region, shape=region), size=2, stroke=0.25)+#
+lims(x=c(-4, 4.3), y=c(-3,3))+#
+scale_fill_manual(values=c("#ff7f00","turquoise"))+#
+scale_shape_manual(values=c(24,21))+#
+annotation_custom(columnar, xmin=1, xmax=2.5, ymax=-1.8, ymin=-3)+#
+annotation_custom(branching, xmin=2.9, xmax=4.6, ymin=-1, ymax=-1.8)+#
+annotation_custom(hispidose, xmin=2, xmax=3.7, ymin=-0.9, ymax=-2.6)+#
+annotation_custom(digitate, xmin=1.7, xmax=3.3, ymin=0.9, ymax=2.4)+#
+annotation_custom(tabular, xmin=2.5, xmax=4.3, ymin=0.4, ymax=2)+#
+annotation_custom(laminar, xmin=-2.8, xmax=-0.5, ymin=2, ymax=3.6)+#
+annotation_custom(encrusting, xmin=-4.3, xmax=-2.9, ymin=0.5, ymax=2.1)+#
+annotation_custom(solitary, xmin=-4.4, xmax=-3, ymin=-0, ymax=-1.5)+#
+annotation_custom(massive, xmin=-4, xmax=-2, ymin=-1.4, ymax=-3.1)+#
+annotation_custom(submassive, xmin=-2.5, xmax=-1.3, ymin=-1.7, ymax=-3.1)+#
+theme3#
+#
+panelb <- list()#
+for (d in unique(doms$region)){#
+plot <- ggplot(doms[doms$region==d,], aes(PC1,PC2))+#
+stat_density2d(geom="polygon", aes(fill=..level..), alpha=0.25, bins=200)+#
+scale_fill_distiller(palette="Spectral", name="Density",limits=c(0,0.105), breaks=0.005*seq(0,10,by=2))+#
+guides(color="none",fill="none")+#
+ggtitle(d)+theme3#
+panelb[[d]] <- plot#
+}#
+#
+B <- plot_grid(panelb[["GBR"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.8),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))#
+#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+nbin <-  10#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.1, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.05, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.1)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(0.1,0.1,0.1,0.1), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+source("R/figure_3.R")#
+fig3#
+ggsave("figs/fig3.png", fig3, width=8.7, height=19, units="cm", dpi = 300)
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.5)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(0.1,0.1,0.1,0.1), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(0.1,0.1,0.1,0.1), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.1, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.1, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(0.1,0.1,0.1,0.1), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.15, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.15, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)#
+#
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(0.1,0.1,0.1,0.1), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+source("R/figure_3.R")#
+fig3#
+ggsave("figs/fig3.png", fig3, width=8.7, height=19, units="cm", dpi = 300)
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(0.2,0.2,0.2,0.2), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(0.2,0.2,0.2,0.3), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(0.2,0.2,0.2,1), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(0.2,1,0.2,1), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(1,1,1,1), legend.position=c(0.82,0.88))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(1,1,1,1), legend.position=c(0.82,0.88), legend.text.size=element_text(size=5))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(1,1,1,1), legend.position=c(0.82,0.88), legend.text=element_text(size=5))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["GBR"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+# geometric models#
+source("R/geometry.R")#
+geo <- read.csv("data/geometry.csv")#
+#
+axes$region <- ifelse(pres_abs$Caribbean %in% 1, "Caribbean", ifelse(pres_abs$Australia %in% 1, "Great Barrier Reef",  NA))#
+#
+# apply geometric models based on morphology#
+t0 <- NULL#
+t1 <- NULL#
+for (i in 1:nrow(data)){#
+	gf <- data[i,"raw_growth_form"]#
+	funct <- geo$function.[geo$morphology==gf]#
+	pars <- geo[geo$morphology==gf, c("br","bh", "bpa", "th", "tb")]#
+	pars$d <- data[i,"dat_colonydiameter"]#
+	t0 <- cbind(t0, do.call(Map, c(f= as.name(funct), pars)))#
+	growth <- data[i,"dat_growth"]#
+	pars$d <- pars$d + growth/10#
+	t1 <- cbind(t1, do.call(Map, c(f= as.name(funct), pars)))#
+}#
+#
+funs <- cbind(axes, do.call("rbind", t0))#
+funs$VOL2 <- cbind(do.call("rbind", t1))$VOL#
+funs$Accretion <- (funs$VOL2 - funs$VOL) * data[,"dat_skeletal"]#
+funs$Biomass <- funs$SA * funs$TB
+# figure 3#
+#
+theme3 <- theme_bw()+#
+theme(axis.title.x=element_blank(), axis.title.y=element_blank(),#
+axis.text=element_blank(),  legend.position=c(0.82,0.91), axis.text.y=element_blank(), panel.grid = element_blank(), #
+axis.ticks=element_blank(), legend.text=element_text(size=6), legend.title=element_blank(),legend.key.size=unit(2,"mm"),legend.key = element_blank(),legend.background=element_rect(colour="grey"),plot.title = element_text(size=10))#
+#
+columnar<-readPNG("data/img/columnar.png")#
+columnar<-rasterGrob(columnar, interpolate=TRUE, )#
+digitate<-readPNG("data/img/digitate.png")#
+digitate<-rasterGrob(digitate, interpolate=TRUE)#
+encrusting<-readPNG("data/img/encrusting.png")#
+encrusting<-rasterGrob(encrusting, interpolate=TRUE)#
+hispidose<-readPNG("data/img/hispidose.png")#
+hispidose<-rasterGrob(hispidose, interpolate=TRUE)#
+laminar<-readPNG("data/img/laminar.png")#
+laminar<-rasterGrob(laminar, interpolate=TRUE)#
+massive<-readPNG("data/img/massive.png")#
+massive<-rasterGrob(massive, interpolate=TRUE)#
+branching<-readPNG("data/img/branching.png")#
+branching<-rasterGrob(branching, interpolate=TRUE)#
+solitary<-readPNG("data/img/solitary.png")#
+solitary<-rasterGrob(solitary, interpolate=TRUE)#
+submassive<-readPNG("data/img/submassive.png")#
+submassive<-rasterGrob(submassive, interpolate=TRUE)#
+tabular<-readPNG("data/img/tabular.png")#
+tabular<-rasterGrob(tabular, interpolate=TRUE)#
+#
+axes$repro <- data[,"reproductive_mode"]#
+axes$repro[axes$repro=="MIXED"] <- "brooder"#
+doms <- axes[!is.na(axes$region),]#
+#
+A <- ggplot(doms, aes(x=PC1, y=PC2))+#
+stat_density2d(geom="polygon", bins=4, alpha=0.25, fill="slategrey")+#
+stat_density2d(colour="black", bins=4, size=0.3)+#
+geom_polygon(data = axes[chull(axes$PC1, axes$PC2),], colour="grey", fill=NA, alpha = 0.5) +#
+geom_point(size=0.5, colour="slategrey")+#
+geom_point(aes(fill=region, shape=region), size=2, stroke=0.25)+#
+lims(x=c(-4, 4.3), y=c(-3,3))+#
+scale_fill_manual(values=c("#ff7f00","turquoise"))+#
+scale_shape_manual(values=c(24,21))+#
+annotation_custom(columnar, xmin=1, xmax=2.5, ymax=-1.8, ymin=-3)+#
+annotation_custom(branching, xmin=2.9, xmax=4.6, ymin=-1, ymax=-1.8)+#
+annotation_custom(hispidose, xmin=2, xmax=3.7, ymin=-0.9, ymax=-2.6)+#
+annotation_custom(digitate, xmin=1.7, xmax=3.3, ymin=0.9, ymax=2.4)+#
+annotation_custom(tabular, xmin=2.5, xmax=4.3, ymin=0.4, ymax=2)+#
+annotation_custom(laminar, xmin=-2.8, xmax=-0.5, ymin=2, ymax=3.6)+#
+annotation_custom(encrusting, xmin=-4.3, xmax=-2.9, ymin=0.5, ymax=2.1)+#
+annotation_custom(solitary, xmin=-4.4, xmax=-3, ymin=-0, ymax=-1.5)+#
+annotation_custom(massive, xmin=-4, xmax=-2, ymin=-1.4, ymax=-3.1)+#
+annotation_custom(submassive, xmin=-2.5, xmax=-1.3, ymin=-1.7, ymax=-3.1)+#
+theme3
+panelb <- list()#
+for (d in unique(doms$region)){#
+plot <- ggplot(doms[doms$region==d,], aes(PC1,PC2))+#
+stat_density2d(geom="polygon", aes(fill=..level..), alpha=0.25, bins=200)+#
+scale_fill_distiller(palette="Spectral", name="Density",limits=c(0,0.105), breaks=0.005*seq(0,10,by=2))+#
+guides(color="none",fill="none")+#
+ggtitle(d)+theme3#
+panelb[[d]] <- plot#
+}#
+#
+B <- plot_grid(panelb[["Great Barrier Reef"]]+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+stat_density2d(colour="black", alpha=1, bins=5.8),#
+panelb[["Caribbean"]]+ lims(y=c(-4.2,4.2), x=c(-4.7,5.1))+#
+stat_density2d(colour="black", alpha=1, bins=6.2))#
+#
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+nbin <-  10
+cc <- cbind(rep(unique(doms$region),each=2),rep(c("Biomass", "Accretion"),2))#
+nbin <-  10#
+#
+panelc <- list()#
+for(i in 1:nrow(cc)){#
+ df <- subset(funs, region==cc[i,1])#
+ df$funct <- df[,cc[i,2]] #
+plot<- ggplot()+#
+ stat_summary_2d(data=df, aes(x=PC1, y=PC2, z=1),bins=nbin, size=0.15, colour="black", fill="grey")+#
+ stat_summary_2d(data=df[!is.na(df$funct),], aes(x=PC1, y=PC2, z=log(funct)),fun=mean, bins=nbin, size=0.15, colour="black")+#
+ guides(fill="none")+theme3+lims(y=c(-3,3.5), x=c(-4.8,5.4))+#
+ annotate("text",x = Inf, y = Inf, hjust = 1.1, vjust=1.6, label=cc[i,2], size=2)#
+#
+means<-ggplot_build(plot)$data[[2]]$value#
+pp <- plot + scale_fill_distiller(palette="Spectral",limits=c(min(means), max(means)+1))#
+panelc[[i]] <- pp#
+}#
+#
+C<- plot_grid(#
+plot_grid(panelc[[1]], NULL, panelc[[2]], nrow=1, rel_widths=c(1,-0.09,1)),#
+plot_grid(panelc[[3]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), NULL,#
+panelc[[4]]+lims(y=c(-4.2,4.2), x=c(-4.7,5.1)), nrow=1, rel_widths=c(1,-0.09,1)), nrow=1)
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(1,1,1,1), legend.position=c(0.82,0.88), legend.text=element_text(size=5))#
+paneld[[d]] <- pd#
+}
+D<-  plot_grid(paneld[["Great Barrier Reef"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+paneld <- list()#
+for (d in unique(clust$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(1,1,1,1), legend.position=c(0.82,0.88), legend.text=element_text(size=5))#
+paneld[[d]] <- pd#
+}#
+#
+D<-  plot_grid(paneld[["Great Barrier Reef"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])#
+#
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+paneld <- list()#
+for (d in unique(doms$region)){#
+	df <- doms[doms$region==d,]#
+pd <- ggplot(data=clust, aes(PC1, PC2))+ #
+stat_ellipse(aes(group=factor(k)), geom="polygon", level=0.95, alpha=0.1, colour="grey", size=0.5)+#
+geom_point(data=df[!is.na(df$repro),], aes(fill=repro, shape=repro), na.rm=TRUE, stroke=0.3, size=1.3)+#
+lims(x=c(-4, 4.3), y=c(-3,3.2))+#
+scale_shape_manual(values=c(24,21), labels=c("Brooders", "Spawners"))+#
+scale_fill_manual(values=c("red","grey"), labels=c("Brooders", "Spawners"))+#
+theme3+theme(legend.margin=margin(1,1,1,1), legend.position=c(0.82,0.88), legend.text=element_text(size=5))#
+paneld[[d]] <- pd#
+}#
+#
+D <-  plot_grid(paneld[["Great Barrier Reef"]]+guides(fill="none", shape="none"),#
+paneld[["Caribbean"]])
+fig3 <- plot_grid(A, NULL, B, C, D, nrow=5, rel_heights=c(1,-0.03, 0.53, 0.28, 0.46), labels=c("A","","B","C","D"), label_size=10, label_x=c(0.03,0,0.03,0.03,0.03), label_y=c(0.98,0,0.84,0.95, 0.95))#
+fig3
+################################## ----- plot figure 3#
+source("R/figure_3.R")#
+fig3#
+ggsave("figs/fig3.png", fig3, width=8.7, height=19, units="cm", dpi = 300)
+ggplot(funs)+geom_histogram(aes(Accretion))+scale_x_log10()
+plot_grid(ggplot(funs)+geom_histogram(aes(Accretion), bins=20)+scale_x_log10(),#
+ggplot(funs)+geom_histogram(aes(Biomass), bins=20)+scale_x_log10())
+plot_grid(ggplot(funs)+geom_histogram(aes(Accretion), bins=10)+scale_x_log10(),#
+ggplot(funs)+geom_histogram(aes(Biomass), bins=10)+scale_x_log10())
+rm(list=ls())#
+#
+library("ggplot2")#
+library("cowplot")#
+#
+data <- read.csv("data/traitbiogeography.csv", row.names=1)#
+#
+info <- read.csv("data/info.csv")#
+pres_abs <- data[,info$name]#
+colnames(pres_abs) <- info$region#
+head(pres_abs)#
+#
+cols<-info$col #
+names(cols)<-info$region#
+#
+################################## ----- PCA#
+#
+list <- c("cat_growthrate","cat_skeletaldensity", "cat_corallitesize","cat_colonydiameter","cat_colonyheight", "cat_SA_vol","cat_spacesize")#
+traits <- na.omit(data[,list])#
+#
+pca <- prcomp(traits, center=TRUE, scale.=TRUE)#
+biplot(pca)#
+#
+vars <- round((pca$sdev^2 / sum(pca$sdev^2)), 3)*100#
+sum(vars[c(1:4)])#
+#
+axes <- data.frame(PC1 = pca$x[,1], PC2 = -pca$x[,2], #
+PC3=pca$x[,3], PC4 =pca$x[,4])#
+#
+vecs<-data.frame(varnames=rownames(pca$rotation), pca$rotation)#
+vecs$label<-c("3","1","7","5","6","2","4")#
+#
+################################## ----- Convex hulls#
+library("geometry")#
+#
+hulls <- NULL#
+points <- NULL#
+#
+for (r in info$region){#
+  df <- axes[!is.na(pres_abs[,r]),]#
+  h <- df[chull(df$PC1, df$PC2),]#
+  vol <- convhulln(df,"FA")$vol / convhulln(axes,"FA")$vol *100 #
+  hulls <-rbind(hulls, cbind(h, region=r, n=nrow(df), vol))#
+  points <- rbind(points, cbind(df, region=r, n=nrow(df)))#
+  }#
+ggplot()+#
+ geom_polygon(data=hulls, aes(PC1, PC2), fill=NA, col="black")+#
+ geom_point(data=points, aes(PC1, PC2), size=.1)+#
+ facet_wrap(~region)+#
+ guides(col="none")#
+#
+################################## ----- figure 1 #
+source("R/map.R")#
+map#
+source("R/figure_1.R")#
+fig1#
+#ggsave("figs/fig1.png", fig1, width=17.8, height=10.5, units="cm", dpi = 300)#
+#
+################################## ----- 4D hypervolumes#
+#
+vols <- unique(hulls[,c("region","n","vol")])#
+dat <- merge(info, vols)#
+#
+null1 <- NULL #volume of random species sample#
+reps <- 5 #
+#
+svol <- function(){#
+	samp <- axes[sample(nrow(axes), size=n, replace=F),]#
+	convhulln(samp,"FA")$vol / convhulln(axes,"FA")$vol*100#
+	}#
+#
+for (n in seq(10,600,5)){#
+	df <- replicate(reps, svol(), simplify="matrix") #
+	df <- quantile(df, probs = c(0.01,0.5,0.99))#
+	null1 <- rbind(null1, cbind(n,y1=df[1], y2=df[2], y3=df[3]))#
+	null1 <- data.frame(null1)#
+	}#
+#
+# null1 <- read.csv("output/null1.csv") # 100 reps#
+#
+ggplot()+#
+geom_crossbar(data=null1, aes(x=n, ymin=y1, y=y2, ymax=y3), col="grey")+#
+geom_text(data=dat, aes(n, vol, label=abv))+#
+labs(y="% of global volume", x="sp richness")#
+#
+################################## ----- neighbour distances#
+library("FNN")#
+#
+neighbs <- 5  #
+#
+nn <- NULL#
+for (r in info$region){#
+  df <- data[!is.na(pres_abs[,r]),list]#
+  dist <- dist(scale(df))#
+  knn <- get.knn(dist,k=neighbs)$nn.dist#
+  tnn <- rowSums(knn)#
+  nn <- rbind(nn, data.frame(d=tnn/max(tnn)*100, region=r, n=nrow(df)))#
+  }#
+#
+nn.av <-aggregate(d~region, nn, mean)#
+dat$nn <- nn.av$d[match(dat$region, nn.av$region)]#
+#
+null2 <- NULL #distances of random species sample#
+reps <- 5#
+#
+snn <- function(){#
+	samp <- data[sample(nrow(data), size=n, replace=F),list]#
+	dist <- dist(scale(samp))#
+	knn <- get.knn(dist,k=neighbs)$nn.dist#
+	rowSums(knn)#
+	}#
+#
+for (n in seq(10,600,5)){#
+	df <- replicate(reps, snn(), simplify="matrix") #
+	df <- colMeans(apply(df, 2, function(x){x/max(x)*100}))#
+	df <- quantile(df, probs = c(0.01,0.5,0.99))#
+	null2 <- rbind(null2, cbind(n,y1=df[1], y2=df[2], y3=df[3]))#
+	null2 <- data.frame(null2)#
+	}#
+#
+# null2 <- read.csv("output/null2.csv") # 100 reps#
+#
+ggplot()+#
+geom_crossbar(data=null2, aes(x=n, ymin=y1, y=y2, ymax=y3), col="grey")+#
+geom_text(data=dat, aes(n, nn, label=abv))+#
+labs(y="neighbour dissimilarity", x="sp richness")#
+#
+################################## ----- functional entities#
+bw <- 0.58#
+bins <- ggplot(axes, aes(PC1, PC2))+stat_bin2d(binwidth=bw)#
+count <- ggplot_build(bins)$data[[1]]$count#
+bins + ggtitle(paste("bins =",length(count)))#
+#
+ents <- NULL#
+for (r in info$region){#
+	df <- axes[!is.na(pres_abs[,r]),]#
+	p <- ggplot(df, aes(PC1, PC2))+stat_bin2d(binwidth=bw)#
+	f <- ggplot_build(p)$data[[1]]$count#
+	n.ent <- length(f)/length(count)*100 # number occupied#
+	ones <- length(f[f==1])/length(f)*100 # singletons#
+	ents <- rbind(ents, data.frame(n.ent, ones, region=r))#
+	}#
+dat$n.ent <- ents$n.ent[match(dat$region, ents$region)]#
+dat$ones <- ents$ones[match(dat$region, ents$region)]#
+#
+null3 <- NULL  # species spread evenly among FEs #
+reps <- 100#
+#
+s.fe <- function(){#
+	samp <- sample(c(1:length(count)), n, replace=T)#
+	f <- as.vector(table(samp))#
+	n.ent <- length(f) / length(count)*100#
+	ones <- length(f[f==1]) / length(f)*100#
+	c(n.ent, ones)#
+	}#
+for (n in seq(10,600,5)){#
+	df <- replicate(reps, s.fe(), simplify="matrix") #
+	null3 <- rbind(null3, data.frame(n, n.ent=df[1,], ones=df[2,]))#
+	}#
+#
+ggplot()+#
+geom_point(data=melt(setDT(null3), "n"), aes(n, value, col=variable), shape=21, alpha=0.1)+#
+geom_point(data=melt(setDT(dat), "n", c("ones","n.ent")), aes(n,value, col=variable), size=2)+#
+labs(y="% of entites", x="sp richness")#
+#
+################################## ----- functional groups#
+# library("mclust") - disables maps? #
+# mod<-mclustBIC(axes[,c(1:2)])#
+# mod   #
+#
+nc <- 8#
+k <- kmeans(axes[,c(1:2)], centers=nc, nstart=25, iter.max=10000000)#
+clust<-cbind(axes, k=k$cluster)#
+#
+ggplot(clust, aes(PC1, PC2)) +#
+geom_point(colour="grey", alpha=0.9, size=0.15)+#
+stat_ellipse(aes(group=factor(k)))#
+#
+gp <- NULL#
+for (r in info$region){#
+	#r <- "Caribbean"#
+	df <- clust[!is.na(pres_abs[,r]),]#
+	freq <-data.frame(table(factor(df$k, levels=c(1:nc)))) #
+	freq$rank[order(-freq$Freq)] <- 1:nrow(freq)#
+	props <- freq$Freq /nrow(df)#
+	gp <-rbind(gp, cbind(freq, prop=props, region=r, n=nrow(df)))#
+}#
+#
+ggplot(gp, aes(x=n, y=prop, group=Var1))+geom_line()+geom_point()#
+#
+gp$rich<-ifelse(gp$n > 180, "high", "low")#
+ggplot(gp[gp$Freq>0,], aes(x=rank, y=Freq, group=region))+geom_line()+geom_point()+facet_wrap(~rich, scales="free_y")#
+#
+################################## ----- plot figure 2#
+source("R/figure_2.R")#
+fig2#
+#ggsave("figs/fig2.png", fig2, width=17.8, height=13.5, units="cm", dpi = 300)#
+#
+################################## ----- KERNEL DENSITY ESTIMATION#
+library("ks")#
+#
+doms <- c("Caribbean", "Australia")#
+#
+par(mfrow=c(1,2))#
+for (d in doms){#
+	df <- axes[!is.na(pres_abs[,d]),c(1:2)]#
+	H <- Hpi(x=df) # optimal bandwidth estimation#
+	est<- kde(x=df, H=H, compute.cont=TRUE)  # kernel density estimation#
+	cl<-contourLevels(est, prob=c(.5,.25,.05), approx=TRUE) # contour probs#
+plot(est, cont=seq(1,100,by=1), display="filled.contour2", add=FALSE, ylab="", xlab="", cex.axis=0.75, ylim=c(-4,4), xlim=c(-4, 4.3),las=1, main=d) #
+plot(est,abs.cont=cl[1], labels=c(0.5),labcex=0.5, add=TRUE, lwd=0.75)#
+plot(est,abs.cont=cl[2], labels=c(0.75),labcex=0.5, add=TRUE, lwd=0.5)#
+plot(est,abs.cont=cl[3], labels=c(0.95),labcex=0.5, add=TRUE, lwd=0.5)#
+points( df[,], pch=16, cex=0.25, col="black") #
+}#
+#
+################################## ----- Importance for functions#
+#
+# geometric models#
+source("R/geometry.R")#
+geo <- read.csv("data/geometry.csv")#
+#
+axes$region <- ifelse(pres_abs$Caribbean %in% 1, "Caribbean", ifelse(pres_abs$Australia %in% 1, "Great Barrier Reef",  NA))#
+#
+# apply geometric models based on morphology#
+t0 <- NULL#
+t1 <- NULL#
+for (i in 1:nrow(data)){#
+	gf <- data[i,"raw_growth_form"]#
+	funct <- geo$function.[geo$morphology==gf]#
+	pars <- geo[geo$morphology==gf, c("br","bh", "bpa", "th", "tb")]#
+	pars$d <- data[i,"dat_colonydiameter"]#
+	t0 <- cbind(t0, do.call(Map, c(f= as.name(funct), pars)))#
+	growth <- data[i,"dat_growth"]#
+	pars$d <- pars$d + growth/10#
+	t1 <- cbind(t1, do.call(Map, c(f= as.name(funct), pars)))#
+}#
+#
+funs <- cbind(axes, do.call("rbind", t0))#
+funs$VOL2 <- cbind(do.call("rbind", t1))$VOL#
+funs$Accretion <- (funs$VOL2 - funs$VOL) * data[,"dat_skeletal"]#
+funs$Biomass <- funs$SA * funs$TB#
+#
+plot_grid(ggplot(funs)+geom_histogram(aes(Accretion), bins=10)+scale_x_log10(),#
+ggplot(funs)+geom_histogram(aes(Biomass), bins=10)+scale_x_log10())#
+#
+################################## ----- plot figure 3#
+source("R/figure_3.R")#
+fig3#
+ggsave("figs/fig3.png", fig3, width=8.7, height=19, units="cm", dpi = 300)

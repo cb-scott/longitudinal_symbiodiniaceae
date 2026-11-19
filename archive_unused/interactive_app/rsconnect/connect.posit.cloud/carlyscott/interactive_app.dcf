@@ -1,0 +1,10 @@
+name: interactive_app
+title:
+username: carlyscott
+account: carlyscott
+server: connect.posit.cloud
+hostUrl: https://api.connect.posit.cloud/v1
+appId: 019f6232-b593-ebf5-0829-bb65e5f98f7c
+bundleId:
+url: https://connect.posit.cloud/carlyscott/content/019f6232-b593-ebf5-0829-bb65e5f98f7c
+version: 1

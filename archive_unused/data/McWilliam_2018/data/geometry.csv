@@ -1,0 +1,16 @@
+﻿morphology,br,bh,bpa,th,tb,function
+bifacial,1.6,NA,0.304,0.24,11.8,up_plates
+laminar,0.5,NA,NA,0.8,19.5,open_cone
+branching_open,0.82,13.66,0.013,NA,7.2,branches
+hispidose,0.82,13.66,0.013,NA,7.2,branches
+branching_closed,0.6,5.4,0.6,NA,15.4,branches
+corymbose,0.46,4.32,0.5,NA,30.2,branches
+tables_or_plates,0.2,1.34,2.53,NA,37,branches
+digitate,1.49,5.39,0.15,NA,10.6,branches
+columnar,2.5,26.66,0.055,NA,29.3,branches
+encrusting_long_uprights,0.5,5,0.21,0.8,16.9,plate2d_proj
+encrusting,NA,NA,NA,1.3,43.2,plate2d
+massive,NA,NA,NA,NA,55.3,hemisphere
+submassive,NA,NA,NA,NA,55.3,hemisphere
+solitary_attached,NA,NA,NA,NA,55.3,hemisphere
+solitary_free,NA,NA,NA,NA,55.3,hemisphere

@@ -170,6 +170,9 @@ root.
 | `03c_Bayesian_FirstTurnoverBernoulli.R` | Genus-level intervals, host phylogeny, traits, and environmental PCs | First-turnover Bernoulli sensitivity results in `results/03c_Bayesian_FirstTurnoverBernoulli/` |
 | `03d_Bayesian_DIVBrayCurtis.R` | DIV intervals, environmental PCs, host phylogeny, and traits | Main DIV-distance model results in `results/03d_Bayesian_DIVBrayCurtis/` |
 | `03e_Bayesian_DIVUniFrac.R` | DIV intervals, environmental PCs, host phylogeny, and traits | Weighted-UniFrac sensitivity results in `results/03e_Bayesian_DIVUniFrac/` |
+| `03f_Bayesian_GenusOrdinal_InitialSingleGenus.R` | Same inputs as `03a`, excluding colonies whose first genus state was mixed | Initial-single-genus sensitivity results in `results/03f_Bayesian_GenusOrdinal_InitialSingleGenus/` |
+| `03g_Bayesian_GenusOrdinal_NoLastGenus.R` | Same inputs as `03a`, omitting prior genus as a predictor | No-prior-genus sensitivity results in `results/03g_Bayesian_GenusOrdinal_NoLastGenus/` |
+| `03h_Bayesian_GenusOrdinal_TraitPCInteractions.R` | Genus-level intervals, TraitPC1-TraitPC3, environmental PCs, and host phylogeny | Trait-by-environment interaction results in `results/03h_Bayesian_GenusOrdinal_TraitPCInteractions/` |
 | `04a_MSM_Modeling.R` | Genus-level intervals with environmental PCs | turnover/reversion and pairwise-transition results in `results/04a_MSM_Modeling/` |
 
 ## Script details
@@ -232,7 +235,7 @@ differences are not treated as modeled turnover events.
 
 R dependencies: `tidyverse`, `readxl`, and `writexl`.
 
-### Bayesian hierarchical models (`03a`-`03e`)
+### Bayesian hierarchical models (`03a`-`03h`)
 
 All Bayesian scripts use `brms` to prepare model data and custom Stan programs
 for fitting. Shared dependencies include `cmdstanr`, `posterior`, `ape`,
@@ -278,6 +281,27 @@ environmental-response summaries.
 Repeats the DIV-distance analysis using weighted UniFrac, incorporating DIV
 phylogenetic relatedness as a sensitivity analysis.
 
+#### `03f_Bayesian_GenusOrdinal_InitialSingleGenus.R`
+
+Repeats the genus-level ordinal analysis after excluding colonies whose first
+observed genus state was mixed. This sensitivity analysis tests whether
+initially co-dominant communities drive the main genus-level patterns.
+
+#### `03g_Bayesian_GenusOrdinal_NoLastGenus.R`
+
+Repeats the genus-level ordinal analysis while omitting previous dominant genus
+as a predictor. This tests whether prior-genus effects mask associations between
+environmental change and turnover.
+
+#### `03h_Bayesian_GenusOrdinal_TraitPCInteractions.R`
+
+Tests whether TraitPC1-TraitPC3 predict species differences in genus-level
+responses to environmental PC1-PC3. The trait PCs and all nine
+trait-by-environment interactions enter as fixed effects. Because traits are
+tested explicitly, this model omits the trait-covariance random-effect block
+used by `03a`; remaining species variation is partitioned between phylogenetic
+and idiosyncratic components.
+
 ### `04a_MSM_Modeling.R`
 
 Fits two multistate Markov analyses. The first estimates annual probabilities
@@ -301,9 +325,13 @@ The active Stan programs are:
 - `scripts/coral_dirichlet_partition_site.stan` for the genus-level ordinal
   model;
 - `scripts/coral_dirichlet_partition_bernoulli_site.stan` for the first-turnover
-  Bernoulli model; and
+  Bernoulli model;
 - `scripts/coral_dirichlet_partition_distance_beta.stan` for the Bray-Curtis
-  and weighted-UniFrac distance models.
+  and weighted-UniFrac distance models;
+- `scripts/coral_dirichlet_partition_site_no_last_genus.stan` for the
+  no-prior-genus sensitivity model; and
+- `scripts/coral_traitpc_interactions_ordinal.stan` for the explicit TraitPC by
+  environmental-PC interaction model.
 
 ## Reproducing the analyses
 

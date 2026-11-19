@@ -9,7 +9,10 @@
    id="svg1"
    xml:space="preserve"
    inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
-   sodipodi:docname="Figure2_FixedEffects"
+   sodipodi:docname="Figure2_FixedEffects.svg"
+   inkscape:export-filename="Figure2_FixedEffects.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,12 +27,12 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="1.0482005"
-     inkscape:cx="301.94605"
-     inkscape:cy="83.476397"
+     inkscape:cx="302.42306"
+     inkscape:cy="83.476396"
      inkscape:window-width="1586"
      inkscape:window-height="908"
      inkscape:window-x="1446"
-     inkscape:window-y="191"
+     inkscape:window-y="135"
      inkscape:window-maximized="0"
      inkscape:current-layer="layer1" /><defs
      id="defs1"><style
@@ -1649,4 +1652,4 @@
        id="text25"><tspan
          sodipodi:role="line"
          id="tspan25"
-         style="stroke-width:0.264583"></tspan></text></g></svg>
+         style="stroke-width:0.264583" /></text></g></svg>

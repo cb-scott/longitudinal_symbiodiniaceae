@@ -1,0 +1,3272 @@
+---
+title: "Panama heatwave symbioses"
+author: "Benjamin Glass"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+# Setup
+
+## Knit options
+
+```{r setup, message = FALSE}
+# Set knit options
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages
+
+```{r, warning = F}
+# Load packages
+library(lme4)
+library(car)
+library(ggplot2)
+library(emmeans)
+library(plyr)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(reshape)
+library(reshape2)
+library(vegan)
+library(ggh4x)
+library(DESeq2)
+library(forcats)
+library(Hmisc)
+library(psych)
+library(multcomp)
+library(circlize)
+library(ape)
+library(lubridate)
+library(phyloseq)
+library(Biostrings)
+library(ANCOMBC)
+library(glmnet)
+library(coefplot)
+```
+
+## Summary function
+
+```{r}
+# Define function to use when summarizing data
+summarySE <- function(data = NULL,
+                      measurevar,
+                      groupvars = NULL,
+                      na.rm = FALSE,
+                      conf.interval = .95,
+                      .drop = TRUE) {
+  length2 <- function (x, na.rm = FALSE) {
+    if (na.rm) sum(!is.na(x))
+    else       length(x)
+  }
+  
+  datac <- ddply(data, groupvars, .drop =.drop,
+                 .fun = function(xx, col) {
+                   c(N    = length2(xx[[col]], na.rm = na.rm),
+                     mean = mean   (xx[[col]], na.rm = na.rm),
+                     sd   = sd     (xx[[col]], na.rm = na.rm)
+                   )
+                 },
+                 measurevar
+  )
+  
+  datac <- plyr::rename(datac, c("mean" = measurevar))
+  
+  datac$se <- datac$sd / sqrt(datac$N)
+  
+  ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+  datac$ci <- datac$se * ciMult
+  
+  return(datac)
+}
+```
+
+# Temperature
+
+## Bocas weather station historical
+
+### Upload data
+
+```{r}
+# Read CSV
+#bwsdata <- read.csv("Bocas_weather_station_temperature_data.csv",
+#                    header = T)
+
+# Convert to date-time
+# bwsdata$Date_time_con <- dmy_hms(bwsdata$Date_time)
+# for (i in 1:nrow(bwsdata)) {
+#   if (is.na(bwsdata$Date_time_con[i]) == T) {
+#     bwsdata$Date_time_con[i] <- dmy_hm(bwsdata$Date_time[i])
+#   }
+# }
+# save(bwsdata,
+#      file = "bwsdata.Rdata")
+load("bwsdata.Rdata")
+
+# Add columns
+bwsdata$Day <- day(bwsdata$Date_time_con)
+bwsdata$Month <- month(bwsdata$Date_time_con)
+bwsdata$Year <- year(bwsdata$Date_time_con)
+```
+
+#### Plot: Bocas weather station daily mean
+
+##### Make data
+
+```{r}
+# Daily mean
+bwsdaymean <- summarySE(data = bwsdata,
+                        groupvars = c("Year",
+                                      "Month",
+                                      "Day"),
+                        measurevar = "Temperature_C")
+
+# Add column
+bwsdaymean$Year_month_day <- paste0(bwsdaymean$Year,
+                                    "_",
+                                    bwsdaymean$Month,
+                                    "_",
+                                    bwsdaymean$Day)
+bwsdaymean$Year_month_day <- ymd(bwsdaymean$Year_month_day)
+```
+
+##### Make plot
+
+```{r}
+# Make plot
+BWStempplot <- ggplot(data = bwsdaymean,
+                      aes(x = Year_month_day,
+                          y = Temperature_C)) +
+  geom_point(size = 1) +
+  geom_vline(xintercept = as.Date("2022-05-05"),
+             linetype = "dashed") +
+  geom_vline(xintercept = as.Date("2023-08-29"),
+             linetype = "dashed") +
+  geom_vline(xintercept = as.Date("2024-04-27"),
+             linetype = "dashed") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_blank(), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "right",
+        legend.title = element_text(color = "black",
+                                    size = 11),
+        legend.text = element_text(color = "black",
+                                   size = 11)) +
+  scale_x_date(expression(Year),
+               limits = c(as.Date("2005-01-01"),
+                          as.Date("2025-01-01"))) +
+  scale_y_continuous(expression(Temp~("°C")),
+                     limits = c(24,
+                                32))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+BWStempplot
+
+# Save plot
+ggsave("Bocas station temperature plot.pdf",
+       width = 5.5,
+       height = 1.5,
+       units = "in")
+```
+
+#### Plot: DHWs
+
+##### Calcuate DHWs
+
+```{r}
+# First, calculate "hotspot" for each day; this is the temperature above the bleaching threshold (here, 29.45°C)
+bwsdaymean$Hotspot <- ifelse(bwsdaymean$Temperature_C > 29.46,
+                             bwsdaymean$Temperature_C-29.46,
+                             0)
+
+# Next, define a function to calculate the DHWs; this function takes 84-day sliding windows, sums the hotspot, and then divides by 7
+calculate_dhw <- function(x) {
+  n <- length(x)
+  result <- numeric(n)
+  for (i in 84:n) {
+    sum_hotspot <- sum(x[(i - 84 + 1):i],
+                       na.rm = TRUE)
+    result[i] <- ifelse(sum_hotspot >= 1,
+                        sum_hotspot / 7,
+                        0)
+  }
+  return(result)
+}
+
+# Apply function to data set
+bwsdaymean$DHW <- calculate_dhw(bwsdaymean$Hotspot)
+```
+
+##### Make plot
+
+```{r}
+# Make plot
+bwsDHWplot <- ggplot(data = bwsdaymean,
+                     aes(x = Year_month_day,
+                         y = DHW)) +
+  geom_area(color = "black",
+            fill = "lightgray") +
+  geom_vline(xintercept = as.Date("2022-05-05"),
+             linetype = "dashed") +
+  geom_vline(xintercept = as.Date("2023-08-29"),
+             linetype = "dashed") +
+  geom_vline(xintercept = as.Date("2024-04-27"),
+             linetype = "dashed") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_text(color = "black",
+                                   size = 11), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                    size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11)) +
+  scale_x_date(expression(Year),
+               limits = c(as.Date("2005-01-01"),
+                          as.Date("2025-01-01"))) +
+  scale_y_continuous(expression(DHW),
+                     limits = c(0,
+                                16),
+                     breaks = seq(0,
+                                  16,
+                                  4),
+                     expand = c(0,
+                                0))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+bwsDHWplot
+
+# Save plot
+ggsave("BWS DHWs plot.pdf",
+       width = 5.5,
+       height = 1.5,
+       units = "in")
+```
+
+## Site data
+
+### Upload data
+
+```{r}
+# Read CSV
+sitetempdata <- read.csv("Site_temperature_data.csv",
+                         header = T)
+
+# Convert to date-time
+sitetempdata$Date_time_con <- mdy_hm(sitetempdata$Date_time)
+
+# Add columns
+sitetempdata$Day <- day(sitetempdata$Date_time_con)
+sitetempdata$Month <- month(sitetempdata$Date_time_con)
+sitetempdata$Year <- year(sitetempdata$Date_time_con)
+
+# Subset to desired range: May 2022 to May 2024
+sitetempdata <- subset(sitetempdata,
+                       as.Date(Date_time_con) > "2022-05-01" &
+                         as.Date(Date_time_con) < "2024-05-01")
+```
+
+#### Plot: daily means over time
+
+##### Make data
+
+```{r}
+# Daily mean
+sitedaymean <- summarySE(data = sitetempdata,
+                          groupvars = c("Site",
+                                        "Year",
+                                        "Month",
+                                        "Day"),
+                          measurevar = "Temperature_C")
+
+# Add column
+sitedaymean$Year_month_day <- paste0(sitedaymean$Year,
+                                    "_",
+                                    sitedaymean$Month,
+                                    "_",
+                                    sitedaymean$Day)
+sitedaymean$Year_month_day <- ymd(sitedaymean$Year_month_day)
+```
+
+##### Make plot
+
+```{r}
+# Make plot
+sitedmtempplot <- ggplot(data = sitedaymean,
+                         aes(x = Year_month_day,
+                             y = Temperature_C)) +
+  facet_wrap(~ Site,
+             nrow = 1) +
+  geom_point(size = 1) +
+  geom_vline(xintercept = as.Date("2022-05-05"),
+             linetype = "dashed") +
+  geom_vline(xintercept = as.Date("2023-08-29"),
+             linetype = "dashed") +
+  geom_vline(xintercept = as.Date("2024-04-27"),
+             linetype = "dashed") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_blank(), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        strip.text = element_text(color = "black",
+                                  size = 11),
+        panel.spacing = unit(0.2,
+                             "in")) +
+  scale_x_date(expression(Month),
+               breaks = seq(as.Date("2022-05-01"),
+                            as.Date("2024-06-01"),
+                            "1 year"),
+               date_labels = "%b%n'%y",
+               limits = c(as.Date("2022-05-01"),
+                          as.Date("2024-06-01"))) +
+  scale_y_continuous(expression(Temp~("°C")),
+                     limits = c(27,
+                                33),
+                     breaks = seq(27,
+                                  33,
+                                  1))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+sitedmtempplot
+
+# Save plot
+ggsave("Site daily mean temp plot.pdf",
+       width = 5.5,
+       height = 1.4,
+       units = "in")
+```
+
+#### Plot: DHWs
+
+##### Calcuate DHWs
+
+```{r}
+# Calculate "hotspot" for each day; this is the temperature above the bleaching threshold (MMM + 1°C)
+sitedaymean$Hotspot <- ifelse(sitedaymean$Temperature_C > 29.46,
+                              sitedaymean$Temperature_C-29.46,
+                              0)
+
+# Next, define a function to calculate the DHWs; this function takes 84-day sliding windows, sums the hotspot, and then divides by 7
+calculate_dhw <- function(x) {
+  n <- length(x)
+  result <- numeric(n)
+  for (i in 84:n) {
+    sum_hotspot <- sum(x[(i - 84 + 1):i],
+                       na.rm = TRUE)
+    result[i] <- ifelse(sum_hotspot >= 1,
+                        sum_hotspot / 7,
+                        0)
+  }
+  return(result)
+}
+
+# Apply function to data set for each site
+## CI
+sitedaymeanCI <- subset(sitedaymean,
+                        Site == "Cristobal Island")
+sitedaymeanCI$DHW <- calculate_dhw(sitedaymeanCI$Hotspot)
+
+## HP
+sitedaymeanHP <- subset(sitedaymean,
+                        Site == "Hospital Point")
+sitedaymeanHP$DHW <- calculate_dhw(sitedaymeanHP$Hotspot)
+
+## PD
+sitedaymeanPD <- subset(sitedaymean,
+                        Site == "Punta Donato")
+sitedaymeanPD$DHW <- calculate_dhw(sitedaymeanPD$Hotspot)
+
+## SP
+sitedaymeanSP <- subset(sitedaymean,
+                        Site == "STRI Point")
+sitedaymeanSP$DHW <- calculate_dhw(sitedaymeanSP$Hotspot)
+
+# Bind all
+sitedaymeanDHW <- rbind(sitedaymeanCI,
+                        sitedaymeanHP,
+                        sitedaymeanPD,
+                        sitedaymeanSP)
+```
+
+##### Make plot
+
+```{r}
+# Make plot
+siteDHWplot <- ggplot(data = sitedaymeanDHW,
+                      aes(x = Year_month_day,
+                          y = DHW)) +
+  facet_wrap(~ Site,
+             nrow = 1) +
+  geom_area(color = "black",
+            fill = "lightgray") +
+  geom_vline(xintercept = as.Date("2022-05-05"),
+             linetype = "dashed") +
+  geom_vline(xintercept = as.Date("2023-08-29"),
+             linetype = "dashed") +
+  geom_vline(xintercept = as.Date("2024-04-27"),
+             linetype = "dashed") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_text(color = "black",
+                                   size = 11), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                    size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        strip.text = element_blank(),
+        panel.spacing = unit(0.2,
+                             "in"),
+        strip.background = element_blank(),
+        strip.text.x = element_blank()) +
+  scale_x_date(expression(Month),
+               breaks = seq(as.Date("2022-05-01"),
+                            as.Date("2024-06-01"),
+                            "1 year"),
+               date_labels = "%b%n'%y",
+               limits = c(as.Date("2022-05-01"),
+                          as.Date("2024-06-01"))) +
+  scale_y_continuous(expression(DHW),
+                     limits = c(0,
+                                20),
+                     breaks = seq(0,
+                                  20,
+                                  4),
+                     expand = c(0,
+                                0))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+siteDHWplot
+
+# Save plot
+ggsave("DHWs plot.pdf",
+       width = 5.5,
+       height = 1.6,
+       units = "in")
+```
+
+## DHW-bleaching correlation
+
+### Make data
+
+```{r}
+DHWbleachdata <- data.frame(Year = c(2023,
+                                     2023,
+                                     2023,
+                                     2023,
+                                     2024,
+                                     2024,
+                                     2024,
+                                     2024),
+                            Site = c("Cristobal Island",
+                                     "Hospital Point",
+                                     "Punta Donato",
+                                     "STRI Point",
+                                     "Cristobal Island",
+                                     "Hospital Point",
+                                     "Punta Donato",
+                                     "STRI Point"),
+                            DHW = c(10.9,
+                                    9,
+                                    10.3,
+                                    6.2,
+                                    8.7,
+                                    6.3,
+                                    5.6,
+                                    2.5),
+                            Percent_bleached = c(68,
+                                                 35,
+                                                 33,
+                                                 44,
+                                                 41,
+                                                 26,
+                                                 15,
+                                                 63))
+```
+
+### Plot
+
+#### Make plot
+
+```{r}
+# Make plot
+DHWbleachplot <- ggplot(data = DHWbleachdata,
+                        aes(x = DHW,
+                            y = Percent_bleached)) +
+  geom_point(aes(color = as.factor(Year),
+                 shape = Site)) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_text(color = "black",
+                                   size = 11), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                   size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "none") +
+  scale_x_continuous(expression(DHW),
+                     limits = c(0,
+                                12),
+                     breaks = seq(0,
+                                  12,
+                                  3)) +
+  scale_y_continuous(expression(Colonies~bleached~("%")),
+                     limits = c(0,
+                                100)) +
+  scale_color_manual(values = c("2022" = "#00798c",
+                                "2023" = "#d1495b",
+                                "2024" = "#edae49"))
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+DHWbleachplot
+
+# Save plot
+ggsave("DHWs-bleaching plot.pdf",
+       width = 2.5,
+       height = 2.5,
+       units = "in")
+```
+
+### Site temperature history-bleaching correlation
+
+#### MMM
+
+##### Make data
+
+```{r}
+MMMbleachdata <- data.frame(Site = c("Cristobal Island",
+                                     "Hospital Point",
+                                     "Punta Donato",
+                                     "STRI Point"),
+                            Year = c(2023,
+                                     2023,
+                                     2023,
+                                     2023,
+                                     2024,
+                                     2024,
+                                     2024,
+                                     2024),
+                            MMM = c(28.47,
+                                    28.46,
+                                    28.46,
+                                    28.46,
+                                    28.47,
+                                    28.46,
+                                    28.46,
+                                    28.46),
+                            Percent_bleached = c(68,
+                                                 35,
+                                                 33,
+                                                 44,
+                                                 41,
+                                                 26,
+                                                 15,
+                                                 63))
+```
+
+##### Plot
+
+###### Make plot
+
+```{r}
+# Make plot
+MMMbleachplot <- ggplot(data = MMMbleachdata,
+                        aes(x = MMM,
+                            y = Percent_bleached)) +
+  geom_point(aes(shape = Site,
+                 color = as.factor(Year))) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_text(color = "black",
+                                   size = 11), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                   size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "NONE") +
+  scale_x_continuous(expression(MMM~("°C")),
+                     limits = c(28.4,
+                                28.6),
+                     breaks = seq(28.4,
+                                  28.6,
+                                  0.1)) +
+  scale_y_continuous(expression(Colonies~bleached~("%")),
+                     limits = c(0,
+                                100)) +
+  scale_color_manual(values = c("2022" = "#00798c",
+                                "2023" = "#d1495b",
+                                "2024" = "#edae49"))
+```
+
+###### Visualize and save plot
+
+```{r}
+# Visualize plot
+MMMbleachplot
+
+# Save plot
+ggsave("MMM-bleaching plot.pdf",
+       width = 2.5,
+       height = 2.5,
+       units = "in")
+```
+
+#### DTV
+
+##### Make data
+
+```{r}
+DTVbleachdata <- data.frame(Site = c("Cristobal Island",
+                                     "Hospital Point",
+                                     "Punta Donato",
+                                     "STRI Point"),
+                            Year = c(2023,
+                                     2023,
+                                     2023,
+                                     2023,
+                                     2024,
+                                     2024,
+                                     2024,
+                                     2024),
+                            DTV = c(1.05,
+                                    1.08,
+                                    0.77,
+                                    0.73,
+                                    1.05,
+                                    1.08,
+                                    0.77,
+                                    0.73),
+                            Percent_bleached = c(68,
+                                                 35,
+                                                 33,
+                                                 44,
+                                                 41,
+                                                 26,
+                                                 15,
+                                                 63))
+```
+
+##### Plot
+
+###### Make plot
+
+```{r}
+# Make plot
+DTVbleachplot <- ggplot(data = DTVbleachdata,
+                        aes(x = DTV,
+                            y = Percent_bleached)) +
+  geom_point(aes(shape = Site,
+                 color = as.factor(Year))) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_text(color = "black",
+                                   size = 11), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                   size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "none") +
+  scale_x_continuous(expression(Mean~DTV~("°C")),
+                     limits = c(0.5,
+                                1.5)) +
+  scale_y_continuous(expression(Colonies~bleached~("%")),
+                     limits = c(0,
+                                100)) +
+  scale_color_manual(values = c("2022" = "#00798c",
+                                "2023" = "#d1495b",
+                                "2024" = "#edae49"))
+```
+
+###### Visualize and save plot
+
+```{r}
+# Visualize plot
+DTVbleachplot
+
+# Save plot
+ggsave("DTV-bleaching plot.pdf",
+       width = 2.5,
+       height = 2.5,
+       units = "in")
+```
+
+#### Mean temperature
+
+##### Make data
+
+```{r}
+MTPbleachdata <- data.frame(Site = c("Cristobal Island",
+                                     "Hospital Point",
+                                     "Punta Donato",
+                                     "STRI Point"),
+                            Year = c(2023,
+                                     2023,
+                                     2023,
+                                     2023,
+                                     2024,
+                                     2024,
+                                     2024,
+                                     2024),
+                            Mean_temperature = c(29.9,
+                                                 30.2,
+                                                 30.1,
+                                                 29.4,
+                                                 29.9,
+                                                 30.2,
+                                                 30.1,
+                                                 29.4),
+                            Percent_bleached = c(68,
+                                                 35,
+                                                 33,
+                                                 44,
+                                                 41,
+                                                 26,
+                                                 15,
+                                                 63))
+```
+
+##### Plot
+
+###### Make plot
+
+```{r}
+# Make plot
+MTPbleachplot <- ggplot(data = MTPbleachdata,
+                        aes(x = Mean_temperature,
+                            y = Percent_bleached)) +
+  geom_point(aes(shape = Site,
+                 color = as.factor(Year))) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_text(color = "black",
+                                   size = 11), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                   size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "NONE") +
+  scale_x_continuous(expression(Mean~daily~temperature~("°C")),
+                     limits = c(29,
+                                31)) +
+  scale_y_continuous(expression(Colonies~bleached~("%")),
+                     limits = c(0,
+                                100)) +
+  scale_color_manual(values = c("2022" = "#00798c",
+                                "2023" = "#d1495b",
+                                "2024" = "#edae49"))
+```
+
+###### Visualize and save plot
+
+```{r}
+# Visualize plot
+MTPbleachplot
+
+# Save plot
+ggsave("MTP-bleaching plot.pdf",
+       width = 2.5,
+       height = 2.5,
+       units = "in")
+```
+
+# Health status
+
+## Upload data
+
+```{r}
+# Read CSV
+healthdata <- read.csv("Health_status_data.csv",
+                       header = T)
+```
+
+## Bleaching status by site over time
+
+### Make data
+
+```{r}
+# Make empty data frame to store data
+statusdf <- data.frame(Site = factor(),
+                       Year = factor(),
+                       Bleaching_status = factor(),
+                       Proportion = numeric())
+
+# Loop through and make proportions
+for (site in unique(healthdata$Site)) {
+  for (year in unique(healthdata$Year)) {
+    healthsub <- subset(healthdata,
+                        Site == site &
+                          Year == year)
+    coralnum <- nrow(healthsub)
+    for (status in unique(healthdata$Bleaching_status)) {
+      healthsubstat <- subset(healthsub,
+                              Bleaching_status == status)
+      numwithstat <- nrow(healthsubstat)
+      propwithstat <- numwithstat/coralnum
+      statusdf <- rbind(statusdf,
+                         data.frame(Site = site,
+                                    Year = year,
+                                    Bleaching_status = status,
+                                    Proportion = propwithstat))
+    }
+  }
+}
+
+# Set factor order
+statusdf$Bleaching_status <- factor(statusdf$Bleaching_status,
+                                 levels = c("Pigmented",
+                                            "Partially bleached",
+                                            "Fully bleached"))
+```
+
+### Plot: bleaching status
+
+#### Make plot
+
+```{r}
+# Make plot
+bsbarplot <- ggplot(data = statusdf,
+                    aes(x = as.factor(Year),
+                        y = Proportion)) +
+  facet_wrap(~ Site,
+             nrow = 1) +
+  geom_bar(stat = "identity",
+           aes(fill = Bleaching_status),
+           position = position_fill(reverse = T)) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_blank(), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "none",
+        strip.text = element_text(color = "black",
+                                  size = 11)) +
+  labs(x = "Year",
+       y = "Proportion",
+       fill = "Health status") +
+  scale_fill_manual(values = c("Pigmented" = "#00798c",
+                               "Fully bleached" = "#d1495b",
+                               "Partially bleached" = "#edae49"))
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+bsbarplot
+
+# Save plot
+ggsave("Bleaching status plot site and year.pdf",
+       width = 5.5,
+       height = 1.75,
+       units = "in")
+```
+
+### Plot: mortality
+
+#### Add bleached in 2023
+
+```{r}
+# Get list of corals with status in 2023
+corals2023 <- unique(subset(healthdata,
+                            Year == 2023)$Coral_ID)
+
+# Add status column
+healthdata$Status_in_2023 <- NA
+
+# Loop through and add status
+for (i in 1:nrow(healthdata)) {
+  if (healthdata$Coral_ID[i] %in% corals2023) {
+    stat2023 <- subset(healthdata,
+                       Coral_ID == healthdata$Coral_ID[i] &
+                         Year == 2023)$Bleaching_status
+    if (stat2023 == "Pigmented") {
+      healthdata$Status_in_2023[i] <- "No"
+    }
+    else {
+      healthdata$Status_in_2023[i] <- "Yes"
+    }
+  }
+}
+
+# Summarize
+mortdata <- summarySE(data = healthdata,
+                      groupvars = c("Year",
+                                    "Site",
+                                    "Status_in_2023"),
+                      measurevar = "Percent_mortality_since_2022")
+```
+
+#### Statistical analysis
+
+```{r}
+# Linear model
+mortmod <- lmer(Percent_mortality_since_2022 ~ factor(Year)*Site*Status_in_2023 + (1|Coral_ID),
+                data = subset(healthdata,
+                              !is.na(Status_in_2023)))
+
+# ANOVA
+mortaov <- Anova(mortmod,
+                 type = "III")
+mortaov
+
+# EMMeans
+mortemmeans <- emmeans(mortmod,
+                       ~ factor(Year):Site:Status_in_2023)
+
+# Tukey
+mortTukey <- contrast(mortemmeans,
+                      method = "pairwise",
+                      simple = "Status_in_2023")
+mortTukey
+```
+
+
+#### Make plot
+
+```{r}
+# Make plot
+mortplot <- ggplot(data = subset(mortdata,
+                                 !is.na(Status_in_2023)),
+                   aes(x = as.factor(Year),
+                       y = Percent_mortality_since_2022)) +
+  facet_wrap(~ Site,
+             nrow = 1) +
+  geom_point() +
+  geom_errorbar(aes(ymin = Percent_mortality_since_2022 - se,
+                    ymax = Percent_mortality_since_2022 + se),
+                width = 0.25) +
+  geom_line(aes(group = Status_in_2023,
+                linetype = Status_in_2023)) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_blank(), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "none",
+        legend.position.inside = c(0.14,
+                                   0.76),
+        legend.title = element_text(color = "black",
+                                    size = 11),
+        legend.text = element_text(color = "black",
+                                   size = 11),
+        strip.text = element_blank(),
+        strip.background = element_blank(),
+        legend.background = element_blank(),
+        legend.key = element_blank()) +
+    labs(x = "Year",
+         linetype = "Bleached in 2023",
+         shape = "Bleached in 2023") +
+    scale_y_continuous(expression("Tissue loss (%)"),
+                       limits = c(0,
+                                  100)) +
+  scale_linetype_manual(values = c("No" = "solid",
+                                   "Yes" = "dashed"))
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+mortplot
+
+# Save plot
+ggsave("Mortality plot.pdf",
+       width = 5.5,
+       height = 1.75,
+       units = "in")
+```
+
+## Disease status by site over time
+
+### Make data
+
+```{r}
+# Make empty data frame to store data
+diseasedf <- data.frame(Site = factor(),
+                        Year = factor(),
+                        Disease_status = factor(),
+                        Proportion = numeric())
+
+# Loop through and make proportions
+for (site in unique(healthdata$Site)) {
+  for (year in unique(healthdata$Year)) {
+    healthsub <- subset(healthdata,
+                        Site == site &
+                          Year == year)
+    coralnum <- nrow(healthsub)
+    for (status in unique(healthdata$Signs_of_disease)) {
+      healthsubstat <- subset(healthsub,
+                              Signs_of_disease == status)
+      numwithstat <- nrow(healthsubstat)
+      propwithstat <- numwithstat/coralnum
+      diseasedf <- rbind(diseasedf,
+                         data.frame(Site = site,
+                                    Year = year,
+                                    Disease_status = status,
+                                    Proportion = propwithstat))
+    }
+  }
+}
+```
+
+### Plot
+
+#### Make plot
+
+```{r}
+# Make plot
+dsbarplot <- ggplot(data = diseasedf,
+                    aes(x = as.factor(Year),
+                        y = Proportion)) +
+  facet_wrap(~ Site,
+             nrow = 1) +
+  geom_bar(stat = "identity",
+           aes(fill = Disease_status),
+           position = position_fill(reverse = T)) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_text(color = "black",
+                                   size = 11), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                   size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "none",
+        strip.text = element_blank(),
+        strip.background = element_blank()) +
+  labs(x = "Year",
+       y = "Proportion",
+       fill = "Disease status") +
+  scale_fill_manual(values = c("No" = "#E7D8C6",
+                               "Yes" = "#5A2D82"))
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+dsbarplot
+
+# Save plot
+ggsave("Disease status plot site and year.pdf",
+       width = 5.5,
+       height = 1.75,
+       units = "in")
+```
+
+# ITS2
+
+## Post-MED sequence relative abundances
+
+### Upload data
+```{r}
+# Read CSV
+postMEDdata <- read.csv("PostMED_relative_abundance.csv",
+                        header = T,
+                        stringsAsFactors = T)
+
+# Remove columns with all 0 values
+postMEDdata <- postMEDdata[, colSums(postMEDdata != 0) > 0]
+```
+
+### PERMANOVA
+
+```{r}
+# Run PERMANOVA
+postMEDpermaov <- adonis2(postMEDdata[,7:726] ~ Year*Site*Lineage*Depth_m,
+                          data = postMEDdata[,c(2,4,5,6)],
+                          permutations = 999,
+                          method = "bray")
+postMEDpermaov
+```
+
+### Bar plot of genus by site and year
+
+#### Make longer data
+
+```{r}
+# Make longer data
+postMEDdatal <- pivot_longer(data = postMEDdata,
+                             cols = !c("Sample_ID",
+                                      "Year",
+                                      "Coral_ID",
+                                      "Site",
+                                      "Lineage",
+                                      "Depth_m"),
+                             names_to = "Sequence",
+                             values_to = "Relative_abundance")
+postMEDdatal <- data.frame(subset(postMEDdatal,
+                                  Relative_abundance != 0))
+
+# Add column for genus
+postMEDdatal$Genus <- NA
+for (i in 1:nrow(postMEDdatal)) {
+  if (startsWith(postMEDdatal$Sequence[i], "A") == TRUE) {
+    postMEDdatal$Genus[i] <- "Symbiodinium"
+  }
+  else if (endsWith(postMEDdatal$Sequence[i], "A") == TRUE) {
+    postMEDdatal$Genus[i] <- "Symbiodinium"
+  }
+  else if (startsWith(postMEDdatal$Sequence[i], "B") == TRUE) {
+    postMEDdatal$Genus[i] <- "Breviolum"
+  }
+  else if (endsWith(postMEDdatal$Sequence[i], "B") == TRUE) {
+    postMEDdatal$Genus[i] <- "Breviolum"
+  }
+  else if (startsWith(postMEDdatal$Sequence[i], "C") == TRUE) {
+    postMEDdatal$Genus[i] <- "Cladocopium"
+  }
+  else if (endsWith(postMEDdatal$Sequence[i], "C") == TRUE) {
+    postMEDdatal$Genus[i] <- "Cladocopium"
+  }
+  else if (startsWith(postMEDdatal$Sequence[i], "D") == TRUE) {
+    postMEDdatal$Genus[i] <- "Durusdinium"
+  }
+  else if (endsWith(postMEDdatal$Sequence[i], "D") == TRUE) {
+    postMEDdatal$Genus[i] <- "Durusdinium"
+  }
+  else {
+    postMEDdatal$Genus[i] <- "NA"
+  }
+}
+
+# Sum by genus for each coral
+postMEDdatalsum <- summarise(.data = postMEDdatal,
+                             .by = c(Sample_ID,
+                                     Year,
+                                     Coral_ID,
+                                     Site,
+                                     Lineage,
+                                     Depth_m,
+                                     Genus),
+                             Relative_abundance = sum(Relative_abundance))
+```
+
+#### Plot (only colonies sampled all 3 years)
+
+##### Make list
+```{r}
+# List of corals with data for all years
+all3list <- c()
+for (ID in unique(postMEDdatalsum$Coral_ID)) {
+  if (length(unique((subset(postMEDdatal,
+                            Coral_ID == ID))$Year)) == 3) {
+    all3list <- c(all3list,
+                  ID)
+  }
+}
+
+# Subset
+postMEDdatalsumall3 <- subset(postMEDdatalsum,
+                              Coral_ID %in% all3list)
+
+# Add column for bleach status in 2023
+postMEDdatalsumall3$Bleached_in_2023 <- NA
+for (i in 1:nrow(postMEDdatalsumall3)) {
+  IDcheck <- postMEDdatalsumall3$Coral_ID[i]
+  bs23 <- subset(healthdata,
+                 Year == 2023 &
+                   Coral_ID == IDcheck)
+  if (bs23$Bleaching_status == "Pigmented") {
+    postMEDdatalsumall3$Bleached_in_2023[i] <- "No"
+  }
+  else {
+    postMEDdatalsumall3$Bleached_in_2023[i] <- "Yes"
+  }
+}
+```
+
+##### Make plot
+
+```{r}
+# Make plot
+barplotsyall3 <- ggplot(data = postMEDdatalsumall3,
+                        aes(x = Coral_ID,
+                            y = Relative_abundance)) +
+  facet_grid(Year ~ Site,
+             scales = "free_x") +
+  geom_bar(stat = "identity",
+           aes(fill  = Genus)) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank(), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "none",
+        strip.text = element_text(color = "black",
+                                  size = 11)) +
+  labs(x = "Colony",
+       y = "Relative abundance") +
+  scale_fill_manual(values = c("Symbiodinium" = "#81b29a",
+                               "Breviolum" = "#3d405b",
+                               "Cladocopium" = "#c9c1ae",
+                               "Durusdinium" = "#e07a5f"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+barplotsyall3
+
+# Save plot
+ggsave("ITS2 barplot all 3 years.pdf",
+       width = 5.5,
+       height = 3,
+       units = "in")
+```
+
+### Bar plot of Cladocopium sequences by site and year
+
+#### Make data
+
+```{r}
+# Subset
+postMEDdatalC <- subset(postMEDdatal,
+                        Genus == "Cladocopium" &
+                          Coral_ID %in% all3list)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+barplotConly <- ggplot(data = postMEDdatalC,
+                       aes(x = Coral_ID,
+                           y = Relative_abundance)) +
+  facet_grid(Year ~ Site,
+             scales = "free_x") +
+  geom_bar(stat = "identity",
+           aes(fill  = Sequence)) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank(), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                    size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "none",
+        strip.text = element_text(color = "black",
+                                  size = 11)) +
+  labs(x = "Colony",
+       y = "Relative abundance")
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+barplotConly
+
+# Save plot
+ggsave("ITS2 barplot C only.pdf",
+       width = 5.5,
+       height = 3,
+       units = "in")
+```
+
+## Relating symbiont community shifts to mortality
+
+### Make community shift data
+
+```{r}
+# Make empty data frame to store data
+commshiftdf <- data.frame(Coral_ID = factor(),
+                          Year = numeric(),
+                          Community_change = numeric())
+
+for (ID in unique(postMEDdatalsumall3$Coral_ID)) {
+  postMEDdfID <- subset(postMEDdatalsumall3,
+                        Coral_ID == ID)
+  B22df <- subset(postMEDdfID,
+                  Genus == "Breviolum" &
+                  Year == 2022)
+  if (nrow(B22df) != 0) {
+    B22 <- B22df$Relative_abundance
+  }
+  else {
+    B22 <- 0
+  }
+  C22df <- subset(postMEDdfID,
+                  Genus == "Cladocopium" &
+                  Year == 2022)
+  if (nrow(C22df) != 0) {
+    C22 <- C22df$Relative_abundance
+  }
+  else {
+    C22 <- 0
+  }
+  D22df <- subset(postMEDdfID,
+                  Genus == "Durusdinium" &
+                  Year == 2022)
+  if (nrow(D22df) != 0) {
+    D22 <- D22df$Relative_abundance
+  }
+  else {
+    D22 <- 0
+  }
+  B23df <- subset(postMEDdfID,
+                  Genus == "Breviolum" &
+                  Year == 2023)
+  if (nrow(B23df) != 0) {
+    B23 <- B23df$Relative_abundance
+  }
+  else {
+    B23 <- 0
+  }
+  C23df <- subset(postMEDdfID,
+                 Genus == "Cladocopium" &
+                  Year == 2023)
+  if (nrow(C23df) != 0) {
+    C23 <- C23df$Relative_abundance
+  }
+  else {
+    C23 <- 0
+  }
+  D23df <- subset(postMEDdfID,
+                  Genus == "Durusdinium" &
+                  Year == 2023)
+  if (nrow(D23df) != 0) {
+    D23 <- D23df$Relative_abundance
+  }
+  else {
+    D23 <- 0
+  }
+  B24df <- subset(postMEDdfID,
+                 Genus == "Breviolum" &
+                 Year == 2024)
+  if (nrow(B24df) != 0) {
+    B24 <- B24df$Relative_abundance
+  }
+  else {
+    B24 <- 0
+  }
+  C24df <- subset(postMEDdfID,
+                  Genus == "Cladocopium" &
+                  Year == 2024)
+  if (nrow(C24df) != 0) {
+    C24 <- C24df$Relative_abundance
+  }
+  else {
+    C24 <- 0
+  }
+  D24df <- subset(postMEDdfID,
+                  Genus == "Durusdinium" &
+                  Year == 2024)
+  if (nrow(D24df) != 0) {
+    D24 <- D24df$Relative_abundance
+  }
+  else {
+    D24 <- 0
+  }
+  dist2322 <- sqrt((B23 - B22)^2 + (C23 - C22)^2 + (D23 - D22)^2)
+  dist2422 <- sqrt((B24 - B22)^2 + (C24 - C22)^2 + (D24 - D22)^2)
+  commshiftdf <- rbind(commshiftdf,
+                       data.frame(Coral_ID = ID,
+                                  Year = 2023,
+                                  Community_change_since_2022 = dist2322))
+  commshiftdf <- rbind(commshiftdf,
+                       data.frame(Coral_ID = ID,
+                                  Year = 2024,
+                                  Community_change_since_2022 = dist2422))
+}
+```
+
+### Combine with mortality data
+
+```{r}
+commshiftdf$Percent_mortality_since_2022 <- NA
+commshiftdf$Site <- NA
+
+for (i in 1:nrow(commshiftdf)) {
+  IDformort <- commshiftdf$Coral_ID[i]
+  yearformort <- commshiftdf$Year[i] 
+  mortdf <- subset(healthdata,
+                   Coral_ID == IDformort & 
+                     Year == yearformort)
+  if (nrow(mortdf) != 0) {
+    commshiftdf$Percent_mortality_since_2022[i] <- mortdf$Percent_mortality_since_2022
+    commshiftdf$Site[i] <- mortdf$Site
+  }
+}
+```
+
+### Plot
+
+#### Make plot
+
+```{r}
+commshiftmorplot <- ggplot(data = subset(commshiftdf,
+                                         Coral_ID != 71),
+                           aes(x = Community_change_since_2022,
+                               y = Percent_mortality_since_2022)) +
+  facet_grid(Year ~ Site) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              color = "black") +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_text(color = "black",
+                                   size = 11), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                   size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "none",
+        strip.text.x = element_blank(),
+        strip.background.x = element_blank(),
+        strip.text.y = element_text(color = "black",
+                                    size = 11)) +
+  scale_x_continuous(Symbiont~community~change~since~2022,
+                     limits = c(0,
+                                1.41),
+                     breaks = seq(0,
+                                  1.4,
+                                  0.7),
+                     labels = c(0,
+                                0.7,
+                                1.4)) +
+  scale_y_continuous(expression(Mortality~since~2022~("%")),
+                     limits = c(-50,
+                                100))
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+commshiftmorplot
+
+# Save plot
+ggsave("Community shift vs. mortality.pdf",
+       width = 5.5,
+       height = 2.5,
+       units = "in")
+```
+
+## Post-MED sequence absolute abundances
+
+### Upload data
+
+```{r}
+# Read CSV
+postMEDabsdata <- read.csv("PostMED_abs_abundance.csv",
+                           header = T,
+                           stringsAsFactors = T)
+
+# Remove columns with all 0 values
+postMEDabsdata <- postMEDabsdata[, colSums(postMEDabsdata != 0) > 0]
+```
+
+### Alpha diversity
+
+#### Calculate
+
+```{r}
+# Shannon index
+shanind <- diversity(postMEDabsdata[,7:726],
+                     index = "shannon")
+
+# Make new data frame
+shaninddf <- postMEDabsdata[,1:6]
+shaninddf$Shannon_index <- shanind
+```
+
+#### Statistics
+
+```{r}
+# Linear model
+shanlm <- lm(Shannon_index ~ factor(Year)*Site,
+             data = shaninddf)
+
+# ANOVA
+shanaov <- Anova(shanlm,
+                 type = "III")
+shanaov
+
+# EMMeans
+shanemmeans <- emmeans(shanlm,
+                       ~ factor(Year):Site)
+
+# Tukey
+shanTukey <- contrast(shanemmeans,
+                      method = "pairwise",
+                      simple = "Year")
+shanTukey
+```
+
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+shaindplot <- ggplot(data = subset(shaninddf,
+                                   Shannon_index != 0),
+                     aes(x = Year,
+                         y = Shannon_index)) +
+  facet_wrap(~ Site,
+             nrow = 1) +
+  geom_boxplot(aes(group = factor(Year)),
+                   alpha = 0.5,
+               outlier.shape = NA) +
+  geom_point(aes(group = factor(Year)),
+             position = position_dodge(width = 0.75),
+             size = 1) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_text(color = "black",
+                                   size = 11), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                    size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "inside",
+        legend.position.inside = c(0.91,
+                                   0.88),
+        legend.title = element_text(color = "black",
+                                    size = 11),
+        legend.text = element_text(color = "black",
+                                   size = 11),
+        legend.background = element_blank(),
+        legend.key = element_blank(),
+        strip.text = element_blank(),
+        strip.background = element_blank()) +
+  scale_x_continuous(breaks = seq(2022,
+                                  2024,
+                                  1)) +
+  scale_y_continuous(expression(Shannon~index),
+                     limits = c(0,
+                                3))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+shaindplot
+
+# Save plot
+ggsave("Shannon index plot.pdf",
+       width = 5,
+       height = 1.5,
+       units = "in")
+```
+
+# 16S
+
+## Upload data
+
+```{r}
+# ASV table
+ASVtab <- readRDS("seqtab_nochim.rds")
+
+# Taxa table
+taxtab <- readRDS("taxa.rds")
+
+# Sample metadata
+meta16S <- read.csv("16S_metadata.csv",
+                    header = T)
+
+# Get sample names
+sample_names <- sapply(strsplit(basename(meta16S$R1_file_full),
+                                "_16S_R1.fastq"),
+                       `[`,
+                       1)
+
+# Sort metadata by sample names in ASV table
+meta16Ssort <- meta16S
+meta16Ssort$Sample_names <- sample_names
+meta16Ssort <- meta16Ssort[match(trimws(rownames(ASVtab)),
+                                 meta16Ssort$Sample_names), ]
+
+# Take desired columns for phyloseq
+meta16Sphylo <- meta16Ssort[,c("Coral_ID",
+                               "Year",
+                               "Site",
+                               "Lineage",
+                               "Depth_m")]
+rownames(meta16Sphylo) <- rownames(ASVtab)
+meta16Sphylo$Year <- as.factor(meta16Sphylo$Year)
+```
+
+## Make base phyloseq object
+
+```{r}
+# Make
+ps <- phyloseq(otu_table(ASVtab,
+                         taxa_are_rows = FALSE), 
+               sample_data(meta16Sphylo), 
+               tax_table(taxtab))
+
+# Save sequences separately
+ASVseqs <- Biostrings::DNAStringSet(taxa_names(ps))
+names(ASVseqs) <- taxa_names(ps)
+ps <- merge_phyloseq(ps,
+                     ASVseqs)
+taxa_names(ps) <- paste0("ASV",
+                         seq(ntaxa(ps)))
+ps@sam_data$Sample_ID <- sample_names(ps)
+
+# Remove NCs and coral 66 from 2023 (no reads)
+ps <- subset_samples(ps,
+                     is.na(Site) == F &
+                       Sample_ID != " 66_F7")
+
+# Remove taxa with no reads
+ps <- prune_taxa(taxa_sums(ps) > 0,
+                 ps)
+
+# Remove eukaryotes and reads from chloroplasts/mitochondria
+ps <- subset_taxa(ps,
+                  Kingdom != "Eukaryota")
+ps <- subset_taxa(ps,
+                  Order != "Chloroplast")
+ps <- subset_taxa(ps,
+                  Family != "Mitochondria")
+```
+
+## Make base for corals with data over all 3 years
+
+```{r}
+# List of corals with data for all 3 years
+all3list16S <- c()
+for (ID in unique(meta16Sphylo$Coral_ID)) {
+  if (length(unique((subset(meta16Sphylo,
+                            Coral_ID == ID))$Year)) == 3 &
+      ID != "66") {
+    all3list16S <- c(all3list16S,
+                     ID)
+  }
+}
+
+# Prune samples
+psall3 <- prune_samples(ps@sam_data$Coral_ID %in% all3list16S,
+                        ps)
+```
+
+## Relative abundance
+
+### Make data
+
+```{r}
+# Create relative abundance objects
+psrel <- transform_sample_counts(ps,
+                                 function(OTU) OTU/sum(OTU))
+psrelall3 <- transform_sample_counts(psall3,
+                                     function(OTU) OTU/sum(OTU))
+```
+
+## PERMANOVA
+
+```{r}
+# Get distance matrix
+psreldist <- distance(psrel,
+                      method = "bray")
+
+# Get sample data df
+psrelsamdata <- data.frame(sample_data(psrel))
+
+# Run PERMANOVA
+permAOV16Srel <- adonis2(psreldist ~ Year*Site*Lineage*Depth_m,
+                         data = psrelsamdata)
+permAOV16Srel
+```
+
+## Filter for abundant taxa
+
+### Make data
+
+```{r}
+# Set thresholds (min_abund*100 % abundance in at least min_samples samples)
+min_abund <- 0.05
+min_samples <- 5
+
+# Get taxa
+keep_taxa <- apply(otu_table(psrelall3),
+                   2,
+                   function(x) {
+                     sum(x >= min_abund) >= min_samples
+                     })
+
+# Prune
+psrelall3maj <- prune_taxa(keep_taxa,
+                           psrelall3)
+
+# Melt for ggplot
+psrelall3majdf <- psmelt(psrelall3maj)
+```
+
+## Plot: relative abundance by site and year
+
+### Make plot
+
+```{r}
+# Make plot
+rasyall3 <- ggplot(data = psrelall3majdf,
+                   aes(x = Coral_ID,
+                       y = Abundance)) +
+  facet_grid(Year ~ Site,
+             scales = "free_x") +
+  geom_bar(stat = "identity",
+           aes(fill  = Family)) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank(), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "none",
+        strip.text = element_text(color = "black",
+                                  size = 11),
+        legend.title = element_text(color = "black",
+                                    size = 11),
+        legend.text = element_text(color = "black",
+                                   size = 11),
+        legend.key = element_blank(),
+        legend.background = element_blank()) +
+  labs(x = "Colony",
+       y = "Relative abundance") +
+  scale_y_continuous(limits = c(0,
+                                1)) +
+  guides(fill = guide_legend(ncol = 4))
+```
+
+### Visualize and save plot
+
+```{r}
+# Visualize plot
+rasyall3
+
+# Save plot
+ggsave("16S barplot all 3 years.pdf",
+       width = 6.5,
+       height = 3.25,
+       units = "in")
+```
+
+## Plot: pie charts
+
+
+### Get colors from larger plot to use
+
+```{r}
+rasall3build <- ggplot_build(rasyall3)
+
+rasall3col <- data.frame(label = sort(unique(psrelall3majdf$Family)),
+                         fill = rasall3build$plot$scales$scales[[2]]$palette.cache)
+colvec <- setNames(rasall3col$fill,
+                   rasall3col$label)
+```
+
+
+### CI 2022
+
+#### Make plot
+
+```{r}
+# Make plot
+CI22pie <- ggplot(data = subset(psrelall3majdf,
+                                Site == "Cristobal Island" &
+                                  Year == 2022),
+                   aes(x = 1,
+                       y = Abundance)) +
+  geom_bar(stat = "summary",
+           aes(fill = Family),
+           color = "black",
+           linewidth = 0.1) +
+  theme_void() +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,0,0,0), "in"),
+        plot.background = element_blank()) +
+  coord_polar("y",
+              start = 0) +
+  scale_fill_manual(values = colvec)
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+CI22pie
+
+# Save plot
+ggsave("CI 2022 pie chart.pdf",
+       width = 0.4,
+       height = 0.4,
+       units = "in")
+```
+
+### CI 2024
+
+#### Make plot
+
+```{r}
+# Make plot
+CI24pie <- ggplot(data = subset(psrelall3majdf,
+                                Site == "Cristobal Island" &
+                                  Year == 2024),
+                   aes(x = 1,
+                       y = Abundance)) +
+  geom_bar(stat = "summary",
+           aes(fill = Family),
+           color = "black",
+           linewidth = 0.1) +
+  theme_void() +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,0,0,0), "in"),
+        plot.background = element_blank()) +
+  coord_polar("y",
+              start = 0) +
+  scale_fill_manual(values = colvec)
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+CI24pie
+
+# Save plot
+ggsave("CI 2024 pie chart.pdf",
+       width = 0.4,
+       height = 0.4,
+       units = "in")
+```
+
+### HP 2022
+
+#### Make plot
+
+```{r}
+# Make plot
+HP22pie <- ggplot(data = subset(psrelall3majdf,
+                                Site == "Hospital Point" &
+                                  Year == 2022),
+                   aes(x = 1,
+                       y = Abundance)) +
+  geom_bar(stat = "summary",
+           aes(fill = Family),
+           color = "black",
+           linewidth = 0.1) +
+  theme_void() +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,0,0,0), "in"),
+        plot.background = element_blank()) +
+  coord_polar("y",
+              start = 0) +
+  scale_fill_manual(values = colvec)
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+HP22pie
+
+# Save plot
+ggsave("HP 2022 pie chart.pdf",
+       width = 0.4,
+       height = 0.4,
+       units = "in")
+```
+
+### HP 2024
+
+#### Make plot
+
+```{r}
+# Make plot
+HP24pie <- ggplot(data = subset(psrelall3majdf,
+                                Site == "Hospital Point" &
+                                  Year == 2024),
+                   aes(x = 1,
+                       y = Abundance)) +
+  geom_bar(stat = "summary",
+           aes(fill = Family),
+           color = "black",
+           linewidth = 0.1) +
+  theme_void() +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,0,0,0), "in"),
+        plot.background = element_blank()) +
+  coord_polar("y",
+              start = 0) +
+  scale_fill_manual(values = colvec)
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+HP24pie
+
+# Save plot
+ggsave("HP 2024 pie chart.pdf",
+       width = 0.4,
+       height = 0.4,
+       units = "in")
+```
+
+### PD 2022
+
+#### Make plot
+
+```{r}
+# Make plot
+PD22pie <- ggplot(data = subset(psrelall3majdf,
+                                Site == "Punta Donato" &
+                                  Year == 2022),
+                   aes(x = 1,
+                       y = Abundance)) +
+  geom_bar(stat = "summary",
+           aes(fill = Family),
+           color = "black",
+           linewidth = 0.1) +
+  theme_void() +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,0,0,0), "in"),
+        plot.background = element_blank()) +
+  coord_polar("y",
+              start = 0) +
+  scale_fill_manual(values = colvec)
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+PD22pie
+
+# Save plot
+ggsave("PD 2022 pie chart.pdf",
+       width = 0.4,
+       height = 0.4,
+       units = "in")
+```
+
+### PD 2024
+
+#### Make plot
+
+```{r}
+# Make plot
+PD24pie <- ggplot(data = subset(psrelall3majdf,
+                                Site == "Punta Donato" &
+                                  Year == 2024),
+                   aes(x = 1,
+                       y = Abundance)) +
+  geom_bar(stat = "summary",
+           aes(fill = Family),
+           color = "black",
+           linewidth = 0.1) +
+  theme_void() +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,0,0,0), "in"),
+        plot.background = element_blank()) +
+  coord_polar("y",
+              start = 0) +
+  scale_fill_manual(values = colvec)
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+PD24pie
+
+# Save plot
+ggsave("PD 2024 pie chart.pdf",
+       width = 0.4,
+       height = 0.4,
+       units = "in")
+```
+
+### SP 2022
+
+#### Make plot
+
+```{r}
+# Make plot
+SP22pie <- ggplot(data = subset(psrelall3majdf,
+                                Site == "STRI Point" &
+                                  Year == 2022),
+                   aes(x = 1,
+                       y = Abundance)) +
+  geom_bar(stat = "summary",
+           aes(fill = Family),
+           color = "black",
+           linewidth = 0.1) +
+  theme_void() +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,0,0,0), "in"),
+        plot.background = element_blank()) +
+  coord_polar("y",
+              start = 0) +
+  scale_fill_manual(values = colvec)
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+SP22pie
+
+# Save plot
+ggsave("SP 2022 pie chart.pdf",
+       width = 0.4,
+       height = 0.4,
+       units = "in")
+```
+
+### SP 2024
+
+#### Make plot
+
+```{r}
+# Make plot
+SP24pie <- ggplot(data = subset(psrelall3majdf,
+                                Site == "STRI Point" &
+                                  Year == 2024),
+                   aes(x = 1,
+                       y = Abundance)) +
+  geom_bar(stat = "summary",
+           aes(fill = Family),
+           color = "black",
+           linewidth = 0.1) +
+  theme_void() +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,0,0,0), "in"),
+        plot.background = element_blank()) +
+  coord_polar("y",
+              start = 0) +
+  scale_fill_manual(values = colvec)
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+SP24pie
+
+# Save plot
+ggsave("SP 2024 pie chart.pdf",
+       width = 0.4,
+       height = 0.4,
+       units = "in")
+```
+
+## Shannon index
+
+### Make data
+
+```{r}
+# Make data
+shannon_data <- estimate_richness(psall3,
+                                  measures = c("Shannon"))
+
+# Add metadata
+shannon_data <- cbind(shannon_data,
+                      subset(meta16Sphylo,
+                             Coral_ID %in% all3list16S))
+```
+
+### Statistics
+
+```{r}
+# Linear model
+shanlm16S <- lm(Shannon ~ factor(Year)*Site,
+                data = shannon_data)
+
+# ANOVA
+shanaov16S <- Anova(shanlm16S,
+                    type = "III")
+shanaov16S
+
+# EMMeans
+shanemmeans16S <- emmeans(shanlm16S,
+                          ~ factor(Year):Site)
+
+# Tukey
+shanTukey16S <- contrast(shanemmeans16S,
+                         method = "pairwise",
+                         simple = "Year")
+shanTukey16S
+```
+
+
+### Plot
+
+#### Make plot
+
+```{r}
+# Make plot
+shaindplot16S <- ggplot(data = shannon_data,
+                        aes(x = factor(Year),
+                            y = Shannon)) +
+  facet_wrap(~ Site,
+             nrow = 1) +
+  geom_boxplot(aes(group = factor(Year)),
+                   alpha = 0.5,
+               outlier.shape = NA) +
+  geom_point(aes(group = factor(Year)),
+             position = position_dodge(width = 0.75),
+             size = 1) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_text(color = "black",
+                                   size = 11), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                    size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "none",
+        strip.text = element_blank(),
+        strip.background = element_blank()) +
+  labs(x = "Year") +
+  scale_y_continuous(expression(Shannon~index),
+                     limits = c(0,
+                                NA))
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+shaindplot16S
+
+# Save plot
+ggsave("Shannon index plot 16S.pdf",
+       width = 6,
+       height = 1.5,
+       units = "in")
+```
+
+# Community similarity (ITS2 and 16S together)
+
+## Make data
+
+```{r}
+# Get list of corals with both ITS2 and 16S data for all 3 years
+all3listboth <- intersect(all3list,
+                          all3list16S)
+
+# Subset data
+all3bITS2 <- subset(postMEDabsdata,
+                    Coral_ID %in% all3listboth)
+all3b16S <- prune_samples(ps@sam_data$Coral_ID %in% all3listboth,
+                          ps)
+all3b16Sdf <- data.frame(cbind(sample_data(all3b16S),
+                               otu_table(all3b16S)))
+
+# Ensure same order
+rownames(all3bITS2) <- NULL
+rownames(all3b16Sdf) <- NULL
+all3bITS2$Coral_Year <- paste0(all3bITS2$Coral_ID,
+                               "_",
+                               all3bITS2$Year)
+all3b16Sdf$Coral_Year <- paste0(all3b16Sdf$Coral_ID,
+                                "_",
+                                all3b16Sdf$Year)
+all3bITS2 <- all3bITS2[match(all3b16Sdf$Coral_Year,
+                             all3bITS2$Coral_Year), ]
+
+# Remove metadata
+rownames(all3bITS2) <- NULL
+rownames(all3b16Sdf) <- NULL
+metasave <- all3bITS2[,c(1:6)]
+all3bITS2 <- all3bITS2[,-c(1:6,
+                           727)]
+all3b16Sdf <- all3b16Sdf[,-c(1:6,
+                             25741)]
+
+# Remove sequences that do not appear in any sample
+all3bITS2[colSums(all3bITS2) != 0]
+all3b16Sdf[colSums(all3b16Sdf) != 0]
+
+# Bind together with metadata
+all3bothdf <- cbind(metasave,
+                    all3bITS2,
+                    all3b16Sdf)
+```
+
+## Similarity testing
+
+```{r}
+# Make distance matrix
+all3bothdist <- vegdist(all3bothdf[,7:26460],
+                        "bray")
+
+# Test for difference in beta dispersion by Site*Year
+betadisres <- betadisper(all3bothdist,
+                         group = interaction(all3bothdf$Site,
+                                             all3bothdf$Year))
+betadistest <- permutest(betadisres,
+                         permutations = 999)
+## p < 0.001, conclude that groups do NOT have the same beta dispersion
+
+# Test for difference in centroids
+anosimres <- anosim(all3bothdist,
+                    grouping = interaction(all3bothdf$Site,
+                                           all3bothdf$Year))
+summary(anosimres)
+# p < 0.001, conclude that groups do NOT have the same centroid
+
+# Do PCoA
+all3bothPCoA <- cmdscale(all3bothdist,
+                         eig = T,
+                         add = T)
+
+# Calculate percent explained
+all3bothpctexp <- (all3bothPCoA$eig/sum(all3bothPCoA$eig))*100
+
+# Add PCoAs to data frame
+all3bothPCoAdf <- all3bothdf
+all3bothPCoAdf$PCo1 <- all3bothPCoA$points[,1]
+all3bothPCoAdf$PCo2 <- all3bothPCoA$points[,2]
+```
+
+## Plot
+
+### Make plot
+
+```{r}
+# Make plot
+all3bothPCoAplot <- ggplot(data = all3bothPCoAdf,
+                           aes(x = PCo1,
+                               y = PCo2)) +
+  facet_wrap(~ Site,
+             nrow = 1) +
+  geom_hline(yintercept = 0,
+             linetype = "dashed",
+             color = "black") +
+  geom_vline(xintercept = 0,
+             linetype = "dashed",
+             color = "black") +
+  geom_point(aes(color = factor(Year))) +
+  stat_ellipse(aes(color = factor(Year))) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_blank(),
+        axis.text.x = element_text(color = "black",
+                                   size = 11), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                    size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "none",
+        legend.position.inside = c(0.08,
+                                   0.84),
+        panel.border = element_rect(fill = NA),
+        legend.title = element_text(color = "black",
+                                    size = 11),
+        legend.text = element_text(color = "black",
+                                   size = 11),
+        legend.key = element_blank(),
+        legend.background = element_blank(),
+        strip.text = element_text(color = "black",
+                                  size = 11)) +
+  scale_x_continuous(expression("PCo1 (8.6% VE)"),
+                     breaks = seq(-1,
+                                  1,
+                                  1)) +
+  scale_y_continuous(expression("PCo2 (5.2% VE)"),
+                     limits = c(-0.8,
+                                0.8),
+                     breaks = seq(-0.8,
+                                  0.8,
+                                  0.4)) +
+  scale_color_manual(values = c("2022" = "#00798c",
+                                "2023" = "#d1495b",
+                                "2024" = "#edae49"))
+```
+
+### Visualize and save plot
+
+```{r}
+# Visualize plot
+all3bothPCoAplot
+
+# Save plot
+ggsave("Both communities PCoA plot.pdf",
+       width = 5.25,
+       height = 2.5,
+       units = "in")
+```
+
+# Networks
+
+## By site and year
+
+### Make data
+
+```{r}
+# Plan here is to make a new phyloseq object using the "all3bothdf" which has metadata and absolute abundances for all ITS2 and 16S sequences
+## Need: OTU table, sample data, and taxonomy table
+### The sample data is all3bothdf[,1:6]
+### The OTU table is all3bothdf[,7:26460]
+### Taxonomy table for 16S --> get from all3b16S phyloseq object (was used to make 16S portion of all3bothdf)
+### Taxonomy table for ITS2 --> make here, colnames are classification and rownames we can take from all3bothdf
+
+## Make taxonomy table for ITS2
+ITS2taxtab <- data.frame("Kingdom" = rep("Eukaryota",
+                                         ncol(all3bITS2)),
+                         "Phylum" = rep("Dinoflagellata",
+                                        ncol(all3bITS2)),
+                         "Class" = rep("Dinophyceae",
+                                       ncol(all3bITS2)),
+                         "Order" = rep("Suessiales",
+                                       ncol(all3bITS2)),
+                         "Family" = rep("Symbiodiniaceae",
+                                        ncol(all3bITS2)),
+                         "Genus" = NA,
+                         "Species" = NA)
+rownames(ITS2taxtab) <- colnames(all3bITS2)
+
+for (i in 1:nrow(ITS2taxtab)) {
+  if (startsWith(rownames(ITS2taxtab)[i], "A") == TRUE) {
+    ITS2taxtab$Genus[i] <- "Symbiodinium"
+  }
+  else if (endsWith(rownames(ITS2taxtab)[i], "A") == TRUE) {
+    ITS2taxtab$Genus[i] <- "Symbiodinium"
+  }
+  else if (startsWith(rownames(ITS2taxtab)[i], "B") == TRUE) {
+    ITS2taxtab$Genus[i] <- "Breviolum"
+  }
+  else if (endsWith(rownames(ITS2taxtab)[i], "B") == TRUE) {
+    ITS2taxtab$Genus[i] <- "Breviolum"
+  }
+  else if (startsWith(rownames(ITS2taxtab)[i], "C") == TRUE) {
+    ITS2taxtab$Genus[i] <- "Cladocopium"
+  }
+  else if (endsWith(rownames(ITS2taxtab)[i], "C") == TRUE) {
+    ITS2taxtab$Genus[i] <- "Cladocopium"
+  }
+  else if (startsWith(rownames(ITS2taxtab)[i], "D") == TRUE) {
+    ITS2taxtab$Genus[i] <- "Durusdinium"
+  }
+  else if (endsWith(rownames(ITS2taxtab)[i], "D") == TRUE) {
+    ITS2taxtab$Genus[i] <- "Durusdinium"
+  }
+  else {
+    ITS2taxtab$Genus[i] <- "NA"
+  }
+}
+
+# Make joint taxonomy table
+taxtab16S <- data.frame(tax_table(all3b16S))
+taxtabboth <- rbind(ITS2taxtab,
+                    taxtab16S)
+
+# Make phyloseq object
+psfornet <- phyloseq(otu_table(as.matrix(all3bothdf[,7:26460]),
+                               taxa_are_rows = FALSE), 
+                     sample_data(all3bothdf[,1:6]), 
+                     tax_table(as.matrix(taxtabboth)))
+psfornet <- prune_taxa(taxa_sums(psfornet) > 0,
+                       psfornet)
+
+# Add color to OTU table
+taxnet <- data.frame(tax_table(psfornet))
+taxnet$Color <- NA
+for (i in 1:nrow(taxnet)) {
+  if (taxnet$Family[i] == "Symbiodiniaceae") {
+    taxnet$Color[i] <- "Sym"
+  }
+  else {
+    taxnet$Color[i] <- "ASV"
+  }
+}
+tax_table(psfornet) <- as.matrix(taxnet)
+```
+
+### Cristobal Island 2022
+
+#### Generate network
+
+```{r}
+# Get data
+CI22net <- subset_samples(psfornet,
+                          Year == 2022 &
+                            Site == "Cristobal Island")
+CI22net <- prune_taxa(taxa_sums(CI22net) > 0,
+                      CI22net)
+keepCI22 <- apply(otu_table(CI22net),
+                  2,
+                  function(x) {
+                    sum(x >= 5) >= 2
+                    })
+CI22net <- prune_taxa(keepCI22,
+                      CI22net)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+CI22netplot <- plot_net(CI22net,
+                        type = "taxa",
+                        maxdist = 0.4,
+                        color = "Color",
+                        point_size = 0.01) +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,
+                        0,
+                        0,
+                        0),
+                        "in")) +
+  scale_color_manual(values = c("Sym" = "#D59E87",
+                                "ASV" = "#87AE52"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+CI22netplot
+
+# Save plot
+ggsave("CI22 network plot.pdf",
+       width = 1.2,
+       height = 1.2,
+       units = "in")
+```
+
+### Cristobal Island 2023
+
+#### Generate network
+
+```{r}
+# Get data
+CI23net <- subset_samples(psfornet,
+                          Year == 2023 &
+                            Site == "Cristobal Island")
+CI23net <- prune_taxa(taxa_sums(CI23net) > 0,
+                      CI23net)
+keepCI23 <- apply(otu_table(CI23net),
+                  2,
+                  function(x) {
+                    sum(x >= 5) >= 2
+                    })
+CI23net <- prune_taxa(keepCI23,
+                      CI23net)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+CI23netplot <- plot_net(CI23net,
+                        type = "taxa",
+                        maxdist = 0.4,
+                        color = "Color",
+                        point_size = 0.01) +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,
+                        0,
+                        0,
+                        0),
+                        "in"))  +
+  scale_color_manual(values = c("Sym" = "#D59E87",
+                                "ASV" = "#87AE52"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+CI23netplot
+
+# Save plot
+ggsave("CI23 network plot.pdf",
+       width = 1.2,
+       height = 1.2,
+       units = "in")
+```
+
+### Cristobal Island 2024
+
+#### Generate network
+
+```{r}
+# Get data
+CI24net <- subset_samples(psfornet,
+                          Year == 2024 &
+                            Site == "Cristobal Island")
+CI24net <- prune_taxa(taxa_sums(CI24net) > 0,
+                      CI24net)
+keepCI24 <- apply(otu_table(CI24net),
+                  2,
+                  function(x) {
+                    sum(x >= 5) >= 2
+                    })
+CI24net <- prune_taxa(keepCI24,
+                      CI24net)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+CI24netplot <- plot_net(CI24net,
+                        type = "taxa",
+                        maxdist = 0.4,
+                        color = "Color",
+                        point_size = 0.01) +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,
+                        0,
+                        0,
+                        0),
+                        "in"))  +
+  scale_color_manual(values = c("Sym" = "#D59E87",
+                                "ASV" = "#87AE52"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+CI24netplot
+
+# Save plot
+ggsave("CI24 network plot.pdf",
+       width = 1.2,
+       height = 1.2,
+       units = "in")
+```
+
+### Hospital Point 2022
+
+#### Generate network
+
+```{r}
+# Get data
+HP22net <- subset_samples(psfornet,
+                          Year == 2022 &
+                            Site == "Hospital Point")
+HP22net <- prune_taxa(taxa_sums(HP22net) > 0,
+                      HP22net)
+keepHP22 <- apply(otu_table(HP22net),
+                  2,
+                  function(x) {
+                    sum(x >= 5) >= 2
+                    })
+HP22net <- prune_taxa(keepHP22,
+                      HP22net)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+HP22netplot <- plot_net(HP22net,
+                        type = "taxa",
+                        maxdist = 0.4,
+                        color = "Color",
+                        point_size = 0.01) +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,
+                        0,
+                        0,
+                        0),
+                        "in"))  +
+  scale_color_manual(values = c("Sym" = "#D59E87",
+                                "ASV" = "#87AE52"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+HP22netplot
+
+# Save plot
+ggsave("HP22 network plot.pdf",
+       width = 1.2,
+       height = 1.2,
+       units = "in")
+```
+
+### Hospital Point 2023
+
+#### Generate network
+
+```{r}
+# Get data
+HP23net <- subset_samples(psfornet,
+                          Year == 2023 &
+                            Site == "Hospital Point")
+HP23net <- prune_taxa(taxa_sums(HP23net) > 0,
+                      HP23net)
+keepHP23 <- apply(otu_table(HP23net),
+                  2,
+                  function(x) {
+                    sum(x >= 5) >= 2
+                    })
+HP23net <- prune_taxa(keepHP23,
+                      HP23net)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+HP23netplot <- plot_net(HP23net,
+                        type = "taxa",
+                        maxdist = 0.4,
+                        color = "Color",
+                        point_size = 0.01) +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,
+                        0,
+                        0,
+                        0),
+                        "in"))  +
+  scale_color_manual(values = c("Sym" = "#D59E87",
+                                "ASV" = "#87AE52"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+HP23netplot
+
+# Save plot
+ggsave("HP23 network plot.pdf",
+       width = 1.2,
+       height = 1.2,
+       units = "in")
+```
+
+### Hospital Point 2024
+
+#### Generate network
+
+```{r}
+# Get data
+HP24net <- subset_samples(psfornet,
+                          Year == 2024 &
+                            Site == "Hospital Point")
+HP24net <- prune_taxa(taxa_sums(HP24net) > 0,
+                      HP24net)
+keepHP24 <- apply(otu_table(HP24net),
+                  2,
+                  function(x) {
+                    sum(x >= 5) >= 2
+                    })
+HP24net <- prune_taxa(keepHP24,
+                      HP24net)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+HP24netplot <- plot_net(HP24net,
+                        type = "taxa",
+                        maxdist = 0.4,
+                        color = "Color",
+                        point_size = 0.01) +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,
+                        0,
+                        0,
+                        0),
+                        "in"))  +
+  scale_color_manual(values = c("Sym" = "#D59E87",
+                                "ASV" = "#87AE52"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+HP24netplot
+
+# Save plot
+ggsave("HP24 network plot.pdf",
+       width = 1.2,
+       height = 1.2,
+       units = "in")
+```
+
+### Punta Donato 2022
+
+#### Generate network
+
+```{r}
+# Get data
+PD22net <- subset_samples(psfornet,
+                          Year == 2022 &
+                            Site == "Punta Donato")
+PD22net <- prune_taxa(taxa_sums(PD22net) > 0,
+                      PD22net)
+keepPD22 <- apply(otu_table(PD22net),
+                  2,
+                  function(x) {
+                    sum(x >= 5) >= 2
+                    })
+PD22net <- prune_taxa(keepPD22,
+                      PD22net)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+PD22netplot <- plot_net(PD22net,
+                        type = "taxa",
+                        maxdist = 0.4,
+                        color = "Color",
+                        point_size = 0.01) +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,
+                        0,
+                        0,
+                        0),
+                        "in"))  +
+  scale_color_manual(values = c("Sym" = "#D59E87",
+                                "ASV" = "#87AE52"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+PD22netplot
+
+# Save plot
+ggsave("PD22 network plot.pdf",
+       width = 1.2,
+       height = 1.2,
+       units = "in")
+```
+
+### Punta Donato 2023
+
+#### Generate network
+
+```{r}
+# Get data
+PD23net <- subset_samples(psfornet,
+                          Year == 2023 &
+                            Site == "Punta Donato")
+PD23net <- prune_taxa(taxa_sums(PD23net) > 0,
+                      PD23net)
+keepPD23 <- apply(otu_table(PD23net),
+                  2,
+                  function(x) {
+                    sum(x >= 5) >= 2
+                    })
+PD23net <- prune_taxa(keepPD23,
+                      PD23net)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+PD23netplot <- plot_net(PD23net,
+                        type = "taxa",
+                        maxdist = 0.4,
+                        color = "Color",
+                        point_size = 0.01) +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,
+                        0,
+                        0,
+                        0),
+                        "in"))  +
+  scale_color_manual(values = c("Sym" = "#D59E87",
+                                "ASV" = "#87AE52"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+PD23netplot
+
+# Save plot
+ggsave("PD23 network plot.pdf",
+       width = 1.2,
+       height = 1.2,
+       units = "in")
+```
+
+### Punta Donato 2024
+
+#### Generate network
+
+```{r}
+# Get data
+PD24net <- subset_samples(psfornet,
+                          Year == 2024 &
+                            Site == "Punta Donato")
+PD24net <- prune_taxa(taxa_sums(PD24net) > 0,
+                      PD24net)
+keepPD24 <- apply(otu_table(PD24net),
+                  2,
+                  function(x) {
+                    sum(x >= 5) >= 2
+                    })
+PD24net <- prune_taxa(keepPD24,
+                      PD24net)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+PD24netplot <- plot_net(PD24net,
+                        type = "taxa",
+                        maxdist = 0.4,
+                        color = "Color",
+                        point_size = 0.01) +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,
+                        0,
+                        0,
+                        0),
+                        "in"))  +
+  scale_color_manual(values = c("Sym" = "#D59E87",
+                                "ASV" = "#87AE52"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+PD24netplot
+
+# Save plot
+ggsave("PD24 network plot.pdf",
+       width = 1.2,
+       height = 1.2,
+       units = "in")
+```
+
+### STRI Point 2022
+
+#### Generate network
+
+```{r}
+# Get data
+SP22net <- subset_samples(psfornet,
+                          Year == 2022 &
+                            Site == "STRI Point")
+SP22net <- prune_taxa(taxa_sums(SP22net) > 0,
+                      SP22net)
+keepSP22 <- apply(otu_table(SP22net),
+                  2,
+                  function(x) {
+                    sum(x >= 5) >= 2
+                    })
+SP22net <- prune_taxa(keepSP22,
+                      SP22net)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+SP22netplot <- plot_net(SP22net,
+                        type = "taxa",
+                        maxdist = 0.4,
+                        color = "Color",
+                        point_size = 0.01) +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,
+                        0,
+                        0,
+                        0),
+                        "in"))  +
+  scale_color_manual(values = c("Sym" = "#D59E87",
+                                "ASV" = "#87AE52"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+SP22netplot
+
+# Save plot
+ggsave("SP22 network plot.pdf",
+       width = 1.2,
+       height = 1.2,
+       units = "in")
+```
+
+### STRI Point 2023
+
+#### Generate network
+
+```{r}
+# Get data
+SP23net <- subset_samples(psfornet,
+                          Year == 2023 &
+                            Site == "STRI Point")
+SP23net <- prune_taxa(taxa_sums(SP23net) > 0,
+                      SP23net)
+keepSP23 <- apply(otu_table(SP23net),
+                  2,
+                  function(x) {
+                    sum(x >= 5) >= 2
+                    })
+SP23net <- prune_taxa(keepSP23,
+                      SP23net)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+SP23netplot <- plot_net(SP23net,
+                        type = "taxa",
+                        maxdist = 0.4,
+                        color = "Color",
+                        point_size = 0.01) +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,
+                        0,
+                        0,
+                        0),
+                        "in"))  +
+  scale_color_manual(values = c("Sym" = "#D59E87",
+                                "ASV" = "#87AE52"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+SP23netplot
+
+# Save plot
+ggsave("SP23 network plot.pdf",
+       width = 1.2,
+       height = 1.2,
+       units = "in")
+```
+
+### STRI Point 2024
+
+#### Generate network
+
+```{r}
+# Get data
+SP24net <- subset_samples(psfornet,
+                          Year == 2024 &
+                            Site == "STRI Point")
+SP24net <- prune_taxa(taxa_sums(SP24net) > 0,
+                      SP24net)
+keepSP24 <- apply(otu_table(SP24net),
+                  2,
+                  function(x) {
+                    sum(x >= 5) >= 2
+                    })
+SP24net <- prune_taxa(keepSP24,
+                      SP24net)
+```
+
+#### Plot
+
+##### Make plot
+
+```{r}
+# Make plot
+SP24netplot <- plot_net(SP24net,
+                        type = "taxa",
+                        maxdist = 0.4,
+                        color = "Color",
+                        point_size = 0.01) +
+  theme(legend.position = "none",
+        plot.margin = unit(c(0,
+                        0,
+                        0,
+                        0),
+                        "in"))  +
+  scale_color_manual(values = c("Sym" = "#D59E87",
+                                "ASV" = "#87AE52"))
+```
+
+##### Visualize and save plot
+
+```{r}
+# Visualize plot
+SP24netplot
+
+# Save plot
+ggsave("SP24 network plot.pdf",
+       width = 1.2,
+       height = 1.2,
+       units = "in")
+```
+
+## Network quantitative analysis (number of nodes and edges)
+
+### Make data
+
+```{r}
+# Extract data from graph objects
+allnetdata <- data.frame(Site = character(),
+                         Year = numeric(),
+                         Nodes = numeric(),
+                         Edges = numeric())
+allnetdata[1,] <- c("Cristobal Island",
+                    2022,
+                    length(unique(c(CI22netplot$data$v1,
+                                    CI22netplot$data$v2))),
+                    nrow(CI22netplot$data))
+allnetdata[2,] <- c("Cristobal Island",
+                    2023,
+                    length(unique(c(CI23netplot$data$v1,
+                                    CI23netplot$data$v2))),
+                    nrow(CI23netplot$data))
+allnetdata[3,] <- c("Cristobal Island",
+                    2024,
+                    length(unique(c(CI24netplot$data$v1,
+                                    CI24netplot$data$v2))),
+                    nrow(CI24netplot$data))
+allnetdata[4,] <- c("Hospital Point",
+                    2022,
+                    length(unique(c(HP22netplot$data$v1,
+                                    HP22netplot$data$v2))),
+                    nrow(HP22netplot$data))
+allnetdata[5,] <- c("Hospital Point",
+                    2023,
+                    length(unique(c(HP23netplot$data$v1,
+                                    HP23netplot$data$v2))),
+                    nrow(HP23netplot$data))
+allnetdata[6,] <- c("Hospital Point",
+                    2024,
+                    length(unique(c(HP24netplot$data$v1,
+                                    HP24netplot$data$v2))),
+                    nrow(HP24netplot$data))
+allnetdata[7,] <- c("Punta Donato",
+                    2022,
+                    length(unique(c(PD22netplot$data$v1,
+                                    PD22netplot$data$v2))),
+                    nrow(PD22netplot$data))
+allnetdata[8,] <- c("Punta Donato",
+                    2023,
+                    length(unique(c(PD23netplot$data$v1,
+                                    PD23netplot$data$v2))),
+                    nrow(PD23netplot$data))
+allnetdata[9,] <- c("Punta Donato",
+                    2024,
+                    length(unique(c(PD24netplot$data$v1,
+                                    PD24netplot$data$v2))),
+                    nrow(PD24netplot$data))
+allnetdata[10,] <- c("STRI Point",
+                    2022,
+                    length(unique(c(SP22netplot$data$v1,
+                                    SP22netplot$data$v2))),
+                    nrow(SP22netplot$data))
+allnetdata[11,] <- c("STRI Point",
+                    2023,
+                    length(unique(c(SP23netplot$data$v1,
+                                    SP23netplot$data$v2))),
+                    nrow(SP23netplot$data))
+allnetdata[12,] <- c("STRI Point",
+                    2024,
+                    length(unique(c(SP24netplot$data$v1,
+                                    SP24netplot$data$v2))),
+                    nrow(SP24netplot$data))
+allnetdatag <- gather(allnetdata,
+                      key = "Feature",
+                      value = "Count",
+                      -c(1:2))
+allnetdatag$Count <- as.numeric(allnetdatag$Count)
+```
+
+### Plot
+
+#### Make plot
+
+```{r}
+# Make plot
+netconplot <- ggplot(data = allnetdatag,
+                     aes(x = as.factor(Year),
+                         y = Count)) +
+  facet_wrap(~ Site,
+             nrow = 1) +
+  geom_bar(stat = "identity",
+           aes(fill = Feature),
+           position = position_dodge(width = 1)) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.text.x = element_text(color = "black",
+                                   size = 11), 
+        axis.text.y = element_text(color = "black",
+                                   size = 11),
+        axis.title.x = element_text(color = "black",
+                                     size = 11),
+        axis.title.y = element_text(color = "black",
+                                    size = 11),
+        legend.position = "none",
+        strip.text = element_text(color = "black",
+                                  size = 11)) +
+  labs(x = "Year",
+       y = "Count") +
+  scale_fill_manual(values = c("Edges" = "darkgray",
+                               "Nodes" = "lightgray"))
+```
+
+#### Visualize and save plot
+
+```{r}
+# Visualize plot
+netconplot
+
+# Save plot
+ggsave("Network features plot.pdf",
+       width = 6,
+       height = 3,
+       units = "in")
+```
